@@ -1,16 +1,16 @@
 /*******************************************************************************
  * Copyright (C) 2007-2019 Emmanuel Dupuy GPLv3
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -58,10 +58,10 @@ import jd.core.model.instruction.bytecode.instruction.UnaryOperatorInstruction;
 /*
  * Utilis� par TernaryOpReconstructor
  */
-public class SearchDupLoadInstructionVisitor 
+public class SearchDupLoadInstructionVisitor
 {
 	public static DupLoad visit(Instruction instruction, DupStore dupStore)
-	{		
+	{
 		switch (instruction.opcode)
 		{
 		case ByteCodeConstants.ARRAYLENGTH:
@@ -103,7 +103,7 @@ public class SearchDupLoadInstructionVisitor
 		case ByteCodeConstants.BINARYOP:
 		case ByteCodeConstants.ASSIGNMENT:
 			{
-				BinaryOperatorInstruction boi = 
+				BinaryOperatorInstruction boi =
 					(BinaryOperatorInstruction)instruction;
 				DupLoad dupLoad = visit(boi.value1, dupStore);
 				if (dupLoad != null)
@@ -138,7 +138,7 @@ public class SearchDupLoadInstructionVisitor
 			return visit(((IfInstruction)instruction).value, dupStore);
 		case ByteCodeConstants.COMPLEXIF:
 			{
-				List<Instruction> branchList = 
+				List<Instruction> branchList =
 					((ComplexConditionalBranchInstruction)instruction).instructions;
 				for (int i=branchList.size()-1; i>=0; --i)
 				{
@@ -194,7 +194,7 @@ public class SearchDupLoadInstructionVisitor
 			return visit(((ANewArray)instruction).dimension, dupStore);
 		case ByteCodeConstants.POP:
 			return visit(((Pop)instruction).objectref, dupStore);
-		case ByteCodeConstants.PUTFIELD: 
+		case ByteCodeConstants.PUTFIELD:
 			{
 				PutField putField = (PutField)instruction;
 				DupLoad dupLoad = visit(putField.objectref, dupStore);
@@ -210,8 +210,8 @@ public class SearchDupLoadInstructionVisitor
 			return visit(((TableSwitch)instruction).key, dupStore);
 		case ByteCodeConstants.TERNARYOPSTORE:
 			return visit(((TernaryOpStore)instruction).objectref, dupStore);
-		case ByteCodeConstants.PREINC:			
-		case ByteCodeConstants.POSTINC:	
+		case ByteCodeConstants.PREINC:
+		case ByteCodeConstants.POSTINC:
 			return visit(((IncInstruction)instruction).value, dupStore);
 		case ByteCodeConstants.GETFIELD:
 			return visit(((GetField)instruction).objectref, dupStore);
@@ -238,8 +238,8 @@ public class SearchDupLoadInstructionVisitor
 		case ByteCodeConstants.GETSTATIC:
 		case ByteCodeConstants.OUTERTHIS:
 		case ByteCodeConstants.GOTO:
-		case ByteCodeConstants.IINC:			
-		case ByteCodeConstants.JSR:			
+		case ByteCodeConstants.IINC:
+		case ByteCodeConstants.JSR:
 		case ByteCodeConstants.LDC:
 		case ByteCodeConstants.LDC2_W:
 		case ByteCodeConstants.NEW:
@@ -252,11 +252,11 @@ public class SearchDupLoadInstructionVisitor
 			break;
 		default:
 			System.err.println(
-					"Can not search DupLoad instruction in " + 
-					instruction.getClass().getName() + 
+					"Can not search DupLoad instruction in " +
+					instruction.getClass().getName() +
 					", opcode=" + instruction.opcode);
 		}
-		
+
 		return null;
 	}
 
@@ -269,7 +269,7 @@ public class SearchDupLoadInstructionVisitor
 			if (dupLoad != null)
 				return dupLoad;
 		}
-		
+
 		return null;
 	}
 }

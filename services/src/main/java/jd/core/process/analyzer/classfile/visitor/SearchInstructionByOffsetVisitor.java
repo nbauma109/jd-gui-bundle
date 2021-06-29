@@ -1,16 +1,16 @@
 /*******************************************************************************
  * Copyright (C) 2007-2019 Emmanuel Dupuy GPLv3
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -56,13 +56,13 @@ import jd.core.model.instruction.bytecode.instruction.UnaryOperatorInstruction;
 /*
  * Utilis� par TernaryOpReconstructor
  */
-public class SearchInstructionByOffsetVisitor 
+public class SearchInstructionByOffsetVisitor
 {
 	public static Instruction visit(Instruction instruction, int offset)
 	{
 		if (instruction.offset == offset)
 			return instruction;
-		
+
 		switch (instruction.opcode)
 		{
 		case ByteCodeConstants.ARRAYLENGTH:
@@ -87,7 +87,7 @@ public class SearchInstructionByOffsetVisitor
 		case ByteCodeConstants.BINARYOP:
 		case ByteCodeConstants.ASSIGNMENT:
 			{
-				BinaryOperatorInstruction boi = 
+				BinaryOperatorInstruction boi =
 					(BinaryOperatorInstruction)instruction;
 				instruction = visit(boi.value1, offset);
 				if (instruction != null)
@@ -118,7 +118,7 @@ public class SearchInstructionByOffsetVisitor
 			return visit(((IfInstruction)instruction).value, offset);
 		case ByteCodeConstants.COMPLEXIF:
 			{
-				List<Instruction> branchList = 
+				List<Instruction> branchList =
 					((ComplexConditionalBranchInstruction)instruction).instructions;
 				for (int i=branchList.size()-1; i>=0; --i)
 				{
@@ -174,7 +174,7 @@ public class SearchInstructionByOffsetVisitor
 			return visit(((ANewArray)instruction).dimension, offset);
 		case ByteCodeConstants.POP:
 			return visit(((Pop)instruction).objectref, offset);
-		case ByteCodeConstants.PUTFIELD: 
+		case ByteCodeConstants.PUTFIELD:
 			{
 				PutField putField = (PutField)instruction;
 				instruction = visit(putField.objectref, offset);
@@ -190,8 +190,8 @@ public class SearchInstructionByOffsetVisitor
 			return visit(((TableSwitch)instruction).key, offset);
 		case ByteCodeConstants.TERNARYOPSTORE:
 			return visit(((TernaryOpStore)instruction).objectref, offset);
-		case ByteCodeConstants.PREINC:			
-		case ByteCodeConstants.POSTINC:	
+		case ByteCodeConstants.PREINC:
+		case ByteCodeConstants.POSTINC:
 			return visit(((IncInstruction)instruction).value, offset);
 		case ByteCodeConstants.GETFIELD:
 			return visit(((GetField)instruction).objectref, offset);
@@ -220,8 +220,8 @@ public class SearchInstructionByOffsetVisitor
 		case ByteCodeConstants.GETSTATIC:
 		case ByteCodeConstants.OUTERTHIS:
 		case ByteCodeConstants.GOTO:
-		case ByteCodeConstants.IINC:			
-		case ByteCodeConstants.JSR:			
+		case ByteCodeConstants.IINC:
+		case ByteCodeConstants.JSR:
 		case ByteCodeConstants.LDC:
 		case ByteCodeConstants.LDC2_W:
 		case ByteCodeConstants.NEW:
@@ -234,11 +234,11 @@ public class SearchInstructionByOffsetVisitor
 			break;
 		default:
 			System.err.println(
-					"Can not search instruction in " + 
-					instruction.getClass().getName() + 
+					"Can not search instruction in " +
+					instruction.getClass().getName() +
 					", opcode=" + instruction.opcode);
 		}
-		
+
 		return null;
 	}
 
@@ -250,7 +250,7 @@ public class SearchInstructionByOffsetVisitor
 			if (instruction != null)
 				return instruction;
 		}
-		
+
 		return null;
 	}
 }

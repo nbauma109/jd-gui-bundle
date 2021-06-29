@@ -28,7 +28,7 @@ import org.jdv1.gui.util.index.IndexesUtil;
 
 public class LogPage extends HyperlinkPage implements UriGettable, IndexesChangeListener {
     /**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
 	protected API api;

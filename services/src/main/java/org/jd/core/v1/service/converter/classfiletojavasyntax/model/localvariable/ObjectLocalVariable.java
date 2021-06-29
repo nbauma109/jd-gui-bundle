@@ -65,7 +65,7 @@ public class ObjectLocalVariable extends AbstractLocalVariable {
         StringBuilder sb = new StringBuilder();
 
         sb.append("ObjectLocalVariable{");
-        
+
         if (type.getName() == null) {
             sb.append(type.getInternalName());
         } else {

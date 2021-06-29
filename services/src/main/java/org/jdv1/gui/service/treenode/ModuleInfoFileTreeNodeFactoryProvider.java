@@ -52,7 +52,7 @@ public class ModuleInfoFileTreeNodeFactoryProvider extends ClassFileTreeNodeFact
 
     protected static class ModuleInfoFileTreeNode extends FileTreeNode {
         /**
-		 * 
+		 *
 		 */
 		private static final long serialVersionUID = 1L;
 

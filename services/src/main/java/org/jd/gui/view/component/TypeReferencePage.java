@@ -24,7 +24,7 @@ import org.jd.gui.util.parser.jdt.core.HyperlinkData;
 public abstract class TypeReferencePage extends HyperlinkPage {
 
     /**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
 

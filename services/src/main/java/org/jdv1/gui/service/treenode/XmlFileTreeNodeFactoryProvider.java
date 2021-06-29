@@ -36,7 +36,7 @@ public class XmlFileTreeNodeFactoryProvider extends TextFileTreeNodeFactoryProvi
 
     protected static class TreeNode extends TextFileTreeNodeFactoryProvider.TreeNode {
         /**
-		 * 
+		 *
 		 */
 		private static final long serialVersionUID = 1L;
 

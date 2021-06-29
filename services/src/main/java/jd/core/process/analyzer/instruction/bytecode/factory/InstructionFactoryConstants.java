@@ -1,16 +1,16 @@
 /*******************************************************************************
  * Copyright (C) 2007-2019 Emmanuel Dupuy GPLv3
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -18,14 +18,14 @@ package jd.core.process.analyzer.instruction.bytecode.factory;
 
 import jd.core.model.instruction.bytecode.ByteCodeConstants;
 
-public class InstructionFactoryConstants 
+public class InstructionFactoryConstants
 {
 	public final static InstructionFactory[] FACTORIES;
-	
+
 	static
 	{
 		FACTORIES   = new InstructionFactory[256];
-		
+
 		FACTORIES[ByteCodeConstants.NOP]             = new DummyFactory();
 		FACTORIES[ByteCodeConstants.ACONST_NULL]     = new AConstNullFactory();
 		FACTORIES[ByteCodeConstants.ICONST_M1]       = new IConstFactory();
@@ -174,10 +174,10 @@ public class InstructionFactoryConstants
 		FACTORIES[ByteCodeConstants.I2B]             = new ConvertInstructionFactory("B");
 		FACTORIES[ByteCodeConstants.I2C]             = new ConvertInstructionFactory("C");
 		FACTORIES[ByteCodeConstants.I2S]             = new ConvertInstructionFactory("S");
-		FACTORIES[ByteCodeConstants.LCMP]            = new CmpFactory(6, "Z", "<"); 
-		FACTORIES[ByteCodeConstants.FCMPL]           = FACTORIES[ByteCodeConstants.LCMP]; 
+		FACTORIES[ByteCodeConstants.LCMP]            = new CmpFactory(6, "Z", "<");
+		FACTORIES[ByteCodeConstants.FCMPL]           = FACTORIES[ByteCodeConstants.LCMP];
 		FACTORIES[ByteCodeConstants.FCMPG]           = FACTORIES[ByteCodeConstants.LCMP];
-		FACTORIES[ByteCodeConstants.DCMPL]           = FACTORIES[ByteCodeConstants.LCMP]; 
+		FACTORIES[ByteCodeConstants.DCMPL]           = FACTORIES[ByteCodeConstants.LCMP];
 		FACTORIES[ByteCodeConstants.DCMPG]           = FACTORIES[ByteCodeConstants.LCMP];
 		FACTORIES[ByteCodeConstants.IFEQ]            = new IfFactory(ByteCodeConstants.CMP_EQ);
 		FACTORIES[ByteCodeConstants.IFNE]            = new IfFactory(ByteCodeConstants.CMP_NE);
@@ -207,7 +207,7 @@ public class InstructionFactoryConstants
 		FACTORIES[ByteCodeConstants.GETSTATIC]       = new GetStaticFactory();
 		FACTORIES[ByteCodeConstants.PUTSTATIC]       = new PutStaticFactory();
 		FACTORIES[ByteCodeConstants.GETFIELD]        = new GetFieldFactory();
-		FACTORIES[ByteCodeConstants.PUTFIELD]        = new PutFieldFactory();	
+		FACTORIES[ByteCodeConstants.PUTFIELD]        = new PutFieldFactory();
 		FACTORIES[ByteCodeConstants.INVOKEVIRTUAL]   = new InvokevirtualFactory();
 		FACTORIES[ByteCodeConstants.INVOKESPECIAL]   = new InvokespecialFactory();
 		FACTORIES[ByteCodeConstants.INVOKESTATIC ]   = new InvokestaticFactory();
@@ -227,7 +227,7 @@ public class InstructionFactoryConstants
 		FACTORIES[ByteCodeConstants.IFNONNULL]       = new IfXNullFactory(ByteCodeConstants.CMP_NE);
 		FACTORIES[ByteCodeConstants.GOTO_W]          = new GotoWFactory();
 		FACTORIES[ByteCodeConstants.JSR_W]           = new JsrWFactory();
-		
+
 		/**
 		 * Non-legal opcodes, may be used by JVM internally.
 		 */

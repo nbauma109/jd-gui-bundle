@@ -1,16 +1,16 @@
 /*******************************************************************************
  * Copyright (C) 2007-2019 Emmanuel Dupuy GPLv3
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -35,36 +35,36 @@ public class IfXNullFactory extends InstructionFactory
 	{
 		this.cmp = cmp;
 	}
-		
+
 	public int create(
-			ClassFile classFile, Method method, List<Instruction> list, 
-			List<Instruction> listForAnalyze,  
-			Stack<Instruction> stack, byte[] code, int offset, 
+			ClassFile classFile, Method method, List<Instruction> list,
+			List<Instruction> listForAnalyze,
+			Stack<Instruction> stack, byte[] code, int offset,
 			int lineNumber, boolean[] jumps)
 	{
 		final int opcode = code[offset] & 255;
-		final int branch = 
+		final int branch =
 			(short)(((code[offset+1] & 255) << 8) | (code[offset+2] & 255));
-		
+
 		list.add(new IfInstruction(
-			ByteCodeConstants.IFXNULL, offset, lineNumber, 
+			ByteCodeConstants.IFXNULL, offset, lineNumber,
 			this.cmp, stack.pop(), branch));
 
 		if (!stack.isEmpty())
 		{
-			Instruction instruction = stack.lastElement();			
+			Instruction instruction = stack.lastElement();
 			if (instruction.opcode == ByteCodeConstants.DUPLOAD)
 			{
-				int nextOffset = 
+				int nextOffset =
 					offset + ByteCodeConstants.NO_OF_OPERANDS[opcode] + 1;
-				
+
 				if (nextOffset < code.length)
 				{
 					switch (code[nextOffset] & 255)
 					{
 					case ByteCodeConstants.POP:
 					case ByteCodeConstants.ARETURN:
-						// Duplicate 'DupLoad' instruction used by 
+						// Duplicate 'DupLoad' instruction used by
 						// DotClass118BReconstructor
 						DupLoad dp = (DupLoad)instruction;
 						stack.push(new DupLoad(
@@ -73,7 +73,7 @@ public class IfXNullFactory extends InstructionFactory
 				}
 			}
 		}
-		
+
 		return ByteCodeConstants.NO_OF_OPERANDS[opcode];
 	}
 }

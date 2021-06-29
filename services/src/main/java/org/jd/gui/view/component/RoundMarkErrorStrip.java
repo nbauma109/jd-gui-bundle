@@ -83,7 +83,7 @@ import java.util.List;
 public class RoundMarkErrorStrip extends JComponent {
 
     /**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
 
@@ -776,7 +776,7 @@ public class RoundMarkErrorStrip extends JComponent {
     private class Marker extends JComponent {
 
         /**
-		 * 
+		 *
 		 */
 		private static final long serialVersionUID = 1L;
 		private List<ParserNotice> notices;

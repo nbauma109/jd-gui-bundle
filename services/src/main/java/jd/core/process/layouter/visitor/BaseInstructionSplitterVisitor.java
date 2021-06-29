@@ -1,16 +1,16 @@
 /*******************************************************************************
  * Copyright (C) 2007-2019 Emmanuel Dupuy GPLv3
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -58,24 +58,24 @@ import jd.core.model.instruction.fast.instruction.FastDeclaration;
 import jd.core.util.StringConstants;
 
 
-public abstract class BaseInstructionSplitterVisitor 
+public abstract class BaseInstructionSplitterVisitor
 {
 	protected ClassFile classFile;
 	protected ConstantPool constants;
-	
+
 	public BaseInstructionSplitterVisitor() {}
-	
+
 	public void start(ClassFile classFile)
 	{
 		this.classFile = classFile;
 		this.constants = (classFile == null) ? null : classFile.getConstantPool();
 	}
-	
+
 	public void visit(Instruction instruction)
 	{
 		visit(null, instruction);
 	}
-	
+
 	protected void visit(Instruction parent, Instruction instruction)
 	{
 		switch (instruction.opcode)
@@ -85,7 +85,7 @@ public abstract class BaseInstructionSplitterVisitor
 			break;
 		case ByteCodeConstants.ARRAYLOAD:
 			{
-				ArrayLoadInstruction ali = (ArrayLoadInstruction)instruction; 
+				ArrayLoadInstruction ali = (ArrayLoadInstruction)instruction;
 				visit(instruction, ali.arrayref);
 				visit(instruction, ali.indexref);
 			}
@@ -113,7 +113,7 @@ public abstract class BaseInstructionSplitterVisitor
 		case ByteCodeConstants.ASSIGNMENT:
 		case ByteCodeConstants.BINARYOP:
 			{
-				BinaryOperatorInstruction boi = 
+				BinaryOperatorInstruction boi =
 					(BinaryOperatorInstruction)instruction;
 				visit(instruction, boi.value1);
 				visit(instruction, boi.value2);
@@ -155,48 +155,48 @@ public abstract class BaseInstructionSplitterVisitor
 			break;
 		case FastConstants.COMPLEXIF:
 			{
-				List<Instruction> branchList = 
+				List<Instruction> branchList =
 					((ComplexConditionalBranchInstruction)instruction).instructions;
-				int lenght = branchList.size();	
+				int lenght = branchList.size();
 				for (int i=0; i<lenght; i++)
 					visit(instruction, branchList.get(i));
 			}
 			break;
-		case ByteCodeConstants.PREINC:	
-		case ByteCodeConstants.POSTINC:			
+		case ByteCodeConstants.PREINC:
+		case ByteCodeConstants.POSTINC:
 			visit(instruction, ((IncInstruction)instruction).value);
 			break;
 		case ByteCodeConstants.INVOKENEW:
 			{
-				InvokeNew in = (InvokeNew)instruction;			
+				InvokeNew in = (InvokeNew)instruction;
 				List<Instruction> args = in.args;
-				int lenght = args.size();	
+				int lenght = args.size();
 				for (int i=0; i<lenght; i++)
 					visit(instruction, args.get(i));
-				
-				ConstantMethodref cmr = 
-					this.constants.getConstantMethodref(in.index);	
-				String internalClassName = 
+
+				ConstantMethodref cmr =
+					this.constants.getConstantMethodref(in.index);
+				String internalClassName =
 					this.constants.getConstantClassName(cmr.class_index);
-				String prefix = 
-					this.classFile.getThisClassName() + 
+				String prefix =
+					this.classFile.getThisClassName() +
 					StringConstants.INTERNAL_INNER_SEPARATOR;
-				
+
 				if (internalClassName.startsWith(prefix))
 				{
-					ClassFile innerClassFile = 
+					ClassFile innerClassFile =
 						this.classFile.getInnerClassFile(internalClassName);
-	
-					if ((innerClassFile != null) && 
+
+					if ((innerClassFile != null) &&
 						(innerClassFile.getInternalAnonymousClassName() != null))
 					{
 						// Anonymous new invoke
 						visitAnonymousNewInvoke(
 							(parent==null) ? in : parent, in, innerClassFile);
-					}	
-					//else 
+					}
+					//else
 					//{
-						// Inner class new invoke		
+						// Inner class new invoke
 					//}
 				}
 				//else
@@ -215,7 +215,7 @@ public abstract class BaseInstructionSplitterVisitor
 		case ByteCodeConstants.INVOKESTATIC:
 			{
 				List<Instruction> args = ((InvokeInstruction)instruction).args;
-				int lenght = args.size();	
+				int lenght = args.size();
 				for (int i=0; i<lenght; i++)
 					visit(instruction, args.get(i));
 			}
@@ -226,11 +226,11 @@ public abstract class BaseInstructionSplitterVisitor
 			break;
 		case ByteCodeConstants.MULTIANEWARRAY:
 			{
-				Instruction[] dimensions = 
+				Instruction[] dimensions =
 					((MultiANewArray)instruction).dimensions;
-				int lenght = dimensions.length;	
+				int lenght = dimensions.length;
 				for (int i=0; i<lenght; i++)
-					visit(instruction, dimensions[i]);	
+					visit(instruction, dimensions[i]);
 			}
 			break;
 		case ByteCodeConstants.NEWARRAY:
@@ -263,8 +263,8 @@ public abstract class BaseInstructionSplitterVisitor
 		case FastConstants.TERNARYOP:
 			{
 				TernaryOperator tp = (TernaryOperator)instruction;
-				visit(instruction, tp.test);	
-				visit(instruction, tp.value1);	
+				visit(instruction, tp.test);
+				visit(instruction, tp.value1);
 				visit(instruction, tp.value2);
 			}
 			break;
@@ -272,16 +272,16 @@ public abstract class BaseInstructionSplitterVisitor
 		case FastConstants.NEWANDINITARRAY:
 			{
 				InitArrayInstruction iai = (InitArrayInstruction)instruction;
-				visit(instruction, iai.newArray);	
+				visit(instruction, iai.newArray);
 				List<Instruction> values = iai.values;
-				int lenght = values.size();	
+				int lenght = values.size();
 				for (int i=0; i<lenght; i++)
-					visit(instruction, values.get(i));	
+					visit(instruction, values.get(i));
 			}
 			break;
 		}
 	}
-	
+
 	public abstract void visitAnonymousNewInvoke(
 		Instruction parent, InvokeNew in, ClassFile innerClassFile);
 }

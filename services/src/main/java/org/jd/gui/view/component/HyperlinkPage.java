@@ -21,7 +21,7 @@ import org.jd.gui.util.parser.jdt.core.HyperlinkData;
 
 public abstract class HyperlinkPage extends TextPage {
     /**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
 	protected static final Cursor DEFAULT_CURSOR = Cursor.getDefaultCursor();
@@ -95,14 +95,14 @@ public abstract class HyperlinkPage extends TextPage {
     public void clearHyperlinks() {
         hyperlinks.clear();
     }
-    
+
     protected abstract boolean isHyperlinkEnabled(HyperlinkData hyperlinkData);
 
     protected abstract void openHyperlink(int x, int y, HyperlinkData hyperlinkData);
 
     public class HyperlinkSyntaxTextArea extends RSyntaxTextArea {
         /**
-		 * 
+		 *
 		 */
 		private static final long serialVersionUID = 1L;
 

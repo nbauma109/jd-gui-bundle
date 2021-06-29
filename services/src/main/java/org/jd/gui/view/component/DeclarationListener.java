@@ -98,7 +98,7 @@ public class DeclarationListener extends AbstractJavaListener {
 		declarations.put(key, data);
 		return true;
 	}
-	
+
 	@Override
 	public boolean visit(FieldDeclaration node) {
 		List<VariableDeclarationFragment> fragments = node.fragments();

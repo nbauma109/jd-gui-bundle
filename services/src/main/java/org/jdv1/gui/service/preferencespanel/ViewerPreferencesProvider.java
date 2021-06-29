@@ -21,7 +21,7 @@ import java.util.Map;
 
 public class ViewerPreferencesProvider extends JPanel implements PreferencesPanel, DocumentListener {
     /**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
 	protected static final int MIN_VALUE = 2;

@@ -1,7 +1,7 @@
 package org.jd.gui.util.parser.jdt.core;
 
 public class DeclarationData {
-	
+
     private int startPosition;
     private int endPosition;
     private String typeName;

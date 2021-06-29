@@ -1,16 +1,16 @@
 /*******************************************************************************
  * Copyright (C) 2007-2019 Emmanuel Dupuy GPLv3
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -65,15 +65,15 @@ import jd.core.model.instruction.bytecode.instruction.UnaryOperatorInstruction;
 		public int lastIndexOf(int ch)
 		public int lastIndexOf(int ch, int fromIndex)
  */
-public class SetConstantTypeInStringIndexOfMethodsVisitor 
+public class SetConstantTypeInStringIndexOfMethodsVisitor
 {
 	protected ConstantPool constants;
-	
+
 	public SetConstantTypeInStringIndexOfMethodsVisitor(ConstantPool constants)
 	{
 		this.constants = constants;
 	}
-	
+
 	public void visit(Instruction instruction)
 	{
 		switch (instruction.opcode)
@@ -102,7 +102,7 @@ public class SetConstantTypeInStringIndexOfMethodsVisitor
 		case ByteCodeConstants.BINARYOP:
 		case ByteCodeConstants.ASSIGNMENT:
 			{
-				BinaryOperatorInstruction boi = 
+				BinaryOperatorInstruction boi =
 					(BinaryOperatorInstruction)instruction;
 				visit(boi.value1);
 				visit(boi.value2);
@@ -136,7 +136,7 @@ public class SetConstantTypeInStringIndexOfMethodsVisitor
 			break;
 		case ByteCodeConstants.COMPLEXIF:
 			{
-				List<Instruction> branchList = 
+				List<Instruction> branchList =
 					((ComplexConditionalBranchInstruction)instruction).instructions;
 				for (int i=branchList.size()-1; i>=0; --i)
 					visit(branchList.get(i));
@@ -148,30 +148,30 @@ public class SetConstantTypeInStringIndexOfMethodsVisitor
 		case ByteCodeConstants.INVOKEVIRTUAL:
 			{
 				Invokevirtual iv = (Invokevirtual)instruction;
-				ConstantMethodref cmr = 
+				ConstantMethodref cmr =
 					this.constants.getConstantMethodref(iv.index);
 				ConstantClass cc = this.constants.getConstantClass(cmr.class_index);
-				
+
 				if (cc.name_index == this.constants.stringClassNameIndex)
 				{
 					int nbrOfParameters = iv.args.size();
-				
-					if ((1 <= nbrOfParameters) && (nbrOfParameters <= 2)) 
+
+					if ((1 <= nbrOfParameters) && (nbrOfParameters <= 2))
 					{
 						int opcode = iv.args.get(0).opcode;
-						
+
 						if (((opcode==ByteCodeConstants.BIPUSH) ||
 							 (opcode==ByteCodeConstants.SIPUSH)) &&
 							 cmr.getReturnedSignature().equals("I") &&
 							 cmr.getListOfParameterSignatures().get(0).equals("I"))
 						{
-							ConstantNameAndType cnat = 
+							ConstantNameAndType cnat =
 								this.constants.getConstantNameAndType(
 									cmr.name_and_type_index);
-							String name = 
+							String name =
 								this.constants.getConstantUtf8(cnat.name_index);
-							
-							if ("indexOf".equals(name) || 
+
+							if ("indexOf".equals(name) ||
 								"lastIndexOf".equals(name))
 							{
 								// Change constant type
@@ -219,7 +219,7 @@ public class SetConstantTypeInStringIndexOfMethodsVisitor
 		case ByteCodeConstants.POP:
 			visit(((Pop)instruction).objectref);
 			break;
-		case ByteCodeConstants.PUTFIELD: 
+		case ByteCodeConstants.PUTFIELD:
 			{
 				PutField putField = (PutField)instruction;
 				visit(putField.objectref);
@@ -238,8 +238,8 @@ public class SetConstantTypeInStringIndexOfMethodsVisitor
 		case ByteCodeConstants.TERNARYOPSTORE:
 			visit(((TernaryOpStore)instruction).objectref);
 			break;
-		case ByteCodeConstants.PREINC:			
-		case ByteCodeConstants.POSTINC:	
+		case ByteCodeConstants.PREINC:
+		case ByteCodeConstants.POSTINC:
 			visit(((IncInstruction)instruction).value);
 			break;
 		case ByteCodeConstants.GETFIELD:
@@ -268,8 +268,8 @@ public class SetConstantTypeInStringIndexOfMethodsVisitor
 		case ByteCodeConstants.GETSTATIC:
 		case ByteCodeConstants.OUTERTHIS:
 		case ByteCodeConstants.GOTO:
-		case ByteCodeConstants.IINC:			
-		case ByteCodeConstants.JSR:			
+		case ByteCodeConstants.IINC:
+		case ByteCodeConstants.JSR:
 		case ByteCodeConstants.LDC:
 		case ByteCodeConstants.LDC2_W:
 		case ByteCodeConstants.NEW:
@@ -282,8 +282,8 @@ public class SetConstantTypeInStringIndexOfMethodsVisitor
 			break;
 		default:
 			System.err.println(
-					"Can not search String.indexOf in " + 
-					instruction.getClass().getName() + 
+					"Can not search String.indexOf in " +
+					instruction.getClass().getName() +
 					", opcode=" + instruction.opcode);
 		}
 	}
@@ -292,5 +292,5 @@ public class SetConstantTypeInStringIndexOfMethodsVisitor
 	{
 		for (int i=instructions.size()-1; i>=0; --i)
 			visit(instructions.get(i));
-	}	
+	}
 }

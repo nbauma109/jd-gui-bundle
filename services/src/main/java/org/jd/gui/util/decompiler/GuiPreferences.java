@@ -15,8 +15,8 @@ public class GuiPreferences extends Preferences {
 	protected boolean showLineNumbers;
 
 	public GuiPreferences()
-	{ 
-		this.showPrefixThis = true; 
+	{
+		this.showPrefixThis = true;
 		this.unicodeEscape = false;
 		this.showLineNumbers = true;
 	}

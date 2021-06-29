@@ -1,16 +1,16 @@
 /*******************************************************************************
  * Copyright (C) 2007-2019 Emmanuel Dupuy GPLv3
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -67,15 +67,15 @@ import jd.core.model.instruction.bytecode.instruction.UnaryOperatorInstruction;
 /*
  * Replace static call to "OuterClass access$0(InnerClass)" methods.
  */
-public class ReplaceOuterAccessorVisitor 
+public class ReplaceOuterAccessorVisitor
 {
 	protected ClassFile classFile;
-	
+
 	public ReplaceOuterAccessorVisitor(ClassFile classFile)
 	{
 		this.classFile = classFile;
 	}
-	
+
 	public void visit(Instruction instruction)
 	{
 		switch (instruction.opcode)
@@ -232,10 +232,10 @@ public class ReplaceOuterAccessorVisitor
 				else
 					visit(iff.value);
 			}
-			break;			
+			break;
 		case ByteCodeConstants.COMPLEXIF:
 			{
-				List<Instruction> branchList = 
+				List<Instruction> branchList =
 					((ComplexConditionalBranchInstruction)instruction).instructions;
 				for (int i=branchList.size()-1; i>=0; --i)
 					visit(branchList.get(i));
@@ -255,7 +255,7 @@ public class ReplaceOuterAccessorVisitor
 		case ByteCodeConstants.INVOKESPECIAL:
 		case ByteCodeConstants.INVOKEVIRTUAL:
 			{
-				InvokeNoStaticInstruction insi = 
+				InvokeNoStaticInstruction insi =
 					(InvokeNoStaticInstruction)instruction;
 				ClassFile matchedClassFile = match(insi.objectref);
 				if (matchedClassFile != null)
@@ -286,7 +286,7 @@ public class ReplaceOuterAccessorVisitor
 				else
 					visit(ls.key);
 			}
-			break;			
+			break;
 		case ByteCodeConstants.MONITORENTER:
 			{
 				MonitorEnter monitorEnter = (MonitorEnter)instruction;
@@ -384,7 +384,7 @@ public class ReplaceOuterAccessorVisitor
 				else
 					visit(ri.valueref);
 			}
-			break;			
+			break;
 		case ByteCodeConstants.TABLESWITCH:
 			{
 				TableSwitch ts = (TableSwitch)instruction;
@@ -394,7 +394,7 @@ public class ReplaceOuterAccessorVisitor
 				else
 					visit(ts.key);
 			}
-			break;			
+			break;
 		case ByteCodeConstants.TERNARYOPSTORE:
 			{
 				TernaryOpStore tos = (TernaryOpStore)instruction;
@@ -404,8 +404,8 @@ public class ReplaceOuterAccessorVisitor
 				else
 					visit(tos.objectref);
 			}
-			break;		
-		case ByteCodeConstants.TERNARYOP:	
+			break;
+		case ByteCodeConstants.TERNARYOP:
 			{
 				TernaryOperator to = (TernaryOperator)instruction;
 				ClassFile matchedClassFile = match(to.test);
@@ -424,7 +424,7 @@ public class ReplaceOuterAccessorVisitor
 				else
 					visit(to.value2);
 			}
-			break;	
+			break;
 		case ByteCodeConstants.ASSIGNMENT:
 			{
 				AssignmentInstruction ai = (AssignmentInstruction)instruction;
@@ -455,8 +455,8 @@ public class ReplaceOuterAccessorVisitor
 					visit(ali.indexref);
 			}
 			break;
-		case ByteCodeConstants.PREINC:			
-		case ByteCodeConstants.POSTINC:		
+		case ByteCodeConstants.PREINC:
+		case ByteCodeConstants.POSTINC:
 			{
 				IncInstruction ii = (IncInstruction)instruction;
 				ClassFile matchedClassFile = match(ii.value);
@@ -502,8 +502,8 @@ public class ReplaceOuterAccessorVisitor
 		case ByteCodeConstants.GETSTATIC:
 		case ByteCodeConstants.OUTERTHIS:
 		case ByteCodeConstants.GOTO:
-		case ByteCodeConstants.IINC:			
-		case ByteCodeConstants.JSR:			
+		case ByteCodeConstants.IINC:
+		case ByteCodeConstants.JSR:
 		case ByteCodeConstants.LDC:
 		case ByteCodeConstants.LDC2_W:
 		case ByteCodeConstants.NEW:
@@ -516,128 +516,128 @@ public class ReplaceOuterAccessorVisitor
 			break;
 		default:
 			System.err.println(
-					"Can not replace DupLoad in " + 
-					instruction.getClass().getName() + 
+					"Can not replace DupLoad in " +
+					instruction.getClass().getName() +
 					", opcode=" + instruction.opcode);
 		}
 	}
-	
+
 	public void visit(List<Instruction> instructions)
 	{
 		for (int index=instructions.size()-1; index>=0; --index)
 		{
 			Instruction i = instructions.get(index);
 			ClassFile matchedClassFile = match(i);
-			
+
 			if (matchedClassFile != null)
 				instructions.set(index, newInstruction(matchedClassFile, i));
 			else
 				visit(i);
-		}		
+		}
 	}
 
 	protected ClassFile match(Instruction instruction)
 	{
 		if (instruction.opcode != ByteCodeConstants.INVOKESTATIC)
 			return null;
-		
+
 		Invokestatic is = (Invokestatic)instruction;
 		if (is.args.size() != 1)
 			return null;
-		
+
 		ClassFile matchedClassFile = innerMatch(is.args.get(0));
-		
+
 		if ((matchedClassFile == null) || !matchedClassFile.isAInnerClass())
 			return null;
-		
+
 		ConstantPool constants = classFile.getConstantPool();
 
-		ConstantMethodref cmr = 
+		ConstantMethodref cmr =
 			constants.getConstantMethodref(is.index);
-		String className = 
+		String className =
 			constants.getConstantClassName(cmr.class_index);
-		
+
 		if (!className.equals(matchedClassFile.getThisClassName()))
 			return null;
-		
-		ConstantNameAndType cnat = 
+
+		ConstantNameAndType cnat =
 			constants.getConstantNameAndType(cmr.name_and_type_index);
 		String methodName = constants.getConstantUtf8(cnat.name_index);
-		String methodDescriptor = 
+		String methodDescriptor =
 			constants.getConstantUtf8(cnat.descriptor_index);
-		Method method = 
+		Method method =
 			matchedClassFile.getMethod(methodName, methodDescriptor);
-		
-		if ((method == null) ||				
-		    ((method.access_flags & (ClassFileConstants.ACC_SYNTHETIC|ClassFileConstants.ACC_STATIC)) 
+
+		if ((method == null) ||
+		    ((method.access_flags & (ClassFileConstants.ACC_SYNTHETIC|ClassFileConstants.ACC_STATIC))
 		    	!= (ClassFileConstants.ACC_SYNTHETIC|ClassFileConstants.ACC_STATIC)))
-			return null;	
-		
+			return null;
+
 		ClassFile outerClassFile = matchedClassFile.getOuterClass();
 		String returnedSignature = cmr.getReturnedSignature();
-		
+
 		if (!returnedSignature.equals(outerClassFile.getInternalClassName()))
 			return null;
-		
+
 		return outerClassFile;
 	}
-	
+
 	private ClassFile innerMatch(Instruction instruction)
 	{
-		switch (instruction.opcode) 
+		switch (instruction.opcode)
 		{
 		case ByteCodeConstants.OUTERTHIS:
 			{
 				GetStatic gs = (GetStatic)instruction;
 				ConstantPool constants = classFile.getConstantPool();
-								
+
 				ConstantFieldref cfr = constants.getConstantFieldref(gs.index);
-				String className = 
+				String className =
 					constants.getConstantClassName(cfr.class_index);
 				ClassFile outerClassFile = classFile.getOuterClass();
-				
-				if ((outerClassFile == null) || 
+
+				if ((outerClassFile == null) ||
 					!className.equals(outerClassFile.getThisClassName()))
 					return null;
-				
-				ConstantNameAndType cnat = 
-					constants.getConstantNameAndType(cfr.name_and_type_index);				
-				String descriptor = 
+
+				ConstantNameAndType cnat =
+					constants.getConstantNameAndType(cfr.name_and_type_index);
+				String descriptor =
 					constants.getConstantUtf8(cnat.descriptor_index);
-					
+
 				if (! descriptor.equals(outerClassFile.getInternalClassName()))
 					return null;
-				
+
 				return outerClassFile;
 			}
 		case ByteCodeConstants.INVOKESTATIC:
-			return match(instruction);	
+			return match(instruction);
 		default:
 			return null;
-		}		
+		}
 	}
-	
+
 	private Instruction newInstruction(ClassFile matchedClassFile, Instruction i)
 	{
-		String internalMatchedClassName = 
+		String internalMatchedClassName =
 			matchedClassFile.getInternalClassName();
 		String matchedClassName = matchedClassFile.getThisClassName();
-					
+
 		ConstantPool constants = this.classFile.getConstantPool();
-		
+
 		int signatureIndex = constants.addConstantUtf8(matchedClassName);
 		int classIndex = constants.addConstantClass(signatureIndex);
 		int thisIndex = constants.thisLocalVariableNameIndex;
-		int descriptorIndex = 
+		int descriptorIndex =
 			constants.addConstantUtf8(internalMatchedClassName);
 		int nameAndTypeIndex = constants.addConstantNameAndType(
 			thisIndex, descriptorIndex);
-		
-		int matchedThisFieldrefIndex = 
+
+		int matchedThisFieldrefIndex =
 			constants.addConstantFieldref(classIndex, nameAndTypeIndex);
-	
+
 		return new GetStatic(
-			ByteCodeConstants.OUTERTHIS, i.offset, 
+			ByteCodeConstants.OUTERTHIS, i.offset,
 			i.lineNumber, matchedThisFieldrefIndex);
 	}
 }

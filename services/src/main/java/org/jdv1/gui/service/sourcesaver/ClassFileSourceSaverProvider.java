@@ -36,7 +36,7 @@ public class ClassFileSourceSaverProvider extends AbstractSourceSaverProvider {
 
     protected ContainerLoader loader = new ContainerLoader();
     protected LineNumberStringBuilderPrinter printer = new LineNumberStringBuilderPrinter();
-    
+
     protected org.jdv0.gui.service.sourcesaver.ClassFileSourceSaverProvider v0Saver = new org.jdv0.gui.service.sourcesaver.ClassFileSourceSaverProvider();
 
     @Override public String[] getSelectors() { return appendSelectors("*:file:*.class"); }

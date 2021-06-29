@@ -1,16 +1,16 @@
 /*******************************************************************************
  * Copyright (C) 2007-2019 Emmanuel Dupuy GPLv3
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -30,15 +30,15 @@ import jd.core.model.reference.ReferenceMap;
 import jd.core.printer.Printer;
 import jd.core.util.StringUtil;
 
-public class ConstantValueWriter 
-{	
+public class ConstantValueWriter
+{
 	public static void Write(
 		Loader loader, Printer printer, ReferenceMap referenceMap,
 		ClassFile classFile, ConstantValue cv)
 	{
 		Write(loader, printer, referenceMap, classFile, cv, (byte)0);
 	}
-	
+
 	public static void Write(
 		Loader loader, Printer printer, ReferenceMap referenceMap,
 		ClassFile classFile, ConstantValue cv, byte constantIntegerType)
@@ -50,35 +50,35 @@ public class ConstantValueWriter
 		case ConstantConstant.CONSTANT_Double:
 			{
 				double d = ((ConstantDouble)cv).bytes;
-				
+
 				if (d == Double.POSITIVE_INFINITY)
 				{
 					Write(
-						loader, printer, referenceMap, classFile, 
+						loader, printer, referenceMap, classFile,
 						"java/lang/Double", "POSITIVE_INFINITY", "D");
 				}
 				else if (d == Double.NEGATIVE_INFINITY)
 				{
 					Write(
-						loader, printer, referenceMap, classFile, 
+						loader, printer, referenceMap, classFile,
 						"java/lang/Double", "NEGATIVE_INFINITY", "D");
 				}
 				else if (d == Double.NaN)
 				{
 					Write(
-						loader, printer, referenceMap, classFile, 
+						loader, printer, referenceMap, classFile,
 						"java/lang/Double", "NaN", "D");
 				}
 				else if (d == Double.MAX_VALUE)
 				{
 					Write(
-						loader, printer, referenceMap, classFile, 
+						loader, printer, referenceMap, classFile,
 						"java/lang/Double", "MAX_VALUE", "D");
 				}
 				/* else if (d == Double.MIN_NORMAL)
 				{
 					Write(
-						loader, printer, referenceMap, classFile, 
+						loader, printer, referenceMap, classFile,
 						"java/lang/Double", "MIN_NORMAL", "D");
 				} */
 				else if (d == Double.MIN_VALUE)
@@ -100,41 +100,41 @@ public class ConstantValueWriter
 		case ConstantConstant.CONSTANT_Float:
 			{
 				float value = ((ConstantFloat)cv).bytes;
-				
+
 				if (value == Float.POSITIVE_INFINITY)
 				{
 					Write(
-						loader, printer, referenceMap, classFile, 
+						loader, printer, referenceMap, classFile,
 						"java/lang/Float", "POSITIVE_INFINITY", "F");
 				}
 				else if (value == Float.NEGATIVE_INFINITY)
 				{
 					Write(
-						loader, printer, referenceMap, classFile, 
+						loader, printer, referenceMap, classFile,
 						"java/lang/Float", "NEGATIVE_INFINITY", "F");
 				}
 				else if (value == Float.NaN)
 				{
 					Write(
-						loader, printer, referenceMap, classFile, 
+						loader, printer, referenceMap, classFile,
 						"java/lang/Float", "NaN", "F");
 				}
 				else if (value == Float.MAX_VALUE)
 				{
 					Write(
-						loader, printer, referenceMap, classFile, 
+						loader, printer, referenceMap, classFile,
 						"java/lang/Float", "MAX_VALUE", "F");
 				}
 				/* else if (value == Float.MIN_NORMAL)
 				{
 					Write(
-						loader, printer, referenceMap, classFile, 
+						loader, printer, referenceMap, classFile,
 						"java/lang/Float", "MIN_NORMAL", "F");
 				} */
 				else if (value == Float.MIN_VALUE)
 				{
 					Write(
-						loader, printer, referenceMap, classFile, 
+						loader, printer, referenceMap, classFile,
 						"java/lang/Float", "MIN_VALUE", "F");
 				}
 				else
@@ -150,7 +150,7 @@ public class ConstantValueWriter
 		case ConstantConstant.CONSTANT_Integer:
 			{
 		    	int value = ((ConstantInteger)cv).bytes;
-		    	
+
 				switch (constantIntegerType)
 				{
 				case 'Z':
@@ -170,13 +170,13 @@ public class ConstantValueWriter
 				    	if (value == Integer.MIN_VALUE)
 				    	{
 							Write(
-								loader, printer, referenceMap, classFile, 
+								loader, printer, referenceMap, classFile,
 								"java/lang/Integer", "MIN_VALUE", "I");
 				    	}
 				    	else if (value == Integer.MAX_VALUE)
 				    	{
 							Write(
-								loader, printer, referenceMap, classFile, 
+								loader, printer, referenceMap, classFile,
 								"java/lang/Integer", "MAX_VALUE", "I");
 				    	}
 				    	else
@@ -190,17 +190,17 @@ public class ConstantValueWriter
 		case ConstantConstant.CONSTANT_Long:
 			{
 				long value = ((ConstantLong)cv).bytes;
-				
+
 		    	if (value == Long.MIN_VALUE)
 		    	{
 					Write(
-						loader, printer, referenceMap, classFile, 
+						loader, printer, referenceMap, classFile,
 						"java/lang/Long", "MIN_VALUE", "J");
 		    	}
 		    	else if (value == Long.MAX_VALUE)
 		    	{
 					Write(
-						loader, printer, referenceMap, classFile, 
+						loader, printer, referenceMap, classFile,
 						"java/lang/Long", "MAX_VALUE", "J");
 		    	}
 		    	else
@@ -224,7 +224,7 @@ public class ConstantValueWriter
 
 	private static void Write(
 		Loader loader, Printer printer, ReferenceMap referenceMap,
-		ClassFile classFile, String internalTypeName, 
+		ClassFile classFile, String internalTypeName,
 		String name, String descriptor)
 	{
 		String className = SignatureWriter.InternalClassNameToClassName(
@@ -232,9 +232,9 @@ public class ConstantValueWriter
 		String scopeInternalName = classFile.getThisClassName();
 		printer.printType(internalTypeName, className, scopeInternalName);
 		printer.print('.');
-		printer.printStaticField(internalTypeName, name, descriptor, scopeInternalName);		
+		printer.printStaticField(internalTypeName, name, descriptor, scopeInternalName);
 	}
-	
+
 	public static void WriteHexa(
 		Loader loader, Printer printer, ReferenceMap referenceMap,
 		ClassFile classFile, ConstantValue cv)

@@ -1,16 +1,16 @@
 /*******************************************************************************
  * Copyright (C) 2007-2019 Emmanuel Dupuy GPLv3
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -40,7 +40,7 @@ import jd.core.process.analyzer.util.ReconstructorUtil;
  * ...
  * ???( DupLoad )
  */
-public class PreIncReconstructor 
+public class PreIncReconstructor
 {
 	public static void Reconstruct(List<Instruction> list)
 	{
@@ -53,44 +53,44 @@ public class PreIncReconstructor
 
 			// DupStore trouv�
 			DupStore dupstore = (DupStore)list.get(dupStoreIndex);
-			
+
 			if ((dupstore.objectref.opcode != ByteCodeConstants.BINARYOP))
 				continue;
-			
-			BinaryOperatorInstruction boi = 
+
+			BinaryOperatorInstruction boi =
 				(BinaryOperatorInstruction)dupstore.objectref;
-			
-			if ((boi.value2.opcode != ByteCodeConstants.ICONST) && 
-				(boi.value2.opcode != ByteCodeConstants.LCONST) && 
-				(boi.value2.opcode != ByteCodeConstants.DCONST) && 
+
+			if ((boi.value2.opcode != ByteCodeConstants.ICONST) &&
+				(boi.value2.opcode != ByteCodeConstants.LCONST) &&
+				(boi.value2.opcode != ByteCodeConstants.DCONST) &&
 				(boi.value2.opcode != ByteCodeConstants.FCONST))
 				continue;
 
 			ConstInstruction ci = (ConstInstruction)boi.value2;
-			
+
 			if (ci.value != 1)
 				continue;
-			
+
 			int value;
-			
+
 			if (boi.operator.equals("+"))
 				value = 1;
 			else if (boi.operator.equals("-"))
 				value = -1;
 			else
-				continue;			
-			
+				continue;
+
 			int xstorePutfieldPutstaticIndex = dupStoreIndex;
-			
+
 			while (++xstorePutfieldPutstaticIndex < length)
 			{
 				Instruction i = list.get(xstorePutfieldPutstaticIndex);
 				Instruction dupload = null;
-				
+
 				switch (i.opcode)
 				{
 				case ByteCodeConstants.ASTORE:
-					if ((boi.value1.opcode == ByteCodeConstants.ALOAD) && 
+					if ((boi.value1.opcode == ByteCodeConstants.ALOAD) &&
 						(((StoreInstruction)i).valueref.opcode == ByteCodeConstants.DUPLOAD) &&
 						(((IndexInstruction)i).index == ((IndexInstruction)boi.value1).index))
 						// 1er DupLoad trouv�
@@ -125,23 +125,23 @@ public class PreIncReconstructor
 						dupload = (DupLoad)((PutStatic)i).valueref;
 					break;
 				}
-					
+
 				if ((dupload == null) || (dupload.offset != dupstore.offset))
 					continue;
-				
+
 				Instruction preinc = new IncInstruction(
-					ByteCodeConstants.PREINC, boi.offset, 
+					ByteCodeConstants.PREINC, boi.offset,
 					boi.lineNumber, boi.value1, value);
 
 				ReconstructorUtil.ReplaceDupLoad(
 						list, xstorePutfieldPutstaticIndex+1, dupstore, preinc);
-				
+
 				list.remove(xstorePutfieldPutstaticIndex);
 				list.remove(dupStoreIndex);
 				dupStoreIndex--;
 				length = list.size();
 				break;
-			}			
-		}	
+			}
+		}
 	}
 }

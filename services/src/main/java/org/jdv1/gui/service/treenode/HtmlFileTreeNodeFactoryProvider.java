@@ -36,7 +36,7 @@ public class HtmlFileTreeNodeFactoryProvider extends TextFileTreeNodeFactoryProv
 
     protected static class TreeNode extends TextFileTreeNodeFactoryProvider.TreeNode {
         /**
-		 * 
+		 *
 		 */
 		private static final long serialVersionUID = 1L;
 
@@ -48,7 +48,7 @@ public class HtmlFileTreeNodeFactoryProvider extends TextFileTreeNodeFactoryProv
         public <T extends JComponent & UriGettable> T createPage(API api) {
             return (T)new TextFileTreeNodeFactoryProvider.Page(entry) {
                 /**
-				 * 
+				 *
 				 */
 				private static final long serialVersionUID = 1L;
 

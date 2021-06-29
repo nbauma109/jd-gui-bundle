@@ -28,7 +28,7 @@ import org.jd.gui.spi.PreferencesPanel;
 
 public class MavenOrgSourceLoaderPreferencesProvider extends JPanel implements PreferencesPanel, DocumentListener, ActionListener {
     /**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
 	public static final String ACTIVATED = "MavenOrgSourceLoaderPreferencesProvider.activated";
@@ -63,7 +63,7 @@ public class MavenOrgSourceLoaderPreferencesProvider extends JPanel implements P
         JComponent spacer = new JComponent() {
 
 			/**
-			 * 
+			 *
 			 */
 			private static final long serialVersionUID = 1L;};
         JScrollPane scrollPane = new JScrollPane(filtersTextArea);

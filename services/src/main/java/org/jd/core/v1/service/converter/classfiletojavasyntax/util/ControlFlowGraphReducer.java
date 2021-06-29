@@ -695,7 +695,7 @@ public class ControlFlowGraphReducer {
             BasicBlock bb = switchCase.getBasicBlock();
 
             watchdog.clear();
-            
+
             while (bb.getFromOffset() < maxOffset) {
                 if (bb == LOOP_START) {
                     return true;

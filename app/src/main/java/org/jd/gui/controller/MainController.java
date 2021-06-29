@@ -706,7 +706,7 @@ public class MainController implements API {
         }
         return list;
     }
-    
+
     @Override
     public Collection<Indexes> getCollectionOfIndexes() {
         List<JComponent> mainPanels = mainView.getMainPanels();

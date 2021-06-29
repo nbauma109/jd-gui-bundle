@@ -27,7 +27,7 @@ public class ASTParserFactory {
 	public static ASTParserFactory getInstanceWithBindings() {
 		return ASTParserFactoryHolder.BINDING_INSTANCE;
 	}
-	
+
 	private static class ASTParserFactoryHolder {
 		private static final ASTParserFactory INSTANCE = new ASTParserFactory(false, false, false);
 		private static final ASTParserFactory BINDING_INSTANCE = new ASTParserFactory(true, true, true);

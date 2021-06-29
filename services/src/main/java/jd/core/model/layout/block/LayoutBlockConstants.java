@@ -1,22 +1,22 @@
 /*******************************************************************************
  * Copyright (C) 2007-2019 Emmanuel Dupuy GPLv3
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 package jd.core.model.layout.block;
 
-public class LayoutBlockConstants 
+public class LayoutBlockConstants
 {
 	public static final byte UNDEFINED                                    = 0;
 
@@ -25,26 +25,26 @@ public class LayoutBlockConstants
 	public static final byte SEPARATOR_AT_BEGINING                        = 3;
 	public static final byte SEPARATOR_AFTER_IMPORTS                      = 4;
 	public static final byte SEPARATOR_OF_STATEMENTS                      = 5;
-	
+
 	public static final byte IMPORTS                                      = 6;
-	
+
 	public static final byte TYPE_MARKER_START                            = 7;
 	public static final byte TYPE_MARKER_END                              = 8;
-	
+
 	public static final byte FIELD_MARKER_START                           = 9;
 	public static final byte FIELD_MARKER_END                             = 10;
-	
+
 	public static final byte METHOD_MARKER_START                          = 11;
 	public static final byte METHOD_MARKER_END                            = 12;
 
 	public static final byte TYPE_BODY_BLOCK_START                        = 13;
 	public static final byte TYPE_BODY_BLOCK_END                          = 14;
 	public static final byte TYPE_BODY_BLOCK_START_END                    = 15;
-	
+
 	public static final byte INNER_TYPE_BODY_BLOCK_START                  = 16;
 	public static final byte INNER_TYPE_BODY_BLOCK_END                    = 17;
 	public static final byte INNER_TYPE_BODY_BLOCK_START_END              = 18;
-	
+
 	public static final byte METHOD_BODY_BLOCK_START                      = 19;
 	public static final byte METHOD_BODY_BLOCK_END                        = 20;
 	public static final byte METHOD_BODY_BLOCK_START_END                  = 21;
@@ -55,7 +55,7 @@ public class LayoutBlockConstants
 	public static final byte STATEMENTS_BLOCK_START                       = 25;
 	public static final byte STATEMENTS_BLOCK_END                         = 26;
 	public static final byte STATEMENTS_BLOCK_START_END                   = 27;
-	
+
 	public static final byte SINGLE_STATEMENT_BLOCK_START                 = 28;
 	public static final byte SINGLE_STATEMENT_BLOCK_END                   = 29;
 	public static final byte SINGLE_STATEMENTS_BLOCK_START_END            = 30;
@@ -71,7 +71,7 @@ public class LayoutBlockConstants
 
 	public static final byte COMMENT_DEPRECATED                           = 39;
 	public static final byte COMMENT_ERROR                                = 40;
-	
+
 	public static final byte ANNOTATIONS                                  = 41;
 
 	public static final byte TYPE_NAME                                    = 42;
@@ -83,17 +83,17 @@ public class LayoutBlockConstants
 	public static final byte GENERIC_EXTENDS_SUPER_TYPE                   = 47;
 	public static final byte GENERIC_EXTENDS_SUPER_INTERFACES             = 48;
 	public static final byte GENERIC_IMPLEMENTS_INTERFACES                = 49;
-	
+
 	public static final byte FIELD_NAME                                   = 50;
-	
+
 	public static final byte METHOD_STATIC                                = 51;
-	
+
 	public static final byte METHOD_NAME                                  = 52;
 	public static final byte THROWS                                       = 53;
 
 	public static final byte INSTRUCTION                                  = 54;
 	public static final byte INSTRUCTIONS                                 = 55;
-	public static final byte BYTE_CODE                                    = 56;	
+	public static final byte BYTE_CODE                                    = 56;
 	public static final byte DECLARE                                      = 57;
 
 	public static final byte SUBLIST_FIELD                                = 58;
@@ -110,7 +110,7 @@ public class LayoutBlockConstants
 	public static final byte FRAGMENT_CATCH                               = 68;
 	public static final byte FRAGMENT_SYNCHRONIZED                        = 69;
 	public static final byte STATEMENT_LABEL                              = 70;
-	
+
 	public static final byte FRAGMENT_ELSE                                = 71;
 	public static final byte FRAGMENT_ELSE_SPACE                          = 72;
 	public static final byte FRAGMENT_DO                                  = 73;

@@ -46,7 +46,7 @@ public class MetainfServiceFileTreeNodeFactoryProvider extends FileTreeNodeFacto
 
     protected static class TreeNode extends FileTreeNodeFactoryProvider.TreeNode implements PageCreator {
         /**
-		 * 
+		 *
 		 */
 		private static final long serialVersionUID = 1L;
 

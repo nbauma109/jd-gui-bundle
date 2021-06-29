@@ -19,7 +19,7 @@ import org.jd.gui.spi.PreferencesPanel;
 
 public class ClassFileDecompilerPreferencesProvider extends JPanel implements PreferencesPanel {
     /**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
 	protected static final String ESCAPE_UNICODE_CHARACTERS = "ClassFileDecompilerPreferences.escapeUnicodeCharacters";

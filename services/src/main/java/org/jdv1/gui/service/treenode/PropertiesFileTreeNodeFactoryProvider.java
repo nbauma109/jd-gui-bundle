@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2008-2019 Emmanuel Dupuy.
  * This project is distributed under the GPLv3 license.
- * This is a Copyleft license that gives the user the right to use, 
+ * This is a Copyleft license that gives the user the right to use,
  * copy and modify the code freely for non-commercial purposes.
  */
 
@@ -36,7 +36,7 @@ public class PropertiesFileTreeNodeFactoryProvider extends TextFileTreeNodeFacto
 
     protected static class TreeNode extends TextFileTreeNodeFactoryProvider.TreeNode {
         /**
-		 * 
+		 *
 		 */
 		private static final long serialVersionUID = 1L;
 
@@ -48,7 +48,7 @@ public class PropertiesFileTreeNodeFactoryProvider extends TextFileTreeNodeFacto
         public <T extends JComponent & UriGettable> T createPage(API api) {
             return (T)new TextFileTreeNodeFactoryProvider.Page(entry) {
                 /**
-				 * 
+				 *
 				 */
 				private static final long serialVersionUID = 1L;
 

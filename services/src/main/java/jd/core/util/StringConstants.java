@@ -1,27 +1,27 @@
 /*******************************************************************************
  * Copyright (C) 2007-2019 Emmanuel Dupuy GPLv3
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 package jd.core.util;
 
 
-public class StringConstants 
+public class StringConstants
 {
 	public static final String CLASS_CONSTRUCTOR = "<clinit>";
 	public static final String INSTANCE_CONSTRUCTOR = "<init>";
-	
+
 	public static final String INTERNAL_CLASS_CLASS_NAME = "java/lang/Class";
 	public static final String INTERNAL_OBJECT_CLASS_NAME = "java/lang/Object";
 	public static final String INTERNAL_STRING_CLASS_NAME = "java/lang/String";
@@ -33,7 +33,7 @@ public class StringConstants
 	public static final char   INTERNAL_INNER_SEPARATOR = '$';
 	public static final char   INTERNAL_BEGIN_TEMPLATE = '<';
 	public static final char   INTERNAL_END_TEMPLATE = '>';
-	
+
 	public static final char   PACKAGE_SEPARATOR = '.';
 	public static final char   INNER_SEPARATOR = '.';
 	public static final String CLASS_FILE_SUFFIX = ".class";
@@ -42,15 +42,15 @@ public class StringConstants
 	public static final String INTERNAL_OBJECT_SIGNATURE = "Ljava/lang/Object;";
 	public static final String INTERNAL_STRING_SIGNATURE = "Ljava/lang/String;";
 	public static final String INTERNAL_DEPRECATED_SIGNATURE = "Ljava/lang/Deprecated;";
-	public static final String INTERNAL_CLASSNOTFOUNDEXCEPTION_SIGNATURE = 
+	public static final String INTERNAL_CLASSNOTFOUNDEXCEPTION_SIGNATURE =
 		"Ljava/lang/ClassNotFoundException;";
-			
+
 	public static final String THIS_LOCAL_VARIABLE_NAME       = "this";
 	public static final String OUTER_THIS_LOCAL_VARIABLE_NAME = "this$1";
 	public static final String TMP_LOCAL_VARIABLE_NAME        = "tmp";
-	
+
 	public static final String INDENT = "  ";
-	
+
 	public static final String ENUM_VALUES_ARRAY_NAME	= "$VALUES";
 	public static final String ENUM_VALUES_ARRAY_NAME_ECLIPSE = "ENUM$VALUES";
 	public static final String ENUM_VALUES_METHOD_NAME	= "values";
@@ -59,7 +59,7 @@ public class StringConstants
 	public static final String VALUEOF_METHOD_NAME		= "valueOf";
 	public static final String APPEND_METHOD_NAME		= "append";
 	public static final String FORNAME_METHOD_NAME		= "forName";
-	public static final String ORDINAL_METHOD_NAME		= "ordinal";	
+	public static final String ORDINAL_METHOD_NAME		= "ordinal";
 
 	public static final String ANNOTATIONDEFAULT_ATTRIBUTE_NAME = "AnnotationDefault";
 	public static final String CODE_ATTRIBUTE_NAME = "Code";
@@ -78,9 +78,9 @@ public class StringConstants
 	public static final String SIGNATURE_ATTRIBUTE_NAME = "Signature";
 	public static final String SOURCEFILE_ATTRIBUTE_NAME = "SourceFile";
 	public static final String SYNTHETIC_ATTRIBUTE_NAME = "Synthetic";
-	
-	public static final String CLASS_DOLLAR = "class$"; 
-	public static final String ARRAY_DOLLAR = "array$"; 
-	public static final String JD_METHOD_PREFIX = "jdMethod_"; 
-	public static final String JD_FIELD_PREFIX = "jdField_"; 
+
+	public static final String CLASS_DOLLAR = "class$";
+	public static final String ARRAY_DOLLAR = "array$";
+	public static final String JD_METHOD_PREFIX = "jdMethod_";
+	public static final String JD_FIELD_PREFIX = "jdField_";
 }

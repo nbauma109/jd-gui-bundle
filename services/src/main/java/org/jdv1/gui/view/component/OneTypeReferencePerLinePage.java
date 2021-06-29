@@ -33,7 +33,7 @@ import org.jdv1.gui.util.index.IndexesUtil;
 public class OneTypeReferencePerLinePage extends TypeReferencePage implements UriGettable, IndexesChangeListener {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	protected API api;
     protected Container.Entry entry;
     protected Collection<Future<Indexes>> collectionOfFutureIndexes = Collections.emptyList();

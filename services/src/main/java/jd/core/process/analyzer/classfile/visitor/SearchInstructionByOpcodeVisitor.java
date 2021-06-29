@@ -1,16 +1,16 @@
 /*******************************************************************************
  * Copyright (C) 2007-2019 Emmanuel Dupuy GPLv3
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -70,17 +70,17 @@ import jd.core.model.instruction.fast.instruction.FastTry.FastCatch;
 /*
  * Utilis� par TernaryOpReconstructor
  */
-public class SearchInstructionByOpcodeVisitor 
+public class SearchInstructionByOpcodeVisitor
 {
-	public static Instruction visit(Instruction instruction, int opcode)	
+	public static Instruction visit(Instruction instruction, int opcode)
 		throws RuntimeException
 	{
 		if (instruction == null)
 			throw new RuntimeException("Null instruction");
-		
+
 		if (instruction.opcode == opcode)
 			return instruction;
-		
+
 		switch (instruction.opcode)
 		{
 		case ByteCodeConstants.ARRAYLENGTH:
@@ -95,7 +95,7 @@ public class SearchInstructionByOpcodeVisitor
 		case ByteCodeConstants.BINARYOP:
 		case ByteCodeConstants.ASSIGNMENT:
 			{
-				BinaryOperatorInstruction boi = 
+				BinaryOperatorInstruction boi =
 					(BinaryOperatorInstruction)instruction;
 				Instruction tmp = visit(boi.value1, opcode);
 				if (tmp != null)
@@ -126,7 +126,7 @@ public class SearchInstructionByOpcodeVisitor
 			return visit(((IfInstruction)instruction).value, opcode);
 		case ByteCodeConstants.COMPLEXIF:
 			{
-				List<Instruction> branchList = 
+				List<Instruction> branchList =
 					((ComplexConditionalBranchInstruction)instruction).instructions;
 				for (int i=branchList.size()-1; i>=0; --i)
 				{
@@ -182,7 +182,7 @@ public class SearchInstructionByOpcodeVisitor
 			return visit(((ANewArray)instruction).dimension, opcode);
 		case ByteCodeConstants.POP:
 			return visit(((Pop)instruction).objectref, opcode);
-		case ByteCodeConstants.PUTFIELD: 
+		case ByteCodeConstants.PUTFIELD:
 			{
 				PutField putField = (PutField)instruction;
 				Instruction tmp = visit(putField.objectref, opcode);
@@ -198,8 +198,8 @@ public class SearchInstructionByOpcodeVisitor
 			return visit(((TableSwitch)instruction).key, opcode);
 		case ByteCodeConstants.TERNARYOPSTORE:
 			return visit(((TernaryOpStore)instruction).objectref, opcode);
-		case ByteCodeConstants.PREINC:			
-		case ByteCodeConstants.POSTINC:	
+		case ByteCodeConstants.PREINC:
+		case ByteCodeConstants.POSTINC:
 			return visit(((IncInstruction)instruction).value, opcode);
 		case ByteCodeConstants.GETFIELD:
 			return visit(((GetField)instruction).objectref, opcode);
@@ -249,16 +249,16 @@ public class SearchInstructionByOpcodeVisitor
 			}
 		case FastConstants.FOR:
 			{
-				FastFor ff = (FastFor)instruction;	
+				FastFor ff = (FastFor)instruction;
 				if (ff.init != null)
 				{
-					Instruction tmp = visit(ff.init, opcode);	
+					Instruction tmp = visit(ff.init, opcode);
 					if (tmp != null)
 						return tmp;
 				}
 				if (ff.inc != null)
 				{
-					Instruction tmp = visit(ff.inc, opcode);	
+					Instruction tmp = visit(ff.inc, opcode);
 					if (tmp != null)
 						return tmp;
 				}
@@ -270,14 +270,14 @@ public class SearchInstructionByOpcodeVisitor
 				FastTestList ftl = (FastTestList)instruction;
 				if (ftl.test != null)
 				{
-					Instruction tmp = visit(ftl.test, opcode);	
+					Instruction tmp = visit(ftl.test, opcode);
 					if (tmp != null)
 						return tmp;
 				}
 			}
 		case FastConstants.INFINITE_LOOP:
 			{
-				List<Instruction> instructions = 
+				List<Instruction> instructions =
 						((FastList)instruction).instructions;
 				if (instructions != null)
 					return visit(instructions, opcode);
@@ -285,22 +285,22 @@ public class SearchInstructionByOpcodeVisitor
 			break;
 		case FastConstants.FOREACH:
 			{
-				FastForEach ffe = (FastForEach)instruction;	
-				Instruction tmp = visit(ffe.variable, opcode);	
+				FastForEach ffe = (FastForEach)instruction;
+				Instruction tmp = visit(ffe.variable, opcode);
 				if (tmp != null)
 					return tmp;
-				tmp = visit(ffe.values, opcode);	
+				tmp = visit(ffe.values, opcode);
 				if (tmp != null)
 					return tmp;
-				return visit(ffe.instructions, opcode);	
+				return visit(ffe.instructions, opcode);
 			}
 		case FastConstants.IF_ELSE:
 			{
 				FastTest2Lists ft2l = (FastTest2Lists)instruction;
-				Instruction tmp = visit(ft2l.test, opcode);	
+				Instruction tmp = visit(ft2l.test, opcode);
 				if (tmp != null)
 					return tmp;
-				tmp = visit(ft2l.instructions, opcode);	
+				tmp = visit(ft2l.instructions, opcode);
 				if (tmp != null)
 					return tmp;
 				return visit(ft2l.instructions2, opcode);
@@ -329,10 +329,10 @@ public class SearchInstructionByOpcodeVisitor
 		case FastConstants.SWITCH_STRING:
 			{
 				FastSwitch fs = (FastSwitch)instruction;
-				Instruction tmp = visit(fs.test, opcode);	
+				Instruction tmp = visit(fs.test, opcode);
 				if (tmp != null)
 					return tmp;
-				
+
 				Pair[] pairs = fs.pairs;
 				for (int i=pairs.length-1; i>=0; --i)
 				{
@@ -368,8 +368,8 @@ public class SearchInstructionByOpcodeVisitor
 		case ByteCodeConstants.GETSTATIC:
 		case ByteCodeConstants.OUTERTHIS:
 		case ByteCodeConstants.GOTO:
-		case ByteCodeConstants.IINC:			
-		case ByteCodeConstants.JSR:			
+		case ByteCodeConstants.IINC:
+		case ByteCodeConstants.JSR:
 		case ByteCodeConstants.LDC:
 		case ByteCodeConstants.LDC2_W:
 		case ByteCodeConstants.NEW:
@@ -381,16 +381,16 @@ public class SearchInstructionByOpcodeVisitor
 			break;
 		default:
 			System.err.println(
-					"Can not search instruction in " + 
-					instruction.getClass().getName() + 
+					"Can not search instruction in " +
+					instruction.getClass().getName() +
 					", opcode=" + instruction.opcode);
 		}
-		
+
 		return null;
 	}
 
 	private static Instruction visit(List<Instruction> instructions, int opcode)
-		throws RuntimeException	
+		throws RuntimeException
 	{
 		for (int i=instructions.size()-1; i>=0; --i)
 		{
@@ -398,7 +398,7 @@ public class SearchInstructionByOpcodeVisitor
 			if (instruction != null)
 				return instruction;
 		}
-		
+
 		return null;
 	}
 }

@@ -1,16 +1,16 @@
 /*******************************************************************************
  * Copyright (C) 2007-2019 Emmanuel Dupuy GPLv3
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -31,34 +31,34 @@ import jd.core.process.analyzer.instruction.bytecode.util.ByteCodeUtil;
 public class GotoFactory extends InstructionFactory
 {
 	public int create(
-			ClassFile classFile, Method method, List<Instruction> list, 
-			List<Instruction> listForAnalyze, 
-			Stack<Instruction> stack, byte[] code, int offset, 
+			ClassFile classFile, Method method, List<Instruction> list,
+			List<Instruction> listForAnalyze,
+			Stack<Instruction> stack, byte[] code, int offset,
 			int lineNumber, boolean[] jumps)
 	{
 		final int opcode = code[offset] & 255;
-		final int value  = 
+		final int value  =
 			(short)(((code[offset+1] & 255) << 8) | (code[offset+2] & 255));
-		
+
 		if (!stack.isEmpty() && !list.isEmpty())
 			generateTernaryOpStore(
 				list, listForAnalyze, stack, code, offset, value);
-				
+
 		list.add(new Goto(opcode, offset, lineNumber, value));
-		
+
 		return ByteCodeConstants.NO_OF_OPERANDS[opcode];
 	}
-	
+
 	private static void generateTernaryOpStore(
-		List<Instruction> list, List<Instruction> listForAnalyze, 
+		List<Instruction> list, List<Instruction> listForAnalyze,
 		Stack<Instruction> stack, byte[] code, int offset, int value)
 	{
 		int i = list.size();
-		
+
 		while (i-- > 0)
 		{
 			Instruction previousInstruction = list.get(i);
-			
+
 			switch (previousInstruction.opcode)
 			{
 			case ByteCodeConstants.IF:
@@ -66,35 +66,35 @@ public class GotoFactory extends InstructionFactory
 			case ByteCodeConstants.IFXNULL:
 				{
 					// Gestion de l'operateur ternaire
-					final int ternaryOp2ndValueOffset = 
+					final int ternaryOp2ndValueOffset =
 						search2ndValueOffset(code, offset, offset+value);
-					
-					final Instruction value0 = stack.pop();			
+
+					final Instruction value0 = stack.pop();
 					TernaryOpStore tos = new TernaryOpStore(
-						ByteCodeConstants.TERNARYOPSTORE, offset-1, 
+						ByteCodeConstants.TERNARYOPSTORE, offset-1,
 						value0.lineNumber, value0, ternaryOp2ndValueOffset);
-						
+
 					list.add(tos);
-					listForAnalyze.add(tos);				
+					listForAnalyze.add(tos);
 				}
 				return;
 			}
-		}		
+		}
 	}
-	
+
 	private static int search2ndValueOffset(
 			byte[] code, int offset, int jumpOffset)
 	{
 		int result = offset;
-		
+
 		while (offset < jumpOffset)
-		{			
+		{
 			int opcode = code[offset] & 255;
-			
-			// on retient l'offset de la derniere op�ration placant une 
+
+			// on retient l'offset de la derniere op�ration placant une
 			// information sur la pile.
 			switch (opcode)
-			{			
+			{
 			case ByteCodeConstants.ACONST_NULL:
 			case ByteCodeConstants.ICONST_M1:
 			case ByteCodeConstants.ICONST_0:
@@ -226,7 +226,7 @@ public class GotoFactory extends InstructionFactory
 			case ByteCodeConstants.CHECKCAST:
 			case ByteCodeConstants.INSTANCEOF:
 			case ByteCodeConstants.WIDE:
-			case ByteCodeConstants.MULTIANEWARRAY:			
+			case ByteCodeConstants.MULTIANEWARRAY:
 			// Extension for decompiler
 			case ByteCodeConstants.ICONST:
 			case ByteCodeConstants.LCONST:
@@ -240,28 +240,28 @@ public class GotoFactory extends InstructionFactory
 			case ByteCodeConstants.EXCEPTIONLOAD:
 			case ByteCodeConstants.ARRAYLOAD:
 			case ByteCodeConstants.INVOKENEW:
-			case ByteCodeConstants.CONVERT:	
-			case ByteCodeConstants.IMPLICITCONVERT:	
+			case ByteCodeConstants.CONVERT:
+			case ByteCodeConstants.IMPLICITCONVERT:
 			case ByteCodeConstants.PREINC:
 			case ByteCodeConstants.POSTINC:
-				result = offset;			
+				result = offset;
 			}
-			
+
 			int nbOfOperands = ByteCodeConstants.NO_OF_OPERANDS[opcode];
-				
+
 			switch (nbOfOperands)
 			{
 			case ByteCodeConstants.NO_OF_OPERANDS_UNPREDICTABLE:
 				switch (opcode)
 				{
 				case ByteCodeConstants.TABLESWITCH:
-					offset = ByteCodeUtil.NextTableSwitchOffset(code, offset);		
+					offset = ByteCodeUtil.NextTableSwitchOffset(code, offset);
 					break;
 				case ByteCodeConstants.LOOKUPSWITCH:
-					offset = ByteCodeUtil.NextLookupSwitchOffset(code, offset);		
+					offset = ByteCodeUtil.NextLookupSwitchOffset(code, offset);
 					break;
 				case ByteCodeConstants.WIDE:
-					offset = ByteCodeUtil.NextWideOffset(code, offset);						
+					offset = ByteCodeUtil.NextWideOffset(code, offset);
 				}
 				break;
 			case ByteCodeConstants.NO_OF_OPERANDS_UNDEFINED:
@@ -269,10 +269,10 @@ public class GotoFactory extends InstructionFactory
 			default:
 				offset += nbOfOperands;
 			}
-			
+
 			++offset;
 		}
-		
+
 		return result;
 	}
 }

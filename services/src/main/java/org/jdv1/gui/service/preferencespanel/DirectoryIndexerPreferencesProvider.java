@@ -18,7 +18,7 @@ import java.util.Map;
 
 public class DirectoryIndexerPreferencesProvider extends JPanel implements PreferencesPanel, DocumentListener {
     /**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
 	protected static final int MAX_VALUE = 30;

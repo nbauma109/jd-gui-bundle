@@ -1,16 +1,16 @@
 /*******************************************************************************
  * Copyright (C) 2007-2019 Emmanuel Dupuy GPLv3
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -35,14 +35,14 @@ import jd.core.model.instruction.fast.instruction.FastTry;
 public class ReturnLineNumberAnalyzer
 {
 	public static void Check(Method method)
-	{	
+	{
 		List<Instruction> list = method.getFastNodes();
 		int length = list.size();
-		
+
 		if (length > 1)
 		{
 			int afterListLineNumber = list.get(length-1).lineNumber;
-			
+
 			if (afterListLineNumber != Instruction.UNKNOWN_LINE_NUMBER)
 			{
 				RecursiveCheck(list , afterListLineNumber);
@@ -54,12 +54,12 @@ public class ReturnLineNumberAnalyzer
 		List<Instruction> list, int afterListLineNumber)
 	{
 		int index = list.size();
-		
+
 		// Appels recursifs
 		while (index-- > 0)
 		{
 			Instruction instruction = list.get(index);
-			
+
 			switch (instruction.opcode)
 			{
 			case FastConstants.WHILE:
@@ -70,19 +70,19 @@ public class ReturnLineNumberAnalyzer
 			case FastConstants.IF_:
 			case FastConstants.SYNCHRONIZED:
 				{
-					List<Instruction> instructions = 
+					List<Instruction> instructions =
 							((FastList)instruction).instructions;
 					if (instructions != null)
 						RecursiveCheck(instructions, afterListLineNumber);
 				}
-				break;					
+				break;
 			case FastConstants.IF_ELSE:
 				{
 					FastTest2Lists ft2l = (FastTest2Lists)instruction;
-					RecursiveCheck(ft2l.instructions, afterListLineNumber);				
+					RecursiveCheck(ft2l.instructions, afterListLineNumber);
 					RecursiveCheck(ft2l.instructions2, afterListLineNumber);
 				}
-				break;	
+				break;
 			case FastConstants.SWITCH:
 			case FastConstants.SWITCH_ENUM:
 			case FastConstants.SWITCH_STRING:
@@ -91,50 +91,50 @@ public class ReturnLineNumberAnalyzer
 					if (pairs != null)
 						for (int i=pairs.length-1; i>=0; --i)
 						{
-							List<Instruction> instructions = pairs[i].getInstructions();					
+							List<Instruction> instructions = pairs[i].getInstructions();
 							if (instructions != null)
 							{
 								RecursiveCheck(instructions, afterListLineNumber);
 								if (instructions.size() > 0)
 								{
-									afterListLineNumber = 
+									afterListLineNumber =
 										instructions.get(0).lineNumber;
 								}
 							}
 						}
 				}
-				break;				
+				break;
 			case FastConstants.TRY:
 				{
 					FastTry ft = (FastTry)instruction;
-					
+
 					if (ft.finallyInstructions != null)
 					{
 						RecursiveCheck(ft.finallyInstructions, afterListLineNumber);
 						if (ft.finallyInstructions.size() > 0)
 						{
-							afterListLineNumber = 
+							afterListLineNumber =
 								ft.finallyInstructions.get(0).lineNumber;
 						}
 					}
-					
+
 					if (ft.catches != null)
 					{
 						for (int i=ft.catches.size()-1; i>=0; --i)
 						{
-							List<Instruction> catchInstructions = 
+							List<Instruction> catchInstructions =
 								ft.catches.get(i).instructions;
 							RecursiveCheck(
 								catchInstructions, afterListLineNumber);
 							if (catchInstructions.size() > 0)
 							{
-								afterListLineNumber = 
+								afterListLineNumber =
 									catchInstructions.get(0).lineNumber;
 							}
 						}
 					}
-					
-					RecursiveCheck(ft.instructions, afterListLineNumber);					
+
+					RecursiveCheck(ft.instructions, afterListLineNumber);
 				}
 				break;
 			case FastConstants.RETURN:
@@ -144,8 +144,8 @@ public class ReturnLineNumberAnalyzer
 						r.lineNumber = Instruction.UNKNOWN_LINE_NUMBER;
 				}
 				break;
-			}	
-			
+			}
+
 			afterListLineNumber = instruction.lineNumber;
 		}
 	}

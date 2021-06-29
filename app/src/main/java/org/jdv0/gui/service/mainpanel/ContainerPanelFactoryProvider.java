@@ -51,7 +51,7 @@ public class ContainerPanelFactoryProvider implements PanelFactory {
 
     protected class ContainerPanel extends TreeTabbedPanel implements ContentIndexable, SourcesSavable {
         /**
-		 * 
+		 *
 		 */
 		private static final long serialVersionUID = 1L;
 		protected Container.Entry entry;

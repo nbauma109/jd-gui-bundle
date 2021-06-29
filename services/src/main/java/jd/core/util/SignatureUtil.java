@@ -1,16 +1,16 @@
 /*******************************************************************************
  * Copyright (C) 2007-2019 Emmanuel Dupuy GPLv3
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import jd.core.model.instruction.bytecode.ByteCodeConstants;
 
 
-public class SignatureUtil 
+public class SignatureUtil
 {
 	/**
 	 * @see SignatureAnalyzer.SignatureAnalyzer(...)
@@ -31,14 +31,14 @@ public class SignatureUtil
 		char c;
 
 		while (true)
-		{			
+		{
 			// Affichage des dimensions du tableau : '[[?' ou '[L[?;'
 			if (caSignature[index] == '[')
 			{
 				while (++index < length)
 				{
-					if ((caSignature[index] == 'L') && 
-						(index+1 < length) && 
+					if ((caSignature[index] == 'L') &&
+						(index+1 < length) &&
 						(caSignature[index+1] == '['))
 					{
 						index++;
@@ -49,19 +49,19 @@ public class SignatureUtil
 						break;
 					}
 				}
-			}			
+			}
 
-			switch(caSignature[index]) 
+			switch(caSignature[index])
 			{
-			case 'B' : case 'C' : case 'D' : case 'F' : 
-			case 'I' : case 'J' : case 'S' : case 'V' : 
+			case 'B' : case 'C' : case 'D' : case 'F' :
+			case 'I' : case 'J' : case 'S' : case 'V' :
 			case 'Z' : case '*' : case 'X' : case 'Y' :
 				index++;
 				break;
-			case 'L' : case '.' : 
+			case 'L' : case '.' :
 				index++;
 				c = '.';
-				
+
 				// Recherche de ; ou de <
 				while (index < length)
 				{
@@ -70,20 +70,20 @@ public class SignatureUtil
 						break;
 					index++;
 				}
-				
+
 				if (c == '<')
 				{
 					index = SkipSignature(caSignature, length, index+1);
-					
+
 					while (caSignature[index] != '>')
 					{
 						index = SkipSignature(caSignature, length, index);
 					}
-					
+
 					// pass '>'
 					index++;
 				}
-				
+
 				// pass ';'
 				if (caSignature[index] == ';')
 					index++;
@@ -97,19 +97,19 @@ public class SignatureUtil
 			//default:
 				// DEBUG
 				//new Throwable(
-				//	"SignatureWriter.WriteSignature: invalid signature '" + 
+				//	"SignatureWriter.WriteSignature: invalid signature '" +
 				//	String.valueOf(caSignature) + "'").printStackTrace();
 				// DEBUG
 			}
-			
+
 			if ((index >= length) || (caSignature[index] != '.'))
 				break;
 		}
-		
+
 		return index;
 	}
-	
-	public static String GetSignatureFromType(int type) 
+
+	public static String GetSignatureFromType(int type)
 	{
 		switch (type)
 		{
@@ -124,12 +124,12 @@ public class SignatureUtil
 		default:                          return null;
 		}
 	}
-	
-	public static int GetTypeFromSignature(String signature) 
+
+	public static int GetTypeFromSignature(String signature)
 	{
 		if (signature.length() != 1)
 			return 0;
-		
+
 		switch (signature.charAt(0))
 		{
 		case 'Z': return ByteCodeConstants.T_BOOLEAN;
@@ -143,12 +143,12 @@ public class SignatureUtil
 		default:  return 0;
 		}
 	}
-	
-	public static boolean IsPrimitiveSignature(String signature) 
+
+	public static boolean IsPrimitiveSignature(String signature)
 	{
 		if ((signature == null) || (signature.length() != 1))
 			return false;
-		
+
 		switch (signature.charAt(0))
 		{
 		case 'Z': case 'C': case 'F': case 'D':
@@ -158,12 +158,12 @@ public class SignatureUtil
 			return false;
 		}
 	}
-	
-	public static boolean IsIntegerSignature(String signature) 
+
+	public static boolean IsIntegerSignature(String signature)
 	{
 		if ((signature == null) || (signature.length() != 1))
 			return false;
-		
+
 		switch (signature.charAt(0))
 		{
 		case 'C': case 'B': case 'S': case 'I':
@@ -172,16 +172,16 @@ public class SignatureUtil
 			return false;
 		}
 	}
-	
-	public static boolean IsObjectSignature(String signature) 
+
+	public static boolean IsObjectSignature(String signature)
 	{
 		if ((signature == null) || (signature.length() <= 2))
 			return false;
-		
+
 		return signature.charAt(0) == 'L';
 	}
-		
-	public static String GetInternalName(String signature) 
+
+	public static String GetInternalName(String signature)
 	{
 		char[] caSignature = signature.toCharArray();
 		int length = signature.length();
@@ -198,32 +198,32 @@ public class SignatureUtil
 		}
 		else
 		{
-			return (beginIndex == 0) ? signature : 
+			return (beginIndex == 0) ? signature :
 				CharArrayUtil.Substring(caSignature, beginIndex, length);
 		}
 	}
 
-	public static String CutArrayDimensionPrefix(String signature) 
+	public static String CutArrayDimensionPrefix(String signature)
 	{
 		int beginIndex = 0;
-		
+
 		while (signature.charAt(beginIndex) == '[')
 			beginIndex++;
 
 		return signature.substring(beginIndex);
 	}
-	
-	public static int GetArrayDimensionCount(String signature) 
+
+	public static int GetArrayDimensionCount(String signature)
 	{
 		int beginIndex = 0;
-		
+
 		while (signature.charAt(beginIndex) == '[')
 			beginIndex++;
 
 		return beginIndex;
 	}
-	
-	public static String GetInnerName(String signature) 
+
+	public static String GetInnerName(String signature)
 	{
 		signature = CutArrayDimensionPrefix(signature);
 
@@ -244,12 +244,12 @@ public class SignatureUtil
 		int length = caSignature.length;
 		ArrayList<String> parameterTypes = new ArrayList<String>(1);
 		int index = CharArrayUtil.IndexOf(caSignature, '(', 0);
-		
+
 		if (index != -1)
 		{
 			// pass '('
 			index++;
-	
+
 			// Arguments
 			while (caSignature[index] != ')')
 			{
@@ -258,7 +258,7 @@ public class SignatureUtil
 				index = newIndex;
 			}
 		}
-		
+
 		return parameterTypes;
 	}
 
@@ -267,7 +267,7 @@ public class SignatureUtil
 		int index = signature.indexOf(')');
 		if (index == -1)
 			return null;
-		
+
 		return signature.substring(index + 1);
 	}
 
@@ -277,12 +277,12 @@ public class SignatureUtil
 		int length = caSignature.length;
 		int index = CharArrayUtil.IndexOf(caSignature, '(', 0);
 		int count = 0;
-		
+
 		if (index != -1)
 		{
 			// pass '('
 			index++;
-	
+
 			// Arguments
 			while (caSignature[index] != ')')
 			{
@@ -291,15 +291,15 @@ public class SignatureUtil
 				count++;
 			}
 		}
-		
+
 		return count;
 	}
 
 	public static int CreateTypesBitField(String signature)
 	{
 		/*
-		 * Pour une constante de type 'signature', les types de variable 
-		 * possible est retourn�e. 
+		 * Pour une constante de type 'signature', les types de variable
+		 * possible est retourn�e.
 		 */
 		switch (signature.charAt(0))
 		{
@@ -312,13 +312,13 @@ public class SignatureUtil
 		case 'Z': return ByteCodeConstants.TBF_INT_BOOLEAN;
 		default:  return 0;
 		}
-	}	
-	
+	}
+
 	public static int CreateArgOrReturnBitFields(String signature)
 	{
 		/*
-		 * Pour un argument de type 'signature', les types de variable possible 
-		 * est retourn�e. 
+		 * Pour un argument de type 'signature', les types de variable possible
+		 * est retourn�e.
 		 */
 		switch (signature.charAt(0))
 		{
@@ -335,8 +335,8 @@ public class SignatureUtil
 
 	public static String GetSignatureFromTypesBitField(int typesBitField)
 	{
-		/* 
-		 * Lorsqu'un choix est possible, le plus 'gros' type est retourn�. 
+		/*
+		 * Lorsqu'un choix est possible, le plus 'gros' type est retourn�.
 		 */
 		if ((typesBitField & ByteCodeConstants.TBF_INT_INT) != 0)
 			return "I";
@@ -348,10 +348,10 @@ public class SignatureUtil
 			return "B";
 		if ((typesBitField & ByteCodeConstants.TBF_INT_BOOLEAN) != 0)
 			return "Z";
-		return "I";		
+		return "I";
 	}
-	
-	public static String CreateTypeName(String signature) 
+
+	public static String CreateTypeName(String signature)
 	{
 		if (signature.length() == 0)
 			return signature;
@@ -367,5 +367,5 @@ public class SignatureUtil
 		default:
 			return "L" + signature + ';';
 		}
-	}	
+	}
 }

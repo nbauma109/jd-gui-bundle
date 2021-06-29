@@ -45,7 +45,7 @@ public class ImageFileTreeNodeFactoryProvider extends FileTreeNodeFactoryProvide
 
     protected static class TreeNode extends FileTreeNodeFactoryProvider.TreeNode implements PageCreator {
         /**
-		 * 
+		 *
 		 */
 		private static final long serialVersionUID = 1L;
 
@@ -61,7 +61,7 @@ public class ImageFileTreeNodeFactoryProvider extends FileTreeNodeFactoryProvide
 
     protected static class ImagePage extends JPanel implements UriGettable {
         /**
-		 * 
+		 *
 		 */
 		private static final long serialVersionUID = 1L;
 		protected Container.Entry entry;

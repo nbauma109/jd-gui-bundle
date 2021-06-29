@@ -34,7 +34,7 @@ public class ProcyonSection {
 
 	private Entry containerEntry;
 	private Set<Integer> sourceStartLines;
-	
+
 	public ProcyonSection(Set<Integer> sourceStartLines, Container.Entry containerEntry) {
 		this.containerEntry = containerEntry;
 		this.sourceStartLines = sourceStartLines;

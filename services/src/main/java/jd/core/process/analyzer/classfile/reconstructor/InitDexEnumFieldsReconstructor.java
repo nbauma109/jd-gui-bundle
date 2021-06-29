@@ -1,16 +1,16 @@
 /*******************************************************************************
  * Copyright (C) 2007-2019 Emmanuel Dupuy GPLv3
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -41,19 +41,19 @@ import jd.core.util.StringConstants;
 
 
 /*
- * Les valeurs des Enum des classes produites par "javac" sont correctement 
+ * Les valeurs des Enum des classes produites par "javac" sont correctement
  * reconnues par "InitStaticFieldsReconstructor.Reconstruct(...)".
- * 
- * Cette classe a ete creee car les enums produits par "dex2jar" contients un 
+ *
+ * Cette classe a ete creee car les enums produits par "dex2jar" contients un
  * motif particulier (Extrait de: gr\androiddev\FuelPrices\StaticTools.class):
- * 
+ *
  * private static final synthetic LocationProvider ANY;
  * private static synthetic LocationProvider BESTOFBOTH;
  * private static synthetic LocationProvider ENUM$VALUES[];
  * private static synthetic LocationProvider GPS;
  * private static synthetic LocationProvider NETWORK;
- * 
- * static 
+ *
+ * static
  * {
  *   BESTOFBOTH = new LocationProvider("BESTOFBOTH", 0);
  *   ANY = new LocationProvider("ANY", 1);
@@ -66,55 +66,55 @@ import jd.core.util.StringConstants;
  *   alocationprovider[3] = NETWORK;
  *   ENUM$VALUES = alocationprovider;
  * }
- * 
+ *
  * --> Les instructions d'initialisation et les champs ne sont pas classes dans le meme ordre.
  * --> Un tableau local est utilise.
  */
-public class InitDexEnumFieldsReconstructor 
+public class InitDexEnumFieldsReconstructor
 {
 	public static void Reconstruct(ClassFile classFile)
 	{
 		Method method = classFile.getStaticMethod();
 		if (method == null)
 			return;
-		
+
 		Field[] fields = classFile.getFields();
 		if (fields == null)
 			return;
-		
-		List<Instruction> list = method.getFastNodes();	
+
+		List<Instruction> list = method.getFastNodes();
 		if (list == null)
 			return;
-		
+
 		ConstantPool constants = classFile.getConstantPool();
 
 		// Search field initialisation from the end
-		
+
 		// Search PutStatic("ENUM$VALUES", ALoad(...))
 		int indexInstruction = list.size();
-		
+
 		if (indexInstruction > 0)
 		{
 			// Saute la derniere instruction 'return'
 			indexInstruction--;
-					
+
 			while (indexInstruction-- > 0)
 			{
-				Instruction instruction = list.get(indexInstruction);		
+				Instruction instruction = list.get(indexInstruction);
 				if (instruction.opcode != ByteCodeConstants.PUTSTATIC)
 					break;
-				
+
 				PutStatic putStatic = (PutStatic)instruction;
 				if (putStatic.valueref.opcode != ByteCodeConstants.ALOAD)
 					break;
-				
+
 				ConstantFieldref cfr = constants.getConstantFieldref(putStatic.index);
 				if (cfr.class_index != classFile.getThisClassIndex())
 					break;
-					
-				ConstantNameAndType cnat = 
+
+				ConstantNameAndType cnat =
 					constants.getConstantNameAndType(cfr.name_and_type_index);
-				
+
 				String name = constants.getConstantUtf8(cnat.name_index);
 				if (! name.equals(StringConstants.ENUM_VALUES_ARRAY_NAME_ECLIPSE))
 					break;
@@ -124,20 +124,20 @@ public class InitDexEnumFieldsReconstructor
 				while (indexField-- > 0)
 				{
 					Field field = fields[indexField];
-					
-					if (((field.access_flags & (ClassFileConstants.ACC_STATIC|ClassFileConstants.ACC_SYNTHETIC|ClassFileConstants.ACC_FINAL|ClassFileConstants.ACC_PRIVATE)) == 
-							(ClassFileConstants.ACC_STATIC|ClassFileConstants.ACC_SYNTHETIC|ClassFileConstants.ACC_FINAL|ClassFileConstants.ACC_PRIVATE)) && 
+
+					if (((field.access_flags & (ClassFileConstants.ACC_STATIC|ClassFileConstants.ACC_SYNTHETIC|ClassFileConstants.ACC_FINAL|ClassFileConstants.ACC_PRIVATE)) ==
+							(ClassFileConstants.ACC_STATIC|ClassFileConstants.ACC_SYNTHETIC|ClassFileConstants.ACC_FINAL|ClassFileConstants.ACC_PRIVATE)) &&
 						(cnat.descriptor_index == field.descriptor_index) &&
-						(cnat.name_index == field.name_index))						
+						(cnat.name_index == field.name_index))
 					{
 						// "ENUM$VALUES = ..." found.
 						ALoad aload = (ALoad)putStatic.valueref;
 						int localEnumArrayIndex = aload.index;
 						int index = indexInstruction;
-						
+
 						// Middle instructions of pattern : AAStore(...)
 						ArrayList<Instruction> values = new ArrayList<Instruction>();
-						
+
 						while (index-- > 0)
 						{
 							instruction = list.get(index);
@@ -150,9 +150,9 @@ public class InitDexEnumFieldsReconstructor
 								break;
 							values.add(aastore.valueref);
 						}
-						
+
 						// FastDeclaration(AStore(...))
-						if (instruction.opcode != FastConstants.DECLARE) 
+						if (instruction.opcode != FastConstants.DECLARE)
 							break;
 						FastDeclaration declaration = (FastDeclaration)instruction;
 						if (declaration.instruction.opcode != ByteCodeConstants.ASTORE)
@@ -160,32 +160,32 @@ public class InitDexEnumFieldsReconstructor
 						AStore astore = (AStore)declaration.instruction;
 						if (astore.index != localEnumArrayIndex)
 							break;
-						
+
 						int valuesLength = values.size();
-						
+
 						if (valuesLength > 0)
 						{
 							// Pattern found.
-							
+
 							// Construct new pattern
-							InitArrayInstruction iai = 
+							InitArrayInstruction iai =
 								new InitArrayInstruction(
-									ByteCodeConstants.INITARRAY, 
-									putStatic.offset, 
-									declaration.lineNumber, 
+									ByteCodeConstants.INITARRAY,
+									putStatic.offset,
+									declaration.lineNumber,
 									new ANewArray(
-										ByteCodeConstants.ANEWARRAY, 
-										putStatic.offset, 
-										declaration.lineNumber, 
-										classFile.getThisClassIndex(), 
+										ByteCodeConstants.ANEWARRAY,
+										putStatic.offset,
+										declaration.lineNumber,
+										classFile.getThisClassIndex(),
 										new IConst(
-											ByteCodeConstants.ICONST, 
-											putStatic.offset, 
-											declaration.lineNumber, 
-											valuesLength)), 
+											ByteCodeConstants.ICONST,
+											putStatic.offset,
+											declaration.lineNumber,
+											valuesLength)),
 									values);
-							field.setValueAndMethod(iai, method);	
-							
+							field.setValueAndMethod(iai, method);
+
 							// Remove PutStatic
 							list.remove(indexInstruction);
 							// Remove AAStores
@@ -194,11 +194,11 @@ public class InitDexEnumFieldsReconstructor
 							// Remove FastDeclaration
 							list.remove(indexInstruction);
 						}
-						
+
 						break;
 					}
 				}
 			}
 		}
-	}	
+	}
 }

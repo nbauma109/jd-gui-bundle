@@ -1,16 +1,16 @@
 /*******************************************************************************
  * Copyright (C) 2007-2019 Emmanuel Dupuy GPLv3
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -32,11 +32,11 @@ import jd.core.util.SignatureFormatException;
 import jd.core.util.SignatureUtil;
 import jd.core.util.StringConstants;
 
-public class SignatureWriter 
+public class SignatureWriter
 {
 	public static void WriteTypeDeclaration(
-			Loader loader, Printer printer, ReferenceMap referenceMap, 
-			ClassFile classFile, String signature) 
+			Loader loader, Printer printer, ReferenceMap referenceMap,
+			ClassFile classFile, String signature)
 	{
 		char[] caSignature = signature.toCharArray();
 		int length = caSignature.length;
@@ -51,8 +51,8 @@ public class SignatureWriter
 	}
 
 	public static int WriteConstructor(
-			Loader loader, Printer printer, ReferenceMap referenceMap, 
-			ClassFile classFile, String signature, String descriptor) 
+			Loader loader, Printer printer, ReferenceMap referenceMap,
+			ClassFile classFile, String signature, String descriptor)
 	{
 		char[] caSignature = signature.toCharArray();
 		return WriteSignature(
@@ -61,9 +61,9 @@ public class SignatureWriter
 	}
 
 	public static void WriteMethodDeclaration(
-			HashSet<String> keywordSet, Loader loader, Printer printer, 
-			ReferenceMap referenceMap, ClassFile classFile, Method method, 
-			String signature, boolean descriptorFlag) 
+			HashSet<String> keywordSet, Loader loader, Printer printer,
+			ReferenceMap referenceMap, ClassFile classFile, Method method,
+			String signature, boolean descriptorFlag)
 	{
 		char[] caSignature = signature.toCharArray();
 		int length = caSignature.length;
@@ -71,9 +71,9 @@ public class SignatureWriter
 
 		// Affichage des generics
 		int newIndex = WriteGenerics(
-				loader, printer, referenceMap, classFile, 
+				loader, printer, referenceMap, classFile,
 				caSignature, length, index);
-		
+
 		if (newIndex != index) {
 			printer.print(' ');
 			index = newIndex;
@@ -90,11 +90,11 @@ public class SignatureWriter
 		String descriptor = constants.getConstantUtf8(method.descriptor_index);
 		boolean staticMethodFlag = ((method.access_flags & ClassFileConstants.ACC_STATIC) != 0);
 
-		if (method.name_index == constants.instanceConstructorIndex) 
+		if (method.name_index == constants.instanceConstructorIndex)
 		{
 			printer.printConstructorDeclaration(internalClassName, classFile.getClassName(), descriptor);
-		} 
-		else 
+		}
+		else
 		{
 			// search ')'
 			newIndex = index;
@@ -105,7 +105,7 @@ public class SignatureWriter
 			}
 
 			WriteSignature(
-				loader, printer, referenceMap, classFile, 
+				loader, printer, referenceMap, classFile,
 				caSignature, length, newIndex, false, null, false);
 
 			printer.print(' ');
@@ -152,16 +152,16 @@ public class SignatureWriter
 		ParameterAnnotations[] visibleParameterAnnotations = method.getVisibleParameterAnnotations();
 		int parameterIndex = 0;
 		int varargsParameterIndex;
-		
+
 		if ((method.access_flags & ClassFileConstants.ACC_VARARGS) == 0)
 		{
 			varargsParameterIndex = Integer.MAX_VALUE;
 		}
 		else
 		{
-			varargsParameterIndex = SignatureUtil.GetParameterSignatureCount(signature) - 1;			
+			varargsParameterIndex = SignatureUtil.GetParameterSignatureCount(signature) - 1;
 		}
-		
+
 		while (caSignature[index] != ')') {
 			char firstChar = caSignature[index];
 
@@ -195,7 +195,7 @@ public class SignatureWriter
 				}
 
 				index = WriteSignature(
-					loader, printer, referenceMap, classFile, caSignature, 
+					loader, printer, referenceMap, classFile, caSignature,
 					length, index, false, null,
 					(parameterIndex==varargsParameterIndex));
 
@@ -224,15 +224,15 @@ public class SignatureWriter
 	}
 
 	private static int WriteGenerics(
-			Loader loader, Printer printer, ReferenceMap referenceMap, 
-			ClassFile classFile, char[] caSignature, int length, int index) 
+			Loader loader, Printer printer, ReferenceMap referenceMap,
+			ClassFile classFile, char[] caSignature, int length, int index)
 	{
-		if (caSignature[index] == '<') 
+		if (caSignature[index] == '<')
 		{
 			printer.print('<');
 			index++;
 
-			while (index < length) 
+			while (index < length)
 			{
 				int endIndex = CharArrayUtil.IndexOf(caSignature, ':', index);
 				String templateName = CharArrayUtil.Substring(caSignature, index, endIndex);
@@ -245,13 +245,13 @@ public class SignatureWriter
 
 				int newIndex = SignatureUtil.SkipSignature(caSignature, length, index);
 
-				if (!IsObjectClass(caSignature, index, newIndex)) 
+				if (!IsObjectClass(caSignature, index, newIndex))
 				{
 					printer.print(' ');
 					printer.printKeyword("extends");
 					printer.print(' ');
 					WriteSignature(
-						loader, printer, referenceMap, classFile, 
+						loader, printer, referenceMap, classFile,
 						caSignature, length, index, false, null, false);
 				}
 
@@ -270,17 +270,17 @@ public class SignatureWriter
 	}
 
 	public static int WriteSignature(
-			Loader loader, Printer printer, ReferenceMap referenceMap, 
-			ClassFile classFile, char[] caSignature, int length, int index) 
+			Loader loader, Printer printer, ReferenceMap referenceMap,
+			ClassFile classFile, char[] caSignature, int length, int index)
 	{
 		return WriteSignature(
-			loader, printer, referenceMap, classFile, 
-			caSignature, length, index, false, null, false);		
+			loader, printer, referenceMap, classFile,
+			caSignature, length, index, false, null, false);
 	}
 
 	public static int WriteSignature(
-			Loader loader, Printer printer, ReferenceMap referenceMap, 
-			ClassFile classFile, String signature) 
+			Loader loader, Printer printer, ReferenceMap referenceMap,
+			ClassFile classFile, String signature)
 	{
 		char[] caSignature = signature.toCharArray();
 		return WriteSignature(
@@ -289,10 +289,10 @@ public class SignatureWriter
 	}
 
 	private static int WriteSignature(
-			Loader loader, Printer printer, ReferenceMap referenceMap, 
-			ClassFile classFile, char[] caSignature, int length, int index, 
+			Loader loader, Printer printer, ReferenceMap referenceMap,
+			ClassFile classFile, char[] caSignature, int length, int index,
 			boolean constructorFlag, String constructorDescriptor,
-			boolean varargsFlag) 
+			boolean varargsFlag)
 	{
 		char c;
 		int beginIndex;
@@ -350,7 +350,7 @@ public class SignatureWriter
 				c = '.';
 
 				// Recherche de ; ou de <
-				while (index < length) 
+				while (index < length)
 				{
 					c = caSignature[index];
 					if ((c == ';') || (c == '<'))
@@ -358,13 +358,13 @@ public class SignatureWriter
 					index++;
 				}
 
-				String internalClassName = 
+				String internalClassName =
 					CharArrayUtil.Substring(caSignature, beginIndex, index);
 
-				if (typeFlag) 
+				if (typeFlag)
 				{
 					String thisClassName = classFile.getThisClassName();
-					
+
 					if (constructorFlag)
 					{
 						printer.printConstructor(
@@ -382,8 +382,8 @@ public class SignatureWriter
 								loader, referenceMap, classFile, internalClassName),
 								thisClassName);
 					}
-				} 
-				else 
+				}
+				else
 				{
 					printer.print(InternalClassNameToClassName(
 						loader, referenceMap, classFile, internalClassName));
@@ -392,13 +392,13 @@ public class SignatureWriter
 				if (c == '<') {
 					printer.print('<');
 					index = WriteSignature(
-						loader, printer, referenceMap, classFile, 
+						loader, printer, referenceMap, classFile,
 						caSignature, length, index + 1, false, null, false);
 
 					while (caSignature[index] != '>') {
 						printer.print(", ");
 						index = WriteSignature(
-							loader, printer, referenceMap, classFile, 
+							loader, printer, referenceMap, classFile,
 							caSignature, length, index, false, null, false);
 					}
 					printer.print('>');
@@ -434,7 +434,7 @@ public class SignatureWriter
 				printer.printKeyword("super");
 				printer.print(' ');
 				index = WriteSignature(
-					loader, printer, referenceMap, classFile, 
+					loader, printer, referenceMap, classFile,
 					caSignature, length, index + 1, false, null, false);
 				break;
 			case '+':
@@ -442,7 +442,7 @@ public class SignatureWriter
 				printer.printKeyword("extends");
 				printer.print(' ');
 				index = WriteSignature(
-					loader, printer, referenceMap, classFile, 
+					loader, printer, referenceMap, classFile,
 					caSignature, length, index + 1, false, null, false);
 				break;
 			case '*':
@@ -461,13 +461,13 @@ public class SignatureWriter
 						.printStackTrace();
 				// DEBUG
 			}
-			
+
 			if (varargsFlag)
 			{
 				if (dimensionLength > 0)
 				{
 					while (--dimensionLength > 0)
-						printer.print("[]");					
+						printer.print("[]");
 					printer.print("...");
 				}
 			}
@@ -476,7 +476,7 @@ public class SignatureWriter
 				while (dimensionLength-- > 0)
 					printer.print("[]");
 			}
-			
+
 			if ((index >= length) || (caSignature[index] != '.'))
 				break;
 
@@ -487,10 +487,10 @@ public class SignatureWriter
 	}
 
 	public static String InternalClassNameToClassName(
-			Loader loader, ReferenceMap referenceMap, 
-			ClassFile classFile, String internalName) 
+			Loader loader, ReferenceMap referenceMap,
+			ClassFile classFile, String internalName)
 	{
-		if (classFile.getThisClassName().equals(internalName)) 
+		if (classFile.getThisClassName().equals(internalName))
 		{
 			// La classe est la classe courante ou l'une de ses classes
 			// internes
@@ -506,52 +506,52 @@ public class SignatureWriter
 					// Retrait du nom du package
 					internalName = internalName.substring(index + 1);
 			}
-		} 
-		else 
+		}
+		else
 		{
 			// La classe n'est pas la classe courante ou l'une de ses classes
 			// internes
 			int index = internalName.lastIndexOf(StringConstants.INTERNAL_PACKAGE_SEPARATOR);
 
-			if (index != -1) 
+			if (index != -1)
 			{
 				String internalPackageName = internalName.substring(0, index);
 
-				if (classFile.getInternalPackageName().equals(internalPackageName)) 
+				if (classFile.getInternalPackageName().equals(internalPackageName))
 				{
 					// Classe appartenant au m�me package que la classe courante
-					if (classFile.getInnerClassFile(internalName) != null) 
+					if (classFile.getInnerClassFile(internalName) != null)
 					{
 						// Dans le cas d'une classe interne, on retire le nom
 						// de la classe externe
 						internalName = internalName.substring(classFile.getThisClassName().length() + 1);
-					} 
-					else 
+					}
+					else
 					{
 						// Le nom est celui d'une classe appartenant au package
 						// de la classe courante
 						internalName = internalName.substring(index + 1);
 					}
-				} 
-				else 
+				}
+				else
 				{
-					if (referenceMap.contains(internalName)) 
+					if (referenceMap.contains(internalName))
 					{
 						// Si le nom interne fait parti de la liste des "import"
 						internalName = internalName.substring(index + 1);
-					} 
-					else if ("java/lang".equals(internalPackageName)) 
+					}
+					else if ("java/lang".equals(internalPackageName))
 					{
 						// Si c'est une classe du package "java.lang"
-						String internalClassName = 
+						String internalClassName =
 							internalName.substring(index + 1);
-						
-						String currentPackageNamePlusInternalClassName = 
-							classFile.getInternalPackageName() + 
+
+						String currentPackageNamePlusInternalClassName =
+							classFile.getInternalPackageName() +
 							StringConstants.INTERNAL_PACKAGE_SEPARATOR +
-							internalClassName + 
+							internalClassName +
 							StringConstants.CLASS_FILE_SUFFIX;
-						
+
 						if (loader.canLoad(currentPackageNamePlusInternalClassName)) {
 							// Une class du package local contient une classe qui
 							// porte le meme nom que la classe du package "java.lang".
@@ -560,7 +560,7 @@ public class SignatureWriter
 								StringConstants.PACKAGE_SEPARATOR);
 						} else {
 							internalName = internalClassName;
-						}						
+						}
 					} else {
 						// Sinon, on conserve le nom du package
 						internalName = internalName.replace(StringConstants.INTERNAL_PACKAGE_SEPARATOR,
@@ -574,19 +574,19 @@ public class SignatureWriter
 	}
 
 	public static String InternalClassNameToShortClassName(
-			ReferenceMap referenceMap, ClassFile classFile, String internalClassName) 
+			ReferenceMap referenceMap, ClassFile classFile, String internalClassName)
 	{
 		int index = internalClassName.lastIndexOf(StringConstants.INTERNAL_PACKAGE_SEPARATOR);
 
-		if (index != -1) 
+		if (index != -1)
 		{
 			String aPackageName = internalClassName.substring(0, index);
 
-			if (classFile.getInternalPackageName().equals(aPackageName)) 
+			if (classFile.getInternalPackageName().equals(aPackageName))
 			{
 				internalClassName = internalClassName.substring(index + 1);
-			} 
-			else 
+			}
+			else
 			{
 				if (referenceMap.contains(internalClassName))
 					internalClassName = internalClassName.substring(index + 1);
@@ -598,11 +598,11 @@ public class SignatureWriter
 		}
 
 		return internalClassName.replace(
-			StringConstants.INTERNAL_INNER_SEPARATOR, 
+			StringConstants.INTERNAL_INNER_SEPARATOR,
 			StringConstants.INNER_SEPARATOR);
 	}
 
-	private static boolean IsObjectClass(char[] caSignature, int beginIndex, int endIndex) 
+	private static boolean IsObjectClass(char[] caSignature, int beginIndex, int endIndex)
 	{
 		int length = StringConstants.INTERNAL_OBJECT_SIGNATURE.length();
 
@@ -614,6 +614,6 @@ public class SignatureWriter
 		else
 		{
 			return false;
-		}		
+		}
 	}
 }

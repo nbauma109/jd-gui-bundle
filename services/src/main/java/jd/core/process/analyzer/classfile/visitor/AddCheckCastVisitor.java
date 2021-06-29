@@ -1,16 +1,16 @@
 /*******************************************************************************
  * Copyright (C) 2007-2019 Emmanuel Dupuy GPLv3
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -63,24 +63,24 @@ import jd.core.util.StringConstants;
 
 
 /*
- * Ajout de 'cast' sur les instructions 'throw', 'astore', 'invokeXXX', 
+ * Ajout de 'cast' sur les instructions 'throw', 'astore', 'invokeXXX',
  * 'putfield', 'putstatic' et 'xreturn'
  */
-public class AddCheckCastVisitor 
+public class AddCheckCastVisitor
 {
 	private ConstantPool constants;
 	private LocalVariables localVariables;
 	private LocalVariable localVariable;
 
 	public AddCheckCastVisitor(
-			ConstantPool constants, LocalVariables localVariables, 
+			ConstantPool constants, LocalVariables localVariables,
 			LocalVariable localVariable)
 	{
 		this.constants = constants;
 		this.localVariables = localVariables;
 		this.localVariable = localVariable;
 	}
-	
+
 	public void visit(Instruction instruction)
 	{
 		switch (instruction.opcode)
@@ -113,7 +113,7 @@ public class AddCheckCastVisitor
 				if (match(aThrow.value))
 				{
 					LoadInstruction li = (LoadInstruction)aThrow.value;
-					LocalVariable lv = 
+					LocalVariable lv =
 						this.localVariables.getLocalVariableWithIndexAndOffset(
 							li.index, li.offset);
 
@@ -122,13 +122,13 @@ public class AddCheckCastVisitor
 						// Add Throwable cast
 						int nameIndex = this.constants.addConstantUtf8(
 								StringConstants.INTERNAL_THROWABLE_CLASS_NAME);
-						int classIndex = 
+						int classIndex =
 							this.constants.addConstantClass(nameIndex);
 						Instruction i = aThrow.value;
 						aThrow.value = new CheckCast(
-							ByteCodeConstants.CHECKCAST, i.offset, 
+							ByteCodeConstants.CHECKCAST, i.offset,
 							i.lineNumber, classIndex, i);
-					}				
+					}
 				}
 				else
 				{
@@ -158,17 +158,17 @@ public class AddCheckCastVisitor
 				StoreInstruction storeInstruction = (StoreInstruction)instruction;
 				if (match(storeInstruction.valueref))
 				{
-					LocalVariable lv = 
+					LocalVariable lv =
 						this.localVariables.getLocalVariableWithIndexAndOffset(
 							storeInstruction.index, storeInstruction.offset);
-					
+
 					if (lv.signature_index > 0)
 					{
 						// AStore est associ� � une variable correctment typ�e
 						if (lv.signature_index != this.constants.objectSignatureIndex)
-						{			
-							String signature = 
-								this.constants.getConstantUtf8(lv.signature_index);								
+						{
+							String signature =
+								this.constants.getConstantUtf8(lv.signature_index);
 							storeInstruction.valueref = newInstruction(
 								signature, storeInstruction.valueref);
 						}
@@ -200,14 +200,14 @@ public class AddCheckCastVisitor
 			break;
 		case ByteCodeConstants.COMPLEXIF:
 			{
-				List<Instruction> branchList = 
+				List<Instruction> branchList =
 					((ComplexConditionalBranchInstruction)instruction).instructions;
 				for (int i=branchList.size()-1; i>=0; --i)
 				{
 					visit(branchList.get(i));
 				}
 			}
-			break;			
+			break;
 		case ByteCodeConstants.INSTANCEOF:
 			visit(((InstanceOf)instruction).objectref);
 			break;
@@ -215,18 +215,18 @@ public class AddCheckCastVisitor
 		case ByteCodeConstants.INVOKESPECIAL:
 		case ByteCodeConstants.INVOKEVIRTUAL:
 			{
-				InvokeNoStaticInstruction insi = 
+				InvokeNoStaticInstruction insi =
 					(InvokeNoStaticInstruction)instruction;
 				if (match(insi.objectref))
 				{
 					ConstantMethodref cmr = this.constants.getConstantMethodref(insi.index);
 					ConstantClass cc = this.constants.getConstantClass(cmr.class_index);
-					
+
 					if (this.constants.objectClassNameIndex != cc.name_index)
 					{
 						Instruction i = insi.objectref;
 						insi.objectref = new CheckCast(
-							ByteCodeConstants.CHECKCAST, i.offset, 
+							ByteCodeConstants.CHECKCAST, i.offset,
 							i.lineNumber, cmr.class_index, i);
 					}
 				}
@@ -240,16 +240,16 @@ public class AddCheckCastVisitor
 				List<Instruction> list = ((InvokeInstruction)instruction).args;
 				List<String> types = ((InvokeInstruction)instruction)
 					.getListOfParameterSignatures(this.constants);
-				
+
 				for (int i=list.size()-1; i>=0; --i)
 				{
 					Instruction arg = list.get(i);
 					if (match(arg))
 					{
-						String signature = types.get(i);	
+						String signature = types.get(i);
 
 						if (! signature.equals(StringConstants.INTERNAL_OBJECT_SIGNATURE))
-						{			
+						{
 							list.set(i, newInstruction(signature, arg));
 						}
 					}
@@ -262,7 +262,7 @@ public class AddCheckCastVisitor
 			break;
 		case ByteCodeConstants.LOOKUPSWITCH:
 			visit(((LookupSwitch)instruction).key);
-			break;			
+			break;
 		case ByteCodeConstants.MONITORENTER:
 			visit(((MonitorEnter)instruction).objectref);
 			break;
@@ -290,15 +290,15 @@ public class AddCheckCastVisitor
 				GetField getField = (GetField)instruction;
 				if (match(getField.objectref))
 				{
-					ConstantFieldref cfr = 
+					ConstantFieldref cfr =
 						this.constants.getConstantFieldref(getField.index);
 					ConstantClass cc = this.constants.getConstantClass(cfr.class_index);
-					
+
 					if (this.constants.objectClassNameIndex != cc.name_index)
 					{
 						Instruction i = getField.objectref;
 						getField.objectref = new CheckCast(
-							ByteCodeConstants.CHECKCAST, i.offset, 
+							ByteCodeConstants.CHECKCAST, i.offset,
 							i.lineNumber, cfr.class_index, i);
 					}
 				}
@@ -307,22 +307,22 @@ public class AddCheckCastVisitor
 					visit(getField.objectref);
 				}
 			}
-			break;	
+			break;
 		case ByteCodeConstants.PUTFIELD:
 			{
 				PutField putField = (PutField)instruction;
 				if (match(putField.objectref))
 				{
-					ConstantFieldref cfr = 
+					ConstantFieldref cfr =
 						this.constants.getConstantFieldref(putField.index);
 					ConstantClass cc = this.constants.getConstantClass(cfr.class_index);
-					
+
 					if (this.constants.objectClassNameIndex != cc.name_index)
 					{
 						Instruction i = putField.objectref;
 						putField.objectref = new CheckCast(
-							ByteCodeConstants.CHECKCAST, i.offset, 
-							i.lineNumber, cfr.class_index, i);						
+							ByteCodeConstants.CHECKCAST, i.offset,
+							i.lineNumber, cfr.class_index, i);
 					}
 				}
 				else
@@ -332,13 +332,13 @@ public class AddCheckCastVisitor
 				if (match(putField.valueref))
 				{
 					ConstantFieldref cfr = constants.getConstantFieldref(putField.index);
-					ConstantNameAndType cnat = 
+					ConstantNameAndType cnat =
 						constants.getConstantNameAndType(cfr.name_and_type_index);
-												
+
 					if (cnat.descriptor_index != this.constants.objectSignatureIndex)
-					{			
-						String signature = 
-							this.constants.getConstantUtf8(cnat.descriptor_index);	
+					{
+						String signature =
+							this.constants.getConstantUtf8(cnat.descriptor_index);
 						putField.valueref = newInstruction(
 							signature, putField.valueref);
 					}
@@ -355,13 +355,13 @@ public class AddCheckCastVisitor
 				if (match(putStatic.valueref))
 				{
 					ConstantFieldref cfr = constants.getConstantFieldref(putStatic.index);
-					ConstantNameAndType cnat = 
+					ConstantNameAndType cnat =
 						constants.getConstantNameAndType(cfr.name_and_type_index);
-					
+
 					if (cnat.descriptor_index != this.constants.objectSignatureIndex)
-					{		
-						String signature = 
-							this.constants.getConstantUtf8(cnat.descriptor_index);			
+					{
+						String signature =
+							this.constants.getConstantUtf8(cnat.descriptor_index);
 						putStatic.valueref = newInstruction(
 							signature, putStatic.valueref);
 					}
@@ -374,20 +374,20 @@ public class AddCheckCastVisitor
 			break;
 		case ByteCodeConstants.XRETURN:
 			visit(((ReturnInstruction)instruction).valueref);
-			break;			
+			break;
 		case ByteCodeConstants.TABLESWITCH:
 			visit(((TableSwitch)instruction).key);
-			break;			
+			break;
 		case ByteCodeConstants.TERNARYOPSTORE:
-			visit(((TernaryOpStore)instruction).objectref);			
-			break;			
-		case ByteCodeConstants.TERNARYOP:	
+			visit(((TernaryOpStore)instruction).objectref);
+			break;
+		case ByteCodeConstants.TERNARYOP:
 			{
 				TernaryOperator to = (TernaryOperator)instruction;
-				visit(to.value1);	
+				visit(to.value1);
 				visit(to.value2);
 			}
-			break;	
+			break;
 		case ByteCodeConstants.ACONST_NULL:
 		case ByteCodeConstants.ARRAYLOAD:
 		case ByteCodeConstants.LOAD:
@@ -403,7 +403,7 @@ public class AddCheckCastVisitor
 		case ByteCodeConstants.OUTERTHIS:
 		case ByteCodeConstants.GOTO:
 		case ByteCodeConstants.INVOKENEW:
-		case ByteCodeConstants.JSR:			
+		case ByteCodeConstants.JSR:
 		case ByteCodeConstants.LDC:
 		case ByteCodeConstants.LDC2_W:
 		case ByteCodeConstants.NEW:
@@ -413,14 +413,14 @@ public class AddCheckCastVisitor
 		case ByteCodeConstants.RETURN:
 		case ByteCodeConstants.EXCEPTIONLOAD:
 		case ByteCodeConstants.RETURNADDRESSLOAD:
-		case ByteCodeConstants.IINC:			
+		case ByteCodeConstants.IINC:
 		case ByteCodeConstants.PREINC:
-		case ByteCodeConstants.POSTINC:		
+		case ByteCodeConstants.POSTINC:
 			break;
 		default:
 			System.err.println(
-					"Can not add cast in " + 
-					instruction.getClass().getName() + 
+					"Can not add cast in " +
+					instruction.getClass().getName() +
 					", opcode=" + instruction.opcode);
 		}
 	}
@@ -429,31 +429,31 @@ public class AddCheckCastVisitor
 	{
 		if (i.opcode == ByteCodeConstants.ALOAD)
 		{
-			LoadInstruction li = (LoadInstruction)i;			
+			LoadInstruction li = (LoadInstruction)i;
 			if (li.index == this.localVariable.index)
 			{
-				LocalVariable lv = 
+				LocalVariable lv =
 					this.localVariables.getLocalVariableWithIndexAndOffset(
-							li.index, li.offset);				
+							li.index, li.offset);
 				return lv == this.localVariable;
 			}
 		}
-			
+
 		return false;
 	}
-	
+
 	private Instruction newInstruction(String signature, Instruction i)
 	{
 		if (SignatureUtil.IsPrimitiveSignature(signature))
 		{
 			return new ConvertInstruction(
-				ByteCodeConstants.CONVERT, i.offset, 
+				ByteCodeConstants.CONVERT, i.offset,
 				i.lineNumber, i, signature);
 		}
 		else
 		{
 			int nameIndex;
-			
+
 			if (signature.charAt(0) == 'L')
 			{
 				String name = SignatureUtil.GetInnerName(signature);
@@ -463,11 +463,11 @@ public class AddCheckCastVisitor
 			{
 				nameIndex = this.constants.addConstantUtf8(signature);
 			}
-			
-			int classIndex = 
+
+			int classIndex =
 				this.constants.addConstantClass(nameIndex);
 			return new CheckCast(
-				ByteCodeConstants.CHECKCAST, i.offset, 
+				ByteCodeConstants.CHECKCAST, i.offset,
 				i.lineNumber, classIndex, i);
 		}
 	}

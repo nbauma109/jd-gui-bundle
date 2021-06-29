@@ -23,7 +23,7 @@ import org.jd.gui.util.io.NewlineOutputStream;
 public class TextPage extends AbstractTextPage implements ContentCopyable, ContentSelectable, ContentSavable {
 
     /**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
 

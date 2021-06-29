@@ -21,7 +21,7 @@ public class FileLoaderService {
     public static FileLoaderService getInstance() { return FILE_LOADER_SERVICE; }
 
     protected final Collection<FileLoader> providers = ExtensionService.getInstance().load(FileLoader.class);
-	
+
 	protected HashMap<String, FileLoader> mapProviders = new HashMap<>();
 
 	protected FileLoaderService() {

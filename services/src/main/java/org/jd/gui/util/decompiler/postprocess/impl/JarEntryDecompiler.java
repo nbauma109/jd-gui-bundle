@@ -31,7 +31,7 @@ public class JarEntryDecompiler {
 			final DecompilationOptions decompilationOptions, final ITextOutput output) throws IOException {
 
 		List<TypeDefinition> types = new ArrayList<>();
-		
+
 		final File jarFile = new File(jarFilePath);
 
 		if (!jarFile.exists()) {

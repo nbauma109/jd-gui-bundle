@@ -1,16 +1,16 @@
 /*******************************************************************************
  * Copyright (C) 2007-2019 Emmanuel Dupuy GPLv3
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -72,7 +72,7 @@ import jd.core.model.instruction.fast.instruction.FastTry;
 import jd.core.model.instruction.fast.instruction.FastTry.FastCatch;
 
 
-public class CheckLocalVariableUsedVisitor 
+public class CheckLocalVariableUsedVisitor
 {
 	public static boolean Visit(
 		LocalVariables localVariables, int maxOffset, Instruction instruction)
@@ -94,11 +94,11 @@ public class CheckLocalVariableUsedVisitor
 			return Visit(localVariables, maxOffset, ((AThrow)instruction).value);
 		case ByteCodeConstants.UNARYOP:
 			return Visit(
-				localVariables, maxOffset, 
+				localVariables, maxOffset,
 				((UnaryOperatorInstruction)instruction).value);
 		case ByteCodeConstants.BINARYOP:
 			{
-				BinaryOperatorInstruction boi = 
+				BinaryOperatorInstruction boi =
 					(BinaryOperatorInstruction)instruction;
 				if (Visit(localVariables, maxOffset, boi.value1))
 					return true;
@@ -111,8 +111,8 @@ public class CheckLocalVariableUsedVisitor
 		case ByteCodeConstants.ALOAD:
 		case ByteCodeConstants.ILOAD:
 			{
-				LoadInstruction li = (LoadInstruction)instruction;				
-				LocalVariable lv = 
+				LoadInstruction li = (LoadInstruction)instruction;
+				LocalVariable lv =
 					localVariables.getLocalVariableWithIndexAndOffset(
 						li.index, li.offset);
 				return (lv != null) && (maxOffset <= lv.start_pc);
@@ -122,7 +122,7 @@ public class CheckLocalVariableUsedVisitor
 		case ByteCodeConstants.ISTORE:
 			{
 				StoreInstruction si = (StoreInstruction)instruction;
-				LocalVariable lv = 
+				LocalVariable lv =
 					localVariables.getLocalVariableWithIndexAndOffset(
 						si.index, si.offset);
 				if ((lv != null) && (maxOffset <= lv.start_pc))
@@ -135,7 +135,7 @@ public class CheckLocalVariableUsedVisitor
 		case ByteCodeConstants.CONVERT:
 		case ByteCodeConstants.IMPLICITCONVERT:
 			return Visit(
-				localVariables, maxOffset, 
+				localVariables, maxOffset,
 				((ConvertInstruction)instruction).value);
 		case ByteCodeConstants.IFCMP:
 			{
@@ -150,7 +150,7 @@ public class CheckLocalVariableUsedVisitor
 				localVariables, maxOffset, ((IfInstruction)instruction).value);
 		case ByteCodeConstants.COMPLEXIF:
 			{
-				List<Instruction> branchList = 
+				List<Instruction> branchList =
 					((ComplexConditionalBranchInstruction)instruction).instructions;
 				for (int i=branchList.size()-1; i>=0; --i)
 				{
@@ -166,7 +166,7 @@ public class CheckLocalVariableUsedVisitor
 		case ByteCodeConstants.INVOKESPECIAL:
 		case ByteCodeConstants.INVOKEVIRTUAL:
 			if (Visit(
-					localVariables, maxOffset, 
+					localVariables, maxOffset,
 					((InvokeNoStaticInstruction)instruction).objectref))
 				return true;
 		case ByteCodeConstants.INVOKESTATIC:
@@ -194,11 +194,11 @@ public class CheckLocalVariableUsedVisitor
 				localVariables, maxOffset, ((LookupSwitch)instruction).key);
 		case ByteCodeConstants.MONITORENTER:
 			return Visit(
-				localVariables, maxOffset, 
+				localVariables, maxOffset,
 				((MonitorEnter)instruction).objectref);
 		case ByteCodeConstants.MONITOREXIT:
 			return Visit(
-				localVariables, maxOffset, 
+				localVariables, maxOffset,
 				((MonitorExit)instruction).objectref);
 		case ByteCodeConstants.MULTIANEWARRAY:
 			{
@@ -212,15 +212,15 @@ public class CheckLocalVariableUsedVisitor
 			}
 		case ByteCodeConstants.NEWARRAY:
 			return Visit(
-				localVariables, maxOffset, 
+				localVariables, maxOffset,
 				((NewArray)instruction).dimension);
 		case ByteCodeConstants.ANEWARRAY:
 			return Visit(
-				localVariables, maxOffset, 
+				localVariables, maxOffset,
 				((ANewArray)instruction).dimension);
 		case ByteCodeConstants.POP:
 			return Visit(
-				localVariables, maxOffset, 
+				localVariables, maxOffset,
 				((Pop)instruction).objectref);
 		case ByteCodeConstants.PUTFIELD:
 			{
@@ -231,106 +231,106 @@ public class CheckLocalVariableUsedVisitor
 			}
 		case ByteCodeConstants.PUTSTATIC:
 			return Visit(
-				localVariables, maxOffset, 
+				localVariables, maxOffset,
 				((PutStatic)instruction).valueref);
 		case ByteCodeConstants.XRETURN:
 			return Visit(
-				localVariables, maxOffset, 
+				localVariables, maxOffset,
 				((ReturnInstruction)instruction).valueref);
 		case ByteCodeConstants.TABLESWITCH:
 			return Visit(
-				localVariables, maxOffset, 
+				localVariables, maxOffset,
 				((TableSwitch)instruction).key);
 		case ByteCodeConstants.TERNARYOPSTORE:
 			return Visit(
-				localVariables, maxOffset, 
-				((TernaryOpStore)instruction).objectref);	
-		case ByteCodeConstants.TERNARYOP:	
+				localVariables, maxOffset,
+				((TernaryOpStore)instruction).objectref);
+		case ByteCodeConstants.TERNARYOP:
 			{
 				TernaryOperator to = (TernaryOperator)instruction;
 				if (Visit(localVariables, maxOffset, to.value1))
-					return true;	
+					return true;
 				return Visit(localVariables, maxOffset, to.value2);
-			}			
+			}
 		case ByteCodeConstants.ASSIGNMENT:
 			{
 				AssignmentInstruction ai = (AssignmentInstruction)instruction;
 				if (Visit(localVariables, maxOffset, ai.value1))
-					return true;	
+					return true;
 				return Visit(localVariables, maxOffset, ai.value2);
 			}
 		case ByteCodeConstants.ARRAYLOAD:
 			{
 				ArrayLoadInstruction ali = (ArrayLoadInstruction)instruction;
 				if (Visit(localVariables, maxOffset, ali.arrayref))
-					return true;	
+					return true;
 				return Visit(localVariables, maxOffset, ali.indexref);
 			}
-		case ByteCodeConstants.PREINC:			
-		case ByteCodeConstants.POSTINC:			
+		case ByteCodeConstants.PREINC:
+		case ByteCodeConstants.POSTINC:
 			return Visit(
-				localVariables, maxOffset, 
+				localVariables, maxOffset,
 				((IncInstruction)instruction).value);
 		case ByteCodeConstants.GETFIELD:
 			return Visit(
-				localVariables, maxOffset, 
+				localVariables, maxOffset,
 				((GetField)instruction).objectref);
 		case ByteCodeConstants.INITARRAY:
 		case ByteCodeConstants.NEWANDINITARRAY:
 			{
 				InitArrayInstruction iai = (InitArrayInstruction)instruction;
 				if (Visit(localVariables, maxOffset, iai.newArray))
-					return true;	
+					return true;
 				if (iai.values != null)
 					if (visit(localVariables, maxOffset, iai.values))
-						return true;	
-				return false;	
+						return true;
+				return false;
 			}
 		case FastConstants.FOR:
 			{
 				FastFor ff = (FastFor)instruction;
 				if (ff.init != null)
 					if (Visit(localVariables, maxOffset, ff.init))
-						return true;	
+						return true;
 				if (ff.inc != null)
 					if (Visit(localVariables, maxOffset, ff.inc))
-						return true;	
-				return false;	
+						return true;
+				return false;
 			}
 		case FastConstants.WHILE:
 		case FastConstants.DO_WHILE:
 		case FastConstants.IF_:
 			{
-				Instruction test = ((FastTestList)instruction).test;					
+				Instruction test = ((FastTestList)instruction).test;
 				if (test != null)
 					if (Visit(localVariables, maxOffset, test))
-						return true;	
-				return false;	
+						return true;
+				return false;
 			}
 		case FastConstants.INFINITE_LOOP:
 			{
-				List<Instruction> instructions = 
+				List<Instruction> instructions =
 						((FastList)instruction).instructions;
 				if (instructions != null)
 					return visit(localVariables, maxOffset, instructions);
-				return false;	
-			}			
+				return false;
+			}
 		case FastConstants.FOREACH:
 			{
-				FastForEach ffe = (FastForEach)instruction;				
+				FastForEach ffe = (FastForEach)instruction;
 				if (Visit(localVariables, maxOffset, ffe.variable))
-					return true;	
+					return true;
 				if (Visit(localVariables, maxOffset, ffe.values))
-					return true;	
+					return true;
 				return visit(localVariables, maxOffset, ffe.instructions);
 			}
 		case FastConstants.IF_ELSE:
 			{
 				FastTest2Lists ft2l = (FastTest2Lists)instruction;
 				if (Visit(localVariables, maxOffset, ft2l.test))
-					return true;	
+					return true;
 				if (visit(localVariables, maxOffset, ft2l.instructions))
-					return true;	
+					return true;
 				return visit(localVariables, maxOffset, ft2l.instructions2);
 			}
 		case FastConstants.IF_CONTINUE:
@@ -343,7 +343,7 @@ public class CheckLocalVariableUsedVisitor
 				FastInstruction fi = (FastInstruction)instruction;
 				if (fi.instruction != null)
 					if (Visit(localVariables, maxOffset, fi.instruction))
-						return true;	
+						return true;
 				return false;
 			}
 		case FastConstants.SWITCH:
@@ -352,14 +352,14 @@ public class CheckLocalVariableUsedVisitor
 			{
 				FastSwitch fs = (FastSwitch)instruction;
 				if (Visit(localVariables, maxOffset, fs.test))
-					return true;			
+					return true;
 				FastSwitch.Pair[] pairs = fs.pairs;
 				for (int i=pairs.length-1; i>=0; --i)
 				{
 					List<Instruction> instructions = pairs[i].getInstructions();
 					if (instructions != null)
 						if (visit(localVariables, maxOffset, instructions))
-							return true;			
+							return true;
 				}
 				return false;
 			}
@@ -367,21 +367,21 @@ public class CheckLocalVariableUsedVisitor
 			{
 				FastTry ft = (FastTry)instruction;
 				if (visit(localVariables, maxOffset, ft.instructions))
-					return true;						
+					return true;
 				if (ft.finallyInstructions != null)
 					if (visit(localVariables, maxOffset, ft.finallyInstructions))
-						return true;						
+						return true;
 				List<FastCatch> catchs = ft.catches;
 				for (int i=catchs.size()-1; i>=0; --i)
 					if (visit(localVariables, maxOffset, catchs.get(i).instructions))
-						return true;			
+						return true;
 				return false;
 			}
 		case FastConstants.SYNCHRONIZED:
 			{
 				FastSynchronized fsd = (FastSynchronized)instruction;
 				if (Visit(localVariables, maxOffset, fsd.monitor))
-					return true;				
+					return true;
 				return visit(localVariables, maxOffset, fsd.instructions);
 			}
 		case FastConstants.LABEL:
@@ -389,15 +389,15 @@ public class CheckLocalVariableUsedVisitor
 				FastLabel fl = (FastLabel)instruction;
 				if (fl.instruction != null)
 					if (Visit(localVariables, maxOffset, fl.instruction))
-						return true;				
+						return true;
 				return false;
 			}
 		case FastConstants.DECLARE:
 			{
 				FastDeclaration fd = (FastDeclaration)instruction;
-				if (fd.instruction != null)				
+				if (fd.instruction != null)
 					if (Visit(localVariables, maxOffset, fd.instruction))
-						return true;				
+						return true;
 				return false;
 			}
 		case ByteCodeConstants.GETSTATIC:
@@ -409,8 +409,8 @@ public class CheckLocalVariableUsedVisitor
 		case ByteCodeConstants.FCONST:
 		case ByteCodeConstants.DCONST:
 		case ByteCodeConstants.GOTO:
-		case ByteCodeConstants.IINC:			
-		case ByteCodeConstants.JSR:			
+		case ByteCodeConstants.IINC:
+		case ByteCodeConstants.JSR:
 		case ByteCodeConstants.LDC:
 		case ByteCodeConstants.LDC2_W:
 		case ByteCodeConstants.NEW:
@@ -424,20 +424,20 @@ public class CheckLocalVariableUsedVisitor
 			return false;
 		default:
 			System.err.println(
-					"Can not find local variable used in " + 
-					instruction.getClass().getName() + 
+					"Can not find local variable used in " +
+					instruction.getClass().getName() +
 					", opcode=" + instruction.opcode);
 			return false;
 		}
 	}
-	
+
 	private static boolean visit(
-		LocalVariables localVariables, int maxOffset, 
+		LocalVariables localVariables, int maxOffset,
 		List<Instruction> instructions)
 	{
 		for (int i=instructions.size()-1; i>=0; --i)
 			if (Visit(localVariables, maxOffset, instructions.get(i)))
-				return true;				
+				return true;
 		return false;
 	}
 }

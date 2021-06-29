@@ -117,7 +117,7 @@ public class AboutView {
             hbox.add(new JLabel("Copyright \u00A9 2008-2019 Emmanuel Dupuy"));
             hbox.add(Box.createHorizontalGlue());
             subvbox.add(hbox);
-            
+
             vbox.add(Box.createVerticalStrut(10));
 
             hbox = Box.createHorizontalBox();
@@ -126,7 +126,7 @@ public class AboutView {
             aboutOkButton = new JButton("    Ok    ");
             Action aboutOkActionListener = new AbstractAction() {
                 /**
-				 * 
+				 *
 				 */
 				private static final long serialVersionUID = 1L;
 

@@ -1,7 +1,7 @@
 package org.jd.gui.util.parser.jdt.core;
 
 public class HyperlinkData {
-	
+
     private int startPosition;
     private int endPosition;
 

@@ -1,16 +1,16 @@
 /*******************************************************************************
  * Copyright (C) 2007-2019 Emmanuel Dupuy GPLv3
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -110,7 +110,7 @@ import jd.core.util.StringConstants;
  *   AnalyzeList <-----------------+ <-----------------------------+ <--+
  *    |  |  |  |                   |                               |    |
  *    |  |  |  v                   |       1)Remove continue inst. |    |
- *    |  |  | AnalyzeBackIf -->AnalyzeLoop 2)Call AnalyzeList      |    | 
+ *    |  |  | AnalyzeBackIf -->AnalyzeLoop 2)Call AnalyzeList      |    |
  *    |  |  v                      |       3)Remove break &        |    |
  *    |  | AnalyzeBackGoto --------+         labeled break         |    |
  *    |  v                                                         |    |
@@ -751,18 +751,18 @@ public class FastInstructionListBuilder {
 			// Calcul de l'offset le plus haut pour le block 'try'
 			int firstOffset = finallyInstructions.get(0).offset;
 			int minimalJumpOffset = SearchMinusJumpOffset(
-					finallyInstructions, 0, finallyInstructions.size(), 
+					finallyInstructions, 0, finallyInstructions.size(),
 					firstOffset, afterListOffset);
-			
-			afterListOffset = firstOffset;	
-			
+
+			afterListOffset = firstOffset;
+
 			if ((minimalJumpOffset != -1) && (afterListOffset > minimalJumpOffset))
-				afterListOffset = minimalJumpOffset;				
+				afterListOffset = minimalJumpOffset;
 		}
 
 		// Extract catch blockes
 		List<FastCatch> catches = null;
-		if (fce.catches != null) 
+		if (fce.catches != null)
 		{
 			int i = fce.catches.size();
 			catches = new ArrayList<FastCatch>(i);
@@ -798,27 +798,27 @@ public class FastInstructionListBuilder {
 
 					// Search exception type and local variables index
 					ExceptionLoad el = SearchExceptionLoadInstruction(instructions);
-					if (el != null) 
+					if (el != null)
 					{
 						int offset = lastInstruction.offset;
 
 						catches.add(0, new FastCatch(
-							offset, el.offset, fcec.type, fcec.otherTypes, 
+							offset, el.offset, fcec.type, fcec.otherTypes,
 							el.index, instructions));
 
 						////////////////////afterListOffset = instructions.get(0).offset;
-						
+
 						// Calcul de l'offset le plus haut pour le block 'try'
 						int firstOffset = instructions.get(0).offset;
 						int minimalJumpOffset = SearchMinusJumpOffset(
-								instructions, 0, instructions.size(), 
+								instructions, 0, instructions.size(),
 								firstOffset, offset);
-						
+
 						if (afterListOffset > firstOffset)
 							afterListOffset = firstOffset;
 
 						if ((minimalJumpOffset != -1) && (afterListOffset > minimalJumpOffset))
-							afterListOffset = minimalJumpOffset;						
+							afterListOffset = minimalJumpOffset;
 					} else {
 						throw new UnexpectedInstructionException();
 					}
@@ -876,7 +876,7 @@ public class FastInstructionListBuilder {
 		// Analyze lists of instructions
 		ExecuteReconstructors(referenceMap, classFile, tryInstructions, localVariables);
 
-		if (catches != null) 
+		if (catches != null)
 		{
 			int length = catches.size();
 
@@ -1013,30 +1013,30 @@ public class FastInstructionListBuilder {
 	    LocalVariables localVariables = method.getLocalVariables();
 
 	    AttributeSignature as = method.getAttributeSignature();
-	    int signatureIndex = (as == null) ? 
+	    int signatureIndex = (as == null) ?
 	    		method.descriptor_index : as.signature_index;
 	    String signature = constants.getConstantUtf8(signatureIndex);
-	    String methodReturnedSignature = 
+	    String methodReturnedSignature =
 	    		SignatureUtil.GetMethodReturnedSignature(signature);
-	    
+
 		int index = list.size();
-		
-		while (index-- > 0) 
+
+		while (index-- > 0)
 		{
 			Instruction instruction = list.get(index);
 
-			if (instruction.opcode == ByteCodeConstants.XRETURN) 
+			if (instruction.opcode == ByteCodeConstants.XRETURN)
 			{
 				ReturnInstruction ri = (ReturnInstruction)instruction;
-				String returnedSignature = 
+				String returnedSignature =
 					ri.valueref.getReturnedSignature(constants, localVariables);
-				
+
 				if ((returnedSignature != null) &&
 					returnedSignature.equals(StringConstants.INTERNAL_OBJECT_SIGNATURE) &&
 					! methodReturnedSignature.equals(StringConstants.INTERNAL_OBJECT_SIGNATURE))
 			    {
-				    signatureIndex = constants.addConstantUtf8(methodReturnedSignature);	 
-				    
+				    signatureIndex = constants.addConstantUtf8(methodReturnedSignature);
+
 					if (ri.valueref.opcode == ByteCodeConstants.CHECKCAST)
 					{
 						((CheckCast)ri.valueref).index = signatureIndex;
@@ -1044,62 +1044,62 @@ public class FastInstructionListBuilder {
 					else
 					{
 					    ri.valueref = new CheckCast(
-							ByteCodeConstants.CHECKCAST, ri.valueref.offset, 
+							ByteCodeConstants.CHECKCAST, ri.valueref.offset,
 							ri.valueref.lineNumber, signatureIndex, ri.valueref);
 					}
 			    }
-				
+
 				/* if (! methodReturnedSignature.equals(returnedSignature))
 				{
 					if (SignatureUtil.IsPrimitiveSignature(methodReturnedSignature))
 				    {
 				    	ri.valueref = new ConvertInstruction(
-							ByteCodeConstants.CONVERT, ri.valueref.offset, 
-							ri.valueref.lineNumber, ri.valueref, 
+							ByteCodeConstants.CONVERT, ri.valueref.offset,
+							ri.valueref.lineNumber, ri.valueref,
 							methodReturnedSignature);
 				    }
 				    else if (! StringConstants.INTERNAL_OBJECT_SIGNATURE.equals(methodReturnedSignature))
 				    {
 				    	signature = SignatureUtil.GetInnerName(methodReturnedSignature);
 					    signatureIndex = constants.addConstantUtf8(signature);
-					    int classIndex = constants.addConstantClass(signatureIndex);			    
+					    int classIndex = constants.addConstantClass(signatureIndex);
 					    ri.valueref = new CheckCast(
-							ByteCodeConstants.CHECKCAST, ri.valueref.offset, 
+							ByteCodeConstants.CHECKCAST, ri.valueref.offset,
 							ri.valueref.lineNumber, classIndex, ri.valueref);
 				    }
-				}*/			
+				}*/
 			}
 		}
 	}
-	
+
 	/*
 	 * debut de liste fin de liste | | Liste ...
 	 * --|----|---|==0===1===2===3===4===5===6==7=...=n---|--| ... | | | | | | |
 	 * beforeListOffset | | Offsets | loopEntryOffset endLoopOffset |
 	 * beforeLoopEntryOffset afterLoopOffset
-	 * 
-	 * 
+	 *
+	 *
 	 * beforeLoopEntryOffset & loopEntryOffset: utile pour la generation
 	 * d'instructions 'continue' beforeListOffset: utile pour la generation de
 	 * declarations de variable endLoopOffset & afterLoopOffset: utile pour la
 	 * generation d'instructions 'break' afterListOffset: utile pour la
 	 * generation d'instructions 'if-else' = lastBodyWhileLoop.offset
-	 * 
+	 *
 	 * WHILE instruction avant boucle | goto | beforeSubListOffset instructions
 	 * | instruction | beforeLoopEntryOffset if a saut negatif |
 	 * loopEntryOffset, endLoopOffset, afterListOffset instruction apres boucle
 	 * | afterLoopOffset
-	 * 
+	 *
 	 * DO_WHILE instruction avant boucle | beforeListOffset instructions |
 	 * instruction | beforeLoopEntryOffset if a saut negatif | loopEntryOffset,
 	 * endLoopOffset, afterListOffset instruction apres boucle | afterLoopOffset
-	 * 
+	 *
 	 * FOR instruction avant boucle | goto | beforeListOffset instructions |
 	 * instruction | beforeLoopEntryOffset iinc | loopEntryOffset,
 	 * afterListOffset if a saut negatif | endLoopOffset instruction apres
 	 * boucle | afterLoopOffset
-	 * 
-	 * 
+	 *
+	 *
 	 * INFINITE_LOOP instruction avant boucle | beforeListOffset instructions |
 	 * instruction | beforeLoopEntryOffset goto a saut negatif |
 	 * loopEntryOffset, endLoopOffset, afterListOffset instruction apres boucle
@@ -1107,7 +1107,7 @@ public class FastInstructionListBuilder {
 	 */
 	private static void AnalyzeList(ClassFile classFile, Method method, List<Instruction> list,
 			LocalVariables localVariables, IntSet offsetLabelSet, int beforeLoopEntryOffset, int loopEntryOffset,
-			int afterBodyLoopOffset, int beforeListOffset, int afterListOffset, int breakOffset, int returnOffset) 
+			int afterBodyLoopOffset, int beforeListOffset, int afterListOffset, int breakOffset, int returnOffset)
 	{
 		// Create loops
 		CreateLoops(classFile, method, list, localVariables, offsetLabelSet, beforeLoopEntryOffset, loopEntryOffset,
@@ -1165,7 +1165,7 @@ public class FastInstructionListBuilder {
 
 		// Remove synthetic 'return'
 		RemoveSyntheticReturn(list, afterListOffset, returnOffset);
-		
+
 		// Add cast instruction on return
 		AddCastInstructionOnReturn(classFile, method, list);
 	}
@@ -1265,7 +1265,7 @@ public class FastInstructionListBuilder {
 
 			int lastOffset = list.get(length - 1).offset;
 
-			for (int i = 0; i < length; i++) 
+			for (int i = 0; i < length; i++)
 			{
 				Instruction instruction = (Instruction) list.get(i);
 
@@ -1436,7 +1436,7 @@ public class FastInstructionListBuilder {
 			int breakOffset, int returnOffset) {
 		int length = list.size();
 
-		for (int index = 0; index < length; index++) 
+		for (int index = 0; index < length; index++)
 		{
 			Instruction instruction = list.get(index);
 
@@ -1444,11 +1444,11 @@ public class FastInstructionListBuilder {
 			case FastConstants.IF:
 			case FastConstants.IFCMP:
 			case FastConstants.IFXNULL:
-			case FastConstants.COMPLEXIF: 
+			case FastConstants.COMPLEXIF:
 				{
 					BranchInstruction bi = (BranchInstruction) instruction;
 					int jumpOffset = bi.GetJumpOffset();
-	
+
 					if ((beforeLoopEntryOffset < jumpOffset) && (jumpOffset <= loopEntryOffset)) {
 						list.set(index, new FastInstruction(
 							FastConstants.IF_CONTINUE, bi.offset, bi.lineNumber, bi));
@@ -1466,29 +1466,29 @@ public class FastInstructionListBuilder {
 							list.set(index, new FastTestList(FastConstants.IF_, bi.offset, bi.lineNumber, jumpOffset
 									- bi.offset, bi, instructions));
 						} else {
-							// Si l'instruction saute vers un '?return' simple, 
-							// duplication de l'instruction cible pour eviter la 
+							// Si l'instruction saute vers un '?return' simple,
+							// duplication de l'instruction cible pour eviter la
 							// generation d'une instruction *_LABELED_BREAK.
 							byte[] code = method.getCode();
-							
-							// Reconnaissance bas niveau de la sequence 
-							// '?load_?' suivie de '?return' en fin de methode. 
+
+							// Reconnaissance bas niveau de la sequence
+							// '?load_?' suivie de '?return' en fin de methode.
 							if (code.length == jumpOffset+2)
 							{
 								LoadInstruction load = DuplicateLoadInstruction(
-									code[jumpOffset] & 255, bi.offset, 
+									code[jumpOffset] & 255, bi.offset,
 									Instruction.UNKNOWN_LINE_NUMBER);
 								if (load != null)
 								{
 									ReturnInstruction ri = DuplacateReturnInstruction(
-										code[jumpOffset+1] & 255, bi.offset, 
-										Instruction.UNKNOWN_LINE_NUMBER, load);									
+										code[jumpOffset+1] & 255, bi.offset,
+										Instruction.UNKNOWN_LINE_NUMBER, load);
 									if (ri != null)
 									{
 										List<Instruction> instructions = new ArrayList<Instruction>(1);
 										instructions.add(ri);
 										list.set(index, new FastTestList(
-											FastConstants.IF_, bi.offset, bi.lineNumber, 
+											FastConstants.IF_, bi.offset, bi.lineNumber,
 											jumpOffset-bi.offset, bi, instructions));
 										break;
 									}
@@ -1503,15 +1503,15 @@ public class FastInstructionListBuilder {
 				}
 				break;
 
-			case FastConstants.GOTO: 
+			case FastConstants.GOTO:
 				{
 					Goto g = (Goto) instruction;
 					int jumpOffset = g.GetJumpOffset();
 					int lineNumber = g.lineNumber;
-					
+
 					if ((index == 0) || (list.get(index-1).lineNumber == lineNumber))
 						lineNumber = Instruction.UNKNOWN_LINE_NUMBER;
-	
+
 					if ((beforeLoopEntryOffset < jumpOffset) && (jumpOffset <= loopEntryOffset)) {
 						// L'instruction 'goto' saute vers le debut de la boucle
 						if ((afterListOffset == afterBodyLoopOffset) && (index + 1 == length)) {
@@ -1534,13 +1534,13 @@ public class FastInstructionListBuilder {
 							list.set(index, new Return(
 								ByteCodeConstants.RETURN, g.offset, lineNumber));
 						} else {
-							// Si l'instruction saute vers un '?return' simple, 
-							// duplication de l'instruction cible pour eviter la 
+							// Si l'instruction saute vers un '?return' simple,
+							// duplication de l'instruction cible pour eviter la
 							// generation d'une instruction *_LABELED_BREAK.
 							byte[] code = method.getCode();
-							
-							// Reconnaissance bas niveau de la sequence 
-							// '?load_?' suivie de '?return' en fin de methode. 
+
+							// Reconnaissance bas niveau de la sequence
+							// '?load_?' suivie de '?return' en fin de methode.
 							if (code.length == jumpOffset+2)
 							{
 								LoadInstruction load = DuplicateLoadInstruction(
@@ -1548,19 +1548,19 @@ public class FastInstructionListBuilder {
 								if (load != null)
 								{
 									ReturnInstruction ri = DuplacateReturnInstruction(
-										code[jumpOffset+1] & 255, g.offset, lineNumber, load);									
+										code[jumpOffset+1] & 255, g.offset, lineNumber, load);
 									if (ri != null)
 									{
 										// Si l'instruction precedente est un
 										// '?store' sur la meme variable et si
-										// elle a le meme numero de ligne 
+										// elle a le meme numero de ligne
 										// => aggregation
 										if (index > 0)
 										{
 											instruction = list.get(index-1);
-											
+
 											if ((load.lineNumber == instruction.lineNumber) &&
-												(ByteCodeConstants.ISTORE <= instruction.opcode) && 
+												(ByteCodeConstants.ISTORE <= instruction.opcode) &&
 												(instruction.opcode <= ByteCodeConstants.ASTORE_3) &&
 												(load.index == ((StoreInstruction)instruction).index))
 											{
@@ -1570,16 +1570,16 @@ public class FastInstructionListBuilder {
 												length--;
 											}
 										}
-										
+
 										list.set(index, ri);
 										break;
 									}
 								}
 							}
-							
+
 							offsetLabelSet.add(jumpOffset);
 							list.set(index, new FastInstruction(
-								FastConstants.GOTO_LABELED_BREAK, 
+								FastConstants.GOTO_LABELED_BREAK,
 								g.offset, lineNumber, g));
 						}
 					}
@@ -1588,7 +1588,7 @@ public class FastInstructionListBuilder {
 			}
 		}
 	}
-	
+
 	private static LoadInstruction DuplicateLoadInstruction(
 		int opcode, int offset, int lineNumber)
 	{
@@ -1608,7 +1608,7 @@ public class FastInstructionListBuilder {
 		case ByteCodeConstants.ILOAD_1:
 		case ByteCodeConstants.ILOAD_2:
 		case ByteCodeConstants.ILOAD_3:
-			return new ILoad(ByteCodeConstants.ILOAD, offset, lineNumber, opcode-ByteCodeConstants.ILOAD_0);	
+			return new ILoad(ByteCodeConstants.ILOAD, offset, lineNumber, opcode-ByteCodeConstants.ILOAD_0);
 		case ByteCodeConstants.LLOAD_0:
 		case ByteCodeConstants.LLOAD_1:
 		case ByteCodeConstants.LLOAD_2:
@@ -1633,7 +1633,7 @@ public class FastInstructionListBuilder {
 			return null;
 		}
 	}
-	
+
 	private static ReturnInstruction DuplacateReturnInstruction(
 		int opcode, int offset, int lineNumber, Instruction instruction)
 	{
@@ -1649,7 +1649,7 @@ public class FastInstructionListBuilder {
 			return null;
 		}
 	}
-	
+
 	private static int UnoptimizeIfElseInLoop(ClassFile classFile, Method method, List<Instruction> list,
 			LocalVariables localVariables, IntSet offsetLabelSet, int beforeListOffset, int afterListOffset,
 			int returnOffset, int offset, int jumpOffset, int index) {
@@ -2210,7 +2210,7 @@ public class FastInstructionListBuilder {
 		}
 	}
 
-	private static void RemoveLocalVariable(Method method, IndexInstruction ii) 
+	private static void RemoveLocalVariable(Method method, IndexInstruction ii)
 	{
 		LocalVariable lv = method.getLocalVariables().searchLocalVariableWithIndexAndOffset(ii.index, ii.offset);
 
@@ -2224,7 +2224,7 @@ public class FastInstructionListBuilder {
 	 * --|----|---|==0===1===2===3===4===5===6==7=...=n---|--| ... | | | | | | |
 	 * beforeListOffset | | Offsets | loopEntryOffset endLoopOffset |
 	 * beforeLoopEntryOffset afterLoopOffset
-	 * 
+	 *
 	 * Pour les boucles 'for', beforeLoopEntryOffset & loopEntryOffset encadrent
 	 * l'instruction d'incrementation.
 	 */
@@ -2277,7 +2277,7 @@ public class FastInstructionListBuilder {
 			}
 		}
 
-		if (jumpInstructionBeforeLoop != null) 
+		if (jumpInstructionBeforeLoop != null)
 		{
 			// Remove 'goto' before 'while' loop
 			if (jumpInstructionBeforeLoop.opcode == FastConstants.GOTO)
@@ -2324,7 +2324,7 @@ public class FastInstructionListBuilder {
 					branch = breakOffset - test.offset;
 
 				list.set(++index, new FastTestList(
-					FastConstants.WHILE, test.offset, test.lineNumber, 
+					FastConstants.WHILE, test.offset, test.lineNumber,
 					branch, test, subList));
 				break;
 			case 3: // for (beforeLoop; test;)
@@ -2415,9 +2415,9 @@ public class FastInstructionListBuilder {
 	}
 
 	private static int SearchMinusJumpOffset(
-			List<Instruction> list, 
-			int fromIndex, int toIndex, 
-			int beforeListOffset, int lastListOffset) 
+			List<Instruction> list,
+			int fromIndex, int toIndex,
+			int beforeListOffset, int lastListOffset)
 	{
 		int breakOffset = -1;
 		int index = toIndex;
@@ -2434,7 +2434,7 @@ public class FastInstructionListBuilder {
 				BranchInstruction bi = (BranchInstruction) instruction;
 				int jumpOffset = bi.GetJumpOffset();
 
-				if ((jumpOffset != -1) && ((jumpOffset <= beforeListOffset) || (lastListOffset < jumpOffset))) 
+				if ((jumpOffset != -1) && ((jumpOffset <= beforeListOffset) || (lastListOffset < jumpOffset)))
 				{
 					if ((breakOffset == -1) || (breakOffset > jumpOffset))
 						breakOffset = jumpOffset;
@@ -2447,7 +2447,7 @@ public class FastInstructionListBuilder {
 			case FastConstants.SYNCHRONIZED:
 				FastList fl = (FastList) instruction;
 				List<Instruction> instructions = fl.instructions;
-				if (instructions != null) 
+				if (instructions != null)
 				{
 					jumpOffset = SearchMinusJumpOffset(instructions, 0, instructions.size(), beforeListOffset,
 							lastListOffset);
@@ -2473,7 +2473,7 @@ public class FastInstructionListBuilder {
 				jumpOffset = SearchMinusJumpOffset(instructions, 0, instructions.size(), beforeListOffset,
 						lastListOffset);
 
-				if ((jumpOffset != -1) && ((jumpOffset <= beforeListOffset) || (lastListOffset < jumpOffset))) 
+				if ((jumpOffset != -1) && ((jumpOffset <= beforeListOffset) || (lastListOffset < jumpOffset)))
 				{
 					if ((breakOffset == -1) || (breakOffset > jumpOffset))
 						breakOffset = jumpOffset;
@@ -2481,13 +2481,13 @@ public class FastInstructionListBuilder {
 
 				// Catch blocks
 				int i = ft.catches.size();
-				while (i-- > 0) 
+				while (i-- > 0)
 				{
 					List<Instruction> catchInstructions = ft.catches.get(i).instructions;
 					jumpOffset = SearchMinusJumpOffset(catchInstructions, 0, catchInstructions.size(),
 							beforeListOffset, lastListOffset);
 
-					if ((jumpOffset != -1) && ((jumpOffset <= beforeListOffset) || (lastListOffset < jumpOffset))) 
+					if ((jumpOffset != -1) && ((jumpOffset <= beforeListOffset) || (lastListOffset < jumpOffset)))
 					{
 						if ((breakOffset == -1) || (breakOffset > jumpOffset))
 							breakOffset = jumpOffset;
@@ -2495,13 +2495,13 @@ public class FastInstructionListBuilder {
 				}
 
 				// Finally block
-				if (ft.finallyInstructions != null) 
+				if (ft.finallyInstructions != null)
 				{
 					List<Instruction> finallyInstructions = ft.finallyInstructions;
 					jumpOffset = SearchMinusJumpOffset(finallyInstructions, 0, finallyInstructions.size(),
 							beforeListOffset, lastListOffset);
 
-					if ((jumpOffset != -1) && ((jumpOffset <= beforeListOffset) || (lastListOffset < jumpOffset))) 
+					if ((jumpOffset != -1) && ((jumpOffset <= beforeListOffset) || (lastListOffset < jumpOffset)))
 					{
 						if ((breakOffset == -1) || (breakOffset > jumpOffset))
 							breakOffset = jumpOffset;
@@ -2515,18 +2515,18 @@ public class FastInstructionListBuilder {
 
 				jumpOffset = fs.GetJumpOffset();
 
-				if ((jumpOffset != -1) && ((jumpOffset <= beforeListOffset) || (lastListOffset < jumpOffset))) 
+				if ((jumpOffset != -1) && ((jumpOffset <= beforeListOffset) || (lastListOffset < jumpOffset)))
 				{
 					if ((breakOffset == -1) || (breakOffset > jumpOffset))
 						breakOffset = jumpOffset;
 				}
 
 				i = fs.pairs.length;
-				while (i-- > 0) 
+				while (i-- > 0)
 				{
-					List<Instruction> caseInstructions = 
+					List<Instruction> caseInstructions =
 						fs.pairs[i].getInstructions();
-					if (caseInstructions != null) 
+					if (caseInstructions != null)
 					{
 						jumpOffset = SearchMinusJumpOffset(caseInstructions, 0, caseInstructions.size(),
 								beforeListOffset, lastListOffset);
@@ -2760,8 +2760,8 @@ public class FastInstructionListBuilder {
 			if (astoreVariable.valueref.opcode != FastConstants.INVOKEINTERFACE)
 				return false;
 			insi = (InvokeNoStaticInstruction)astoreVariable.valueref;
-		}		
-		
+		}
+
 		if ((insi.objectref.opcode != ByteCodeConstants.ALOAD)
 				|| (((ALoad) insi.objectref).index != astoreIterator.index))
 			return false;
@@ -2781,7 +2781,7 @@ public class FastInstructionListBuilder {
 	 * Pattern SUN 1.5: 14: String[] strings = { "a", "b" }; 20: int j =
 	 * (arrayOfString1 = strings).length; 48: for (int i = 0; i < j; ++i) { 33:
 	 * String s = arrayOfString1[i]; 38: System.out.println(s); }
-	 * 
+	 *
 	 * Return 0: No pattern 1: Pattern SUN 1.5
 	 */
 	private static int GetForEachArraySun15PatternType(Instruction init, Instruction test, Instruction inc,
@@ -2844,7 +2844,7 @@ public class FastInstructionListBuilder {
 	 * Pattern SUN 1.6: String[] arr$ = { "a", "b" }; int len$ = arr$.length;
 	 * for(int i$ = 0; i$ < len$; i$++) { String s = arr$[i$];
 	 * System.out.println(s); }
-	 * 
+	 *
 	 * Return 0: No pattern 2: Pattern SUN 1.6
 	 */
 	private static int GetForEachArraySun16PatternType(Instruction init, Instruction test, Instruction inc,
@@ -2911,7 +2911,7 @@ public class FastInstructionListBuilder {
 	 * for (GUIMap localGUIMap1 = localObject.length; guiMap < localGUIMap1;
 	 * ++guiMap) { 99: String arg = localObject[guiMap]; 106:
 	 * System.out.println(arg); }
-	 * 
+	 *
 	 * Return 0: No pattern 3: Pattern IBM
 	 */
 	private static int GetForEachArrayIbmPatternType(ClassFile classFile, Instruction init, Instruction test,
@@ -2984,16 +2984,16 @@ public class FastInstructionListBuilder {
 	 * Pattern SUN 1.5: 14: String[] strings = { "a", "b" }; 20: int j =
 	 * (arrayOfString1 = strings).length; 48: for (int i = 0; i < j; ++i) { 33:
 	 * String s = arrayOfString1[i]; 38: System.out.println(s); }
-	 * 
+	 *
 	 * Pattern SUN 1.6: String[] arr$ = { "a", "b" }; int len$ = arr$.length;
 	 * for(int i$ = 0; i$ < len$; i$++) { String s = arr$[i$];
 	 * System.out.println(s); }
-	 * 
+	 *
 	 * Pattern IBM: 81: Object localObject = args; 84: GUIMap guiMap = 0; 116:
 	 * for (GUIMap localGUIMap1 = localObject.length; guiMap < localGUIMap1;
 	 * ++guiMap) { 99: String arg = localObject[guiMap]; 106:
 	 * System.out.println(arg); }
-	 * 
+	 *
 	 * Return 0: No pattern 1: Pattern SUN 1.5 2: Pattern SUN 1.6 3: Pattern IBM
 	 */
 	private static int GetForEachArrayPatternType(ClassFile classFile, Instruction init, Instruction test,
@@ -3109,7 +3109,7 @@ public class FastInstructionListBuilder {
 					} else if (beforeLoop.lineNumber == lastBodyLoop.lineNumber) {
 						return 5;
 					} else {
-						return ((beforeLastBodyLoop != null) && 
+						return ((beforeLastBodyLoop != null) &&
 								(beforeLastBodyLoop.lineNumber > lastBodyLoop.lineNumber)) ? 4 : 0;
 					}
 				}
@@ -3241,7 +3241,7 @@ public class FastInstructionListBuilder {
 
 		int subListLength = subList.size();
 
-		if (subListLength > 0) 
+		if (subListLength > 0)
 		{
 			Instruction beforeLoop = (index >= 0) ? list.get(index) : null;
 			if (beforeLoop != null)
@@ -3526,17 +3526,17 @@ public class FastInstructionListBuilder {
 		// IF_CONTINUE ET IF_BREAK
 		// return;
 
-		if ((test.branch < 0) && 
-			(beforeLoopEntryOffset < elseOffset) && 
-			(elseOffset <= loopEntryOffset)	&& 
-			(afterBodyLoopOffset == afterListOffset)) 
+		if ((test.branch < 0) &&
+			(beforeLoopEntryOffset < elseOffset) &&
+			(elseOffset <= loopEntryOffset)	&&
+			(afterBodyLoopOffset == afterListOffset))
 		{
 			// L'instruction saute sur un debut de boucle et la liste termine
 			// le block de la boucle.
 			elseOffset = afterListOffset;
 		}
 
-		if ((elseOffset <= test.offset) || 
+		if ((elseOffset <= test.offset) ||
 			((afterListOffset != -1) && (elseOffset > afterListOffset)))
 			return;
 
@@ -3560,7 +3560,7 @@ public class FastInstructionListBuilder {
 			int beforeSubListOffset = test.offset;
 			Instruction beforeElseBlock = subList.get(subListLength - 1);
 			int minusJumpOffset = SearchMinusJumpOffset(
-					subList, 0, subListLength, 
+					subList, 0, subListLength,
 					test.offset, beforeElseBlock.offset);
 			int lastListOffset = list.get(length - 1).offset;
 
@@ -3570,7 +3570,7 @@ public class FastInstructionListBuilder {
 			if ((minusJumpOffset == -1)
 					&& (subListLength > 1)
 					&& (beforeElseBlock.opcode == ByteCodeConstants.RETURN)
-					&& ((afterListOffset == -1) || (afterListOffset == returnOffset) || 
+					&& ((afterListOffset == -1) || (afterListOffset == returnOffset) ||
 							ByteCodeUtil.JumpTo(
 								method.getCode(),
 								ByteCodeUtil.NextInstructionOffset(method.getCode(), lastListOffset), returnOffset))) {
@@ -3588,10 +3588,10 @@ public class FastInstructionListBuilder {
 				}
 			}
 
-			if (minusJumpOffset != -1) 
+			if (minusJumpOffset != -1)
 			{
-				if ((subListLength == 1) && 
-					(beforeElseBlock.opcode == FastConstants.GOTO)) 
+				if ((subListLength == 1) &&
+					(beforeElseBlock.opcode == FastConstants.GOTO))
 				{
 					// Instruction 'if' suivi d'un bloc contenant un seul 'goto'
 					// ==> Generation d'une instrcution 'break' ou 'continue'
@@ -3606,21 +3606,21 @@ public class FastInstructionListBuilder {
 
 				int afterIfElseOffset;
 
-				if ((minusJumpOffset < test.offset) && 
-					(beforeLoopEntryOffset < minusJumpOffset) && 
+				if ((minusJumpOffset < test.offset) &&
+					(beforeLoopEntryOffset < minusJumpOffset) &&
 					(minusJumpOffset <= loopEntryOffset))
 				{
 					// Jump to loop entry ==> continue
 					int positiveJumpOffset = SearchMinusJumpOffset(
 							subList, 0, subListLength, -1, beforeElseBlock.offset);
-					
-					// S'il n'y a pas de saut positif ou si le saut mini positif 
-					// est au dela de la fin de la liste (pour sauter vers le 
-					// 'return' final par exemple) et si la liste courante termine 
+
+					// S'il n'y a pas de saut positif ou si le saut mini positif
+					// est au dela de la fin de la liste (pour sauter vers le
+					// 'return' final par exemple) et si la liste courante termine
 					// la boucle courante
-					if (((positiveJumpOffset == -1) || (positiveJumpOffset >= afterListOffset)) && 
-						(afterBodyLoopOffset == afterListOffset)) 
-					{					
+					if (((positiveJumpOffset == -1) || (positiveJumpOffset >= afterListOffset)) &&
+						(afterBodyLoopOffset == afterListOffset))
+					{
 						// Cas des instructions de saut n�gatif dans une boucle qui
 						// participent tout de meme � une instruction if-else
 						// L'instruction saute sur un debut de boucle et la liste
@@ -3630,17 +3630,17 @@ public class FastInstructionListBuilder {
 						// If-else
 						afterIfElseOffset = positiveJumpOffset;
 					}
-					
+
 				} else {
 					// If ou If-else
 					afterIfElseOffset = minusJumpOffset;
 				}
 
 				if ((afterIfElseOffset > elseOffset)
-						&& ((afterListOffset == -1) || (afterIfElseOffset <= afterListOffset) || 
+						&& ((afterListOffset == -1) || (afterIfElseOffset <= afterListOffset) ||
 								ByteCodeUtil.JumpTo(
 									method.getCode(),
-									ByteCodeUtil.NextInstructionOffset(method.getCode(), lastListOffset), afterIfElseOffset))) 
+									ByteCodeUtil.NextInstructionOffset(method.getCode(), lastListOffset), afterIfElseOffset)))
 				{
 					// If-else or If-elseif-...
 					if (((beforeElseBlock.opcode == FastConstants.GOTO) && (((Goto) beforeElseBlock).GetJumpOffset() == minusJumpOffset))
@@ -3666,13 +3666,13 @@ public class FastInstructionListBuilder {
 							afterIfElseOffset, breakOffset, returnOffset);
 
 						int subElseListLength = subElseList.size();
-						int lastIfElseOffset = (subElseListLength > 0) ? 
+						int lastIfElseOffset = (subElseListLength > 0) ?
 								subElseList.get(subElseListLength - 1).offset :
 								beforeSubListOffset;
 
 						ComparisonInstructionAnalyzer.InverseComparison(test);
 						list.set(testIndex, new FastTest2Lists(
-							FastConstants.IF_ELSE, lastIfElseOffset, test.lineNumber, 
+							FastConstants.IF_ELSE, lastIfElseOffset, test.lineNumber,
 							afterIfElseOffset - lastIfElseOffset, test, subList, subElseList));
 						return;
 					}
@@ -3685,7 +3685,7 @@ public class FastInstructionListBuilder {
 
 			ComparisonInstructionAnalyzer.InverseComparison(test);
 			list.set(testIndex, new FastTestList(
-					FastConstants.IF_, beforeElseBlock.offset, test.lineNumber, 
+					FastConstants.IF_, beforeElseBlock.offset, test.lineNumber,
 					elseOffset - beforeElseBlock.offset, test, subList));
 		} else if (elseOffset == breakOffset) {
 			// If-break
@@ -3698,8 +3698,8 @@ public class FastInstructionListBuilder {
 	}
 
 	private static int ExtrackBlock(
-			List<Instruction> list, List<Instruction> subList, 
-			int index, int length, int endOffset) 
+			List<Instruction> list, List<Instruction> subList,
+			int index, int length, int endOffset)
 	{
 		while ((index < length) && (list.get(index).offset < endOffset)) {
 			subList.add(list.remove(index));
@@ -3760,56 +3760,56 @@ public class FastInstructionListBuilder {
 				ls.lineNumber, ls.key, pairs, pairLength);
 	}
 
-	private static int AnalyzeSwitchType(ClassFile classFile, Instruction i) 
+	private static int AnalyzeSwitchType(ClassFile classFile, Instruction i)
 	{
 		if (i.opcode == ByteCodeConstants.ARRAYLOAD)
 		{
 			// switch(1.$SwitchMap$basic$data$TestEnum$enum1[e.ordinal()]) ?
-			// switch(1.$SwitchMap$basic$data$TestEnum$enum1[request.getOperationType().ordinal()]) ?		
+			// switch(1.$SwitchMap$basic$data$TestEnum$enum1[request.getOperationType().ordinal()]) ?
 			ArrayLoadInstruction ali = (ArrayLoadInstruction)i;
-			
-			if (ali.indexref.opcode == ByteCodeConstants.INVOKEVIRTUAL) 
-			{		
-				if (ali.arrayref.opcode == ByteCodeConstants.GETSTATIC) 
+
+			if (ali.indexref.opcode == ByteCodeConstants.INVOKEVIRTUAL)
+			{
+				if (ali.arrayref.opcode == ByteCodeConstants.GETSTATIC)
 				{
 					GetStatic gs = (GetStatic) ali.arrayref;
-	
+
 					ConstantPool constants = classFile.getConstantPool();
 					ConstantFieldref cfr = constants.getConstantFieldref(gs.index);
 					ConstantNameAndType cnat = constants.getConstantNameAndType(cfr.name_and_type_index);
-	
+
 					if (classFile.getSwitchMaps().containsKey(cnat.name_index)) {
 						Invokevirtual iv = (Invokevirtual) ali.indexref;
-	
+
 						if (iv.args.size() == 0) {
 							ConstantMethodref cmr = constants.getConstantMethodref(iv.index);
 							cnat = constants.getConstantNameAndType(cmr.name_and_type_index);
-							
-							if (StringConstants.ORDINAL_METHOD_NAME.equals(constants.getConstantUtf8(cnat.name_index))) {								
+
+							if (StringConstants.ORDINAL_METHOD_NAME.equals(constants.getConstantUtf8(cnat.name_index))) {
 								// SWITCH_ENUM found
 								return FastConstants.SWITCH_ENUM;
 							}
 						}
 					}
-				} 
-				else if (ali.arrayref.opcode == ByteCodeConstants.INVOKESTATIC) 
+				}
+				else if (ali.arrayref.opcode == ByteCodeConstants.INVOKESTATIC)
 				{
 					Invokestatic is = (Invokestatic) ali.arrayref;
-	
+
 					if (is.args.size() == 0) {
 						ConstantPool constants = classFile.getConstantPool();
 						ConstantMethodref cmr = constants.getConstantMethodref(is.index);
-						
+
 						if (cmr.class_index == classFile.getThisClassIndex()) {
 							ConstantNameAndType cnat = constants.getConstantNameAndType(cmr.name_and_type_index);
 							if (classFile.getSwitchMaps().containsKey(cnat.name_index)) {
 								Invokevirtual iv = (Invokevirtual) ali.indexref;
-	
+
 								if (iv.args.size() == 0) {
 									cmr = constants.getConstantMethodref(iv.index);
 									cnat = constants.getConstantNameAndType(cmr.name_and_type_index);
-									
-									if (StringConstants.ORDINAL_METHOD_NAME.equals(constants.getConstantUtf8(cnat.name_index))) {								
+
+									if (StringConstants.ORDINAL_METHOD_NAME.equals(constants.getConstantUtf8(cnat.name_index))) {
 										// Eclipse SWITCH_ENUM found
 										return FastConstants.SWITCH_ENUM;
 									}
@@ -3820,10 +3820,10 @@ public class FastInstructionListBuilder {
 				}
 			}
 		}
-		
+
 		return FastConstants.SWITCH;
 	}
-	
+
 	/*
 	 * debut de liste fin de liste | switchIndex | | | | Liste ...
 	 * --|----|---|==0===1===2===3===4===5===6==7=...=n---|--| ... | | | | | | |
@@ -4083,18 +4083,18 @@ public class FastInstructionListBuilder {
 		if (index < list.size()) {
 			// Switch non vide ou non en derniere position dans la serie
 			// d'instructions
-			for (int i = 0; i < pairLength; i++) 
+			for (int i = 0; i < pairLength; i++)
 			{
 				ArrayList<Instruction> instructions = null;
 				int beforeCaseOffset = lastSwitchOffset;
 				int afterCaseOffset = pairs[i + 1].getOffset();
 
-				while (index < list.size()) 
+				while (index < list.size())
 				{
 					Instruction instruction = list.get(index);
-					if (instruction.offset >= afterCaseOffset) 
+					if (instruction.offset >= afterCaseOffset)
 					{
-						if (instructions != null) 
+						if (instructions != null)
 						{
 							int nbrInstrucrions = instructions.size();
 							if (nbrInstrucrions > 0)
@@ -4111,10 +4111,10 @@ public class FastInstructionListBuilder {
 								instruction = instructions.get(nbrInstrucrions - 1);
 								if (instruction.opcode == FastConstants.GOTO) {
 									int lineNumber = instruction.lineNumber;
-									
+
 									if ((nbrInstrucrions <= 1) || (instructions.get(nbrInstrucrions-2).lineNumber == lineNumber))
 										lineNumber = Instruction.UNKNOWN_LINE_NUMBER;
-									
+
 									// Replace goto by break;
 									instructions.set(nbrInstrucrions - 1, new FastInstruction(FastConstants.GOTO_BREAK,
 											instruction.offset, lineNumber, null));
@@ -4186,23 +4186,23 @@ public class FastInstructionListBuilder {
 				// Extraction
 				List<Instruction> instructions = null;
 
-				while (index < list.size()) 
+				while (index < list.size())
 				{
 					instruction = list.get(index);
-					if (instruction.offset >= afterSwitchOffset) 
+					if (instruction.offset >= afterSwitchOffset)
 					{
-						if (instructions != null) 
+						if (instructions != null)
 						{
 							int nbrInstrucrions = instructions.size();
-							if (nbrInstrucrions > 0) 
+							if (nbrInstrucrions > 0)
 							{
 								instruction = instructions.get(nbrInstrucrions - 1);
 								if (instruction.opcode == FastConstants.GOTO) {
 									int lineNumber = instruction.lineNumber;
-									
+
 									if ((nbrInstrucrions <= 1) || (instructions.get(nbrInstrucrions-2).lineNumber == lineNumber))
 										lineNumber = Instruction.UNKNOWN_LINE_NUMBER;
-									
+
 									// Replace goto by break;
 									instructions.set(nbrInstrucrions - 1, new FastInstruction(FastConstants.GOTO_BREAK,
 											instruction.offset, instruction.lineNumber, null));
@@ -4228,36 +4228,36 @@ public class FastInstructionListBuilder {
 			if (index < list.size())
 				afterListOffset = list.get(index).offset;
 
-			for (int i = 0; i <= pairLength; i++) 
+			for (int i = 0; i <= pairLength; i++)
 			{
 				FastSwitch.Pair pair = pairs[i];
 				List<Instruction> instructions = pair.getInstructions();
-				if (instructions != null) 
+				if (instructions != null)
 				{
 					int nbrInstrucrions = instructions.size();
-					if (nbrInstrucrions > 0) 
+					if (nbrInstrucrions > 0)
 					{
 						Instruction instruction = instructions.get(nbrInstrucrions - 1);
-						if (instruction.opcode == FastConstants.GOTO_BREAK) 
+						if (instruction.opcode == FastConstants.GOTO_BREAK)
 						{
 							instructions.remove(nbrInstrucrions - 1);
 							AnalyzeList(classFile, method, instructions, localVariables, offsetLabelSet,
 									beforeLoopEntryOffset, loopEntryOffset, afterBodyLoopOffset, beforeListOffset,
 									afterListOffset, breakOffset, returnOffset);
 							instructions.add(instruction);
-						} 
-						else 
+						}
+						else
 						{
 							AnalyzeList(classFile, method, instructions, localVariables, offsetLabelSet,
 									beforeLoopEntryOffset, loopEntryOffset, afterBodyLoopOffset, beforeListOffset,
 									afterListOffset, breakOffset, returnOffset);
 
 							nbrInstrucrions = instructions.size();
-							if (nbrInstrucrions > 0) 
+							if (nbrInstrucrions > 0)
 							{
 								instruction = instructions.get(nbrInstrucrions - 1);
 
-								switch (instruction.opcode) 
+								switch (instruction.opcode)
 								{
 								case ByteCodeConstants.IF:
 								case ByteCodeConstants.IFCMP:

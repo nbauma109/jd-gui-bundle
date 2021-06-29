@@ -37,7 +37,7 @@ import org.fife.ui.rtextarea.RTextAreaUI;
 
 public abstract class CustomLineNumbersPage extends HyperlinkPage {
     /**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
 	protected Color errorForeground = Color.RED;
@@ -133,7 +133,7 @@ public abstract class CustomLineNumbersPage extends HyperlinkPage {
 
 	public class SourceSyntaxTextArea extends HyperlinkSyntaxTextArea {
         /**
-		 * 
+		 *
 		 */
 		private static final long serialVersionUID = 1L;
 
@@ -151,7 +151,7 @@ public abstract class CustomLineNumbersPage extends HyperlinkPage {
 
     public class SourceSyntaxTextAreaEditorKit extends RSyntaxTextAreaEditorKit {
         /**
-		 * 
+		 *
 		 */
 		private static final long serialVersionUID = 1L;
 
@@ -163,7 +163,7 @@ public abstract class CustomLineNumbersPage extends HyperlinkPage {
      */
     public class SourceLineNumberList extends LineNumberList {
         /**
-		 * 
+		 *
 		 */
 		private static final long serialVersionUID = 1L;
 		protected RTextArea rTextArea;

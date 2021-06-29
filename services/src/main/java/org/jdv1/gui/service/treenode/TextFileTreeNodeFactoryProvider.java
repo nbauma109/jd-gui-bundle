@@ -56,7 +56,7 @@ public class TextFileTreeNodeFactoryProvider extends FileTreeNodeFactoryProvider
 
     protected static class TreeNode extends FileTreeNodeFactoryProvider.TreeNode implements PageCreator {
         /**
-		 * 
+		 *
 		 */
 		private static final long serialVersionUID = 1L;
 
@@ -72,7 +72,7 @@ public class TextFileTreeNodeFactoryProvider extends FileTreeNodeFactoryProvider
 
     protected static class Page extends TextPage implements UriGettable {
         /**
-		 * 
+		 *
 		 */
 		private static final long serialVersionUID = 1L;
 		protected Container.Entry entry;

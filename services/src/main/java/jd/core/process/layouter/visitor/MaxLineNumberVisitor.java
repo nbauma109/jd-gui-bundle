@@ -1,16 +1,16 @@
 /*******************************************************************************
  * Copyright (C) 2007-2019 Emmanuel Dupuy GPLv3
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -54,12 +54,12 @@ import jd.core.model.instruction.bytecode.instruction.UnaryOperatorInstruction;
 import jd.core.model.instruction.fast.FastConstants;
 import jd.core.model.instruction.fast.instruction.FastDeclaration;
 
-public class MaxLineNumberVisitor 
+public class MaxLineNumberVisitor
 {
 	public static int visit(Instruction instruction)
 	{
 		int maxLineNumber = instruction.lineNumber;
-				
+
 		switch (instruction.opcode)
 		{
 		case ByteCodeConstants.ARRAYLOAD:
@@ -103,7 +103,7 @@ public class MaxLineNumberVisitor
 		case FastConstants.DECLARE:
 			{
 				FastDeclaration fd = (FastDeclaration)instruction;
-				if (fd.instruction != null) 
+				if (fd.instruction != null)
 					maxLineNumber = visit(fd.instruction);
 			}
 			break;
@@ -116,7 +116,7 @@ public class MaxLineNumberVisitor
 			break;
 		case ByteCodeConstants.COMPLEXIF:
 			{
-				List<Instruction> branchList = 
+				List<Instruction> branchList =
 					((ComplexConditionalBranchInstruction)instruction).instructions;
 				maxLineNumber = visit(branchList.get(branchList.size()-1));
 			}
@@ -131,17 +131,17 @@ public class MaxLineNumberVisitor
 			{
 				List<Instruction> list = ((InvokeInstruction)instruction).args;
 				int length = list.size();
-				
+
 				if (length == 0)
 				{
-					maxLineNumber = instruction.lineNumber;					
+					maxLineNumber = instruction.lineNumber;
 				}
 				else
 				{
 					// Correction pour un tres curieux bug : les numeros de
-					// ligne des parametres ne sont pas toujours en ordre croissant					
+					// ligne des parametres ne sont pas toujours en ordre croissant
 					maxLineNumber = visit(list.get(0));
-					
+
 					for (int i=length-1; i>0; i--)
 					{
 						int lineNumber = visit(list.get(i));
@@ -156,17 +156,17 @@ public class MaxLineNumberVisitor
 			{
 				List<Instruction> list = ((InvokeNew)instruction).args;
 				int length = list.size();
-				
+
 				if (length == 0)
 				{
-					maxLineNumber = instruction.lineNumber;					
+					maxLineNumber = instruction.lineNumber;
 				}
 				else
 				{
 					// Correction pour un tres curieux bug : les numeros de
 					// ligne des parametres ne sont pas toujours en ordre croissant
 					maxLineNumber = visit(list.get(0));
-				
+
 					for (int i=length-1; i>0; i--)
 					{
 						int lineNumber = visit(list.get(i));
@@ -202,7 +202,7 @@ public class MaxLineNumberVisitor
 		case ByteCodeConstants.POP:
 			maxLineNumber = visit(((Pop)instruction).objectref);
 			break;
-		case ByteCodeConstants.PUTFIELD: 
+		case ByteCodeConstants.PUTFIELD:
 			maxLineNumber = visit(((PutField)instruction).valueref);
 			break;
 		case ByteCodeConstants.PUTSTATIC:
@@ -218,9 +218,9 @@ public class MaxLineNumberVisitor
 			maxLineNumber = visit(((TernaryOpStore)instruction).objectref);
 			break;
 		case ByteCodeConstants.PREINC:
-			{	
+			{
 				IncInstruction ii = (IncInstruction)instruction;
-				
+
 				switch (ii.count)
 				{
 				case -1:
@@ -230,10 +230,10 @@ public class MaxLineNumberVisitor
 				}
 			}
 			break;
-		case ByteCodeConstants.POSTINC:	
-			{	
+		case ByteCodeConstants.POSTINC:
+			{
 				IncInstruction ii = (IncInstruction)instruction;
-				
+
 				switch (ii.count)
 				{
 				case -1:
@@ -257,9 +257,9 @@ public class MaxLineNumberVisitor
 			maxLineNumber = visit(((TernaryOperator)instruction).value2);
 			break;
 		}
-		
-		// Autre curieux bug : les constantes finales passees en parametres 
-		// peuvent avoir un numero de ligne plus petit que le numero de ligne 
+
+		// Autre curieux bug : les constantes finales passees en parametres
+		// peuvent avoir un numero de ligne plus petit que le numero de ligne
 		// de l'instruction INVOKE*
 		if (maxLineNumber < instruction.lineNumber)
 		{

@@ -34,7 +34,7 @@ public abstract class AbstractTypeFileTreeNodeFactoryProvider extends AbstractTr
 
     public static class BaseTreeNode extends DefaultMutableTreeNode implements ContainerEntryGettable, UriGettable, PageCreator {
         /**
-		 * 
+		 *
 		 */
 		private static final long serialVersionUID = 1L;
 		protected Container.Entry entry;
@@ -75,7 +75,7 @@ public abstract class AbstractTypeFileTreeNodeFactoryProvider extends AbstractTr
 
     protected static class FileTreeNode extends BaseTreeNode implements TreeNodeExpandable {
         /**
-		 * 
+		 *
 		 */
 		private static final long serialVersionUID = 1L;
 		protected boolean initialized;
@@ -106,7 +106,7 @@ public abstract class AbstractTypeFileTreeNodeFactoryProvider extends AbstractTr
                         add(new TypeTreeNode(entry, type, new TreeNodeBean(type.getDisplayTypeName(), type.getIcon()), factory));
                     }
                 }
-                
+
                 initialized = true;
             }
         }
@@ -114,7 +114,7 @@ public abstract class AbstractTypeFileTreeNodeFactoryProvider extends AbstractTr
 
     protected static class TypeTreeNode extends BaseTreeNode implements TreeNodeExpandable {
         /**
-		 * 
+		 *
 		 */
 		private static final long serialVersionUID = 1L;
 		protected boolean initialized;
@@ -193,7 +193,7 @@ public abstract class AbstractTypeFileTreeNodeFactoryProvider extends AbstractTr
 
     protected static class FieldOrMethodTreeNode extends BaseTreeNode {
         /**
-		 * 
+		 *
 		 */
 		private static final long serialVersionUID = 1L;
 

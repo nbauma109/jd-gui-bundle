@@ -1,16 +1,16 @@
 /*******************************************************************************
  * Copyright (C) 2007-2019 Emmanuel Dupuy GPLv3
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -57,7 +57,7 @@ import jd.core.model.instruction.bytecode.instruction.TernaryOperator;
 import jd.core.model.instruction.bytecode.instruction.UnaryOperatorInstruction;
 
 
-public class ReplaceGetStaticVisitor 
+public class ReplaceGetStaticVisitor
 {
 	private int index;
 	private Instruction newInstruction;
@@ -69,7 +69,7 @@ public class ReplaceGetStaticVisitor
 		this.newInstruction = newInstruction;
 		this.parentFound = null;
 	}
-	
+
 	public void visit(Instruction instruction)
 	{
 		switch (instruction.opcode)
@@ -94,7 +94,7 @@ public class ReplaceGetStaticVisitor
 				else
 				{
 					visit(asi.arrayref);
-					
+
 					if (this.parentFound == null)
 					{
 						if (match(asi, asi.indexref))
@@ -104,7 +104,7 @@ public class ReplaceGetStaticVisitor
 						else
 						{
 							visit(asi.indexref);
-							
+
 							if (this.parentFound == null)
 							{
 								if (match(asi, asi.valueref))
@@ -127,7 +127,7 @@ public class ReplaceGetStaticVisitor
 				else
 				{
 					visit(ai.test);
-				
+
 					if ((this.parentFound == null) && (ai.msg != null))
 					{
 						if (match(ai, ai.msg))
@@ -135,7 +135,7 @@ public class ReplaceGetStaticVisitor
 						else
 							visit(ai.msg);
 					}
-				}				
+				}
 			}
 			break;
 		case ByteCodeConstants.ATHROW:
@@ -166,7 +166,7 @@ public class ReplaceGetStaticVisitor
 				else
 				{
 					visit(boi.value1);
-				
+
 					if (this.parentFound == null)
 					{
 						if (match(boi, boi.value2))
@@ -226,7 +226,7 @@ public class ReplaceGetStaticVisitor
 				else
 				{
 					visit(ifCmp.value1);
-					
+
 					if (this.parentFound == null)
 					{
 						if (match(ifCmp, ifCmp.value2))
@@ -246,10 +246,10 @@ public class ReplaceGetStaticVisitor
 				else
 					visit(iff.value);
 			}
-			break;			
+			break;
 		case ByteCodeConstants.COMPLEXIF:
 			{
-				List<Instruction> branchList = 
+				List<Instruction> branchList =
 					((ComplexConditionalBranchInstruction)instruction).instructions;
 				for (int i=branchList.size()-1; (i>=0) && (this.parentFound == null); --i)
 				{
@@ -270,7 +270,7 @@ public class ReplaceGetStaticVisitor
 		case ByteCodeConstants.INVOKESPECIAL:
 		case ByteCodeConstants.INVOKEVIRTUAL:
 			{
-				InvokeNoStaticInstruction insi = 
+				InvokeNoStaticInstruction insi =
 					(InvokeNoStaticInstruction)instruction;
 				if (match(insi, insi.objectref))
 					insi.objectref = this.newInstruction;
@@ -298,7 +298,7 @@ public class ReplaceGetStaticVisitor
 				else
 					visit(ls.key);
 			}
-			break;			
+			break;
 		case ByteCodeConstants.MONITORENTER:
 			{
 				MonitorEnter monitorEnter = (MonitorEnter)instruction;
@@ -366,7 +366,7 @@ public class ReplaceGetStaticVisitor
 				else
 				{
 					visit(putField.objectref);
-					
+
 					if (this.parentFound == null)
 					{
 						if (match(putField, putField.valueref))
@@ -394,7 +394,7 @@ public class ReplaceGetStaticVisitor
 				else
 					visit(ri.valueref);
 			}
-			break;			
+			break;
 		case ByteCodeConstants.TABLESWITCH:
 			{
 				TableSwitch ts = (TableSwitch)instruction;
@@ -403,17 +403,17 @@ public class ReplaceGetStaticVisitor
 				else
 					visit(ts.key);
 			}
-			break;			
+			break;
 		case ByteCodeConstants.TERNARYOPSTORE:
 			{
 				TernaryOpStore tos = (TernaryOpStore)instruction;
 				if (match(tos, tos.objectref))
 					tos.objectref = this.newInstruction;
 				else
-					visit(tos.objectref);	
+					visit(tos.objectref);
 			}
-			break;		
-		case ByteCodeConstants.TERNARYOP:	
+			break;
+		case ByteCodeConstants.TERNARYOP:
 			{
 				TernaryOperator to = (TernaryOperator)instruction;
 				if (match(to, to.test))
@@ -433,7 +433,7 @@ public class ReplaceGetStaticVisitor
 						else
 						{
 							visit(to.value1);
-			
+
 							if (this.parentFound == null)
 							{
 								if (match(to, to.value2))
@@ -445,7 +445,7 @@ public class ReplaceGetStaticVisitor
 					}
 				}
 			}
-			break;	
+			break;
 		case ByteCodeConstants.ASSIGNMENT:
 			{
 				AssignmentInstruction ai = (AssignmentInstruction)instruction;
@@ -456,7 +456,7 @@ public class ReplaceGetStaticVisitor
 				else
 				{
 					visit(ai.value1);
-	
+
 					if (this.parentFound == null)
 					{
 						if (match(ai, ai.value2))
@@ -477,7 +477,7 @@ public class ReplaceGetStaticVisitor
 				else
 				{
 					visit(ali.arrayref);
-	
+
 					if (this.parentFound == null)
 					{
 						if (match(ali, ali.indexref))
@@ -488,8 +488,8 @@ public class ReplaceGetStaticVisitor
 				}
 			}
 			break;
-		case ByteCodeConstants.PREINC:			
-		case ByteCodeConstants.POSTINC:		
+		case ByteCodeConstants.PREINC:
+		case ByteCodeConstants.POSTINC:
 			{
 				IncInstruction ii = (IncInstruction)instruction;
 				if (match(ii, ii.value))
@@ -518,7 +518,7 @@ public class ReplaceGetStaticVisitor
 				else
 				{
 					visit(iai.newArray);
-					
+
 					if ((this.parentFound == null) && (iai.values != null))
 						visit(iai.values);
 				}
@@ -536,8 +536,8 @@ public class ReplaceGetStaticVisitor
 		case ByteCodeConstants.DUPLOAD:
 		case ByteCodeConstants.GETSTATIC:
 		case ByteCodeConstants.GOTO:
-		case ByteCodeConstants.IINC:			
-		case ByteCodeConstants.JSR:			
+		case ByteCodeConstants.IINC:
+		case ByteCodeConstants.JSR:
 		case ByteCodeConstants.LDC:
 		case ByteCodeConstants.LDC2_W:
 		case ByteCodeConstants.NEW:
@@ -550,35 +550,35 @@ public class ReplaceGetStaticVisitor
 			break;
 		default:
 			System.err.println(
-					"Can not replace DupLoad in " + 
-					instruction.getClass().getName() + 
+					"Can not replace DupLoad in " +
+					instruction.getClass().getName() +
 					", opcode=" + instruction.opcode);
 		}
 	}
-	
+
 	private void visit(List<Instruction> instructions)
 	{
 		for (int i=instructions.size()-1; i>=0; --i)
 			visit(instructions.get(i));
 	}
-	
+
 	/**
 	 * @return le dernier parent sur lequel une substitution a �t� faite
 	 */
-	public Instruction getParentFound() 
+	public Instruction getParentFound()
 	{
 		return this.parentFound;
 	}
 
 	private boolean match(Instruction parent, Instruction i)
 	{
-		if ((i.opcode == ByteCodeConstants.GETSTATIC) && 
+		if ((i.opcode == ByteCodeConstants.GETSTATIC) &&
 			(((GetStatic)i).index == this.index))
 		{
 			this.parentFound = parent;
 			return true;
 		}
-		
+
 		return false;
 	}
 }

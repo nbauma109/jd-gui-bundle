@@ -1,16 +1,16 @@
 /*******************************************************************************
  * Copyright (C) 2007-2019 Emmanuel Dupuy GPLv3
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -27,16 +27,16 @@ public class DefaultVariableNameGenerator implements VariableNameGenerator
 {
 	private HashSet<String> fieldNames;
 	private HashSet<String> localNames;
-	
-	
+
+
 	public DefaultVariableNameGenerator(ClassFile classFile)
 	{
 		this.fieldNames = new HashSet<String>();
 		this.localNames = new HashSet<String>();
-		
+
 		// Add field names
 		Field[] fields = classFile.getFields();
-		
+
 		if (fields != null)
 		{
 			for (int i=0; i<fields.length; i++)
@@ -45,18 +45,18 @@ public class DefaultVariableNameGenerator implements VariableNameGenerator
 						getConstantUtf8(fields[i].name_index));
 		}
 	}
-	
+
 	public void clearLocalNames()
 	{
 		this.localNames.clear();
 	}
-	
+
 	public String generateParameterNameFromSignature(
-			String signature, boolean appearsOnceFlag, 
+			String signature, boolean appearsOnceFlag,
 			boolean varargsFlag, int anonymousClassDepth)
 	{
 		String prefix;
-		
+
 		switch (anonymousClassDepth)
 		{
 		case 0:
@@ -69,24 +69,24 @@ public class DefaultVariableNameGenerator implements VariableNameGenerator
 			prefix = "paramAnonymous" + anonymousClassDepth;
 			break;
 		}
-		
+
 		if (varargsFlag)
 		{
 			return prefix + "VarArgs";
 		}
-		else 
+		else
 		{
-			int index = CountDimensionOfArray(signature);		
+			int index = CountDimensionOfArray(signature);
 
 			if (index > 0)
 				prefix += "ArrayOf";
-			
+
 			return generateValidName(
-				prefix + GetSuffixFromSignature(signature.substring(index)), 
+				prefix + GetSuffixFromSignature(signature.substring(index)),
 				appearsOnceFlag);
 		}
 	}
-	
+
 	public String generateLocalVariableNameFromSignature(
 			String signature, boolean appearsOnce)
 	{
@@ -95,19 +95,19 @@ public class DefaultVariableNameGenerator implements VariableNameGenerator
 		if (index > 0)
 		{
 			return generateValidName(
-					"arrayOf" + GetSuffixFromSignature(signature.substring(index)), 
-					appearsOnce);			
+					"arrayOf" + GetSuffixFromSignature(signature.substring(index)),
+					appearsOnce);
 		}
 		else
 		{
 			switch (signature.charAt(0))
 			{
-			case 'L' : 
+			case 'L' :
 				String s = FormatSignature(signature);
-				
+
 				if (s.equals("String"))
 					return generateValidName("str", appearsOnce);
-					
+
 				return generateValidName("local" + s, appearsOnce);
 			case 'B' : return generateValidName("b", appearsOnce);
 			case 'C' : return generateValidName("c", appearsOnce);
@@ -117,7 +117,7 @@ public class DefaultVariableNameGenerator implements VariableNameGenerator
 			case 'J' : return generateValidName("l", appearsOnce);
 			case 'S' : return generateValidName("s", appearsOnce);
 			case 'Z' : return generateValidName("bool", appearsOnce);
-			default:   
+			default:
 				// DEBUG
 				new Throwable(
 						"NameGenerator.generateParameterNameFromSignature: " +
@@ -128,19 +128,19 @@ public class DefaultVariableNameGenerator implements VariableNameGenerator
 			}
 		}
 	}
-	
+
 	private static int CountDimensionOfArray(String signature)
 	{
 		int index = 0;
 		int length = signature.length();
-		
+
 		// Comptage du nombre de dimensions : '[[?' ou '[L[?;'
 		if (signature.charAt(index) == '[')
 		{
 			while (++index < length)
 			{
-				if ((signature.charAt(index) == 'L') && 
-					(index+1 < length) && 
+				if ((signature.charAt(index) == 'L') &&
+					(index+1 < length) &&
 					(signature.charAt(index+1) == '['))
 				{
 					index++;
@@ -152,7 +152,7 @@ public class DefaultVariableNameGenerator implements VariableNameGenerator
 				}
 			}
 		}
-		
+
 		return index;
 	}
 
@@ -171,7 +171,7 @@ public class DefaultVariableNameGenerator implements VariableNameGenerator
 		case 'Z' : return "Boolean";
 		case '[' : return "Array";
 		case 'T' : return FormatTemplate(signature);
-		default:   
+		default:
 			// DEBUG
 			new Throwable("NameGenerator.generateParameterNameFromSignature: invalid signature '" + signature + "'").printStackTrace();
 			// DEBUG
@@ -183,7 +183,7 @@ public class DefaultVariableNameGenerator implements VariableNameGenerator
 	{
 		// cut 'L' and ';'
 		signature = signature.substring(1, signature.length()-1);
-		
+
 		int index = signature.indexOf(StringConstants.INTERNAL_BEGIN_TEMPLATE);
 		if (index != -1)
 			signature = signature.substring(0, index);
@@ -191,14 +191,14 @@ public class DefaultVariableNameGenerator implements VariableNameGenerator
 		index = signature.lastIndexOf(StringConstants.INTERNAL_INNER_SEPARATOR);
 		if (index != -1)
 			signature = signature.substring(index+1);
-		
+
 		index = signature.lastIndexOf(StringConstants.INTERNAL_PACKAGE_SEPARATOR);
 		if (index != -1)
 			signature = signature.substring(index+1);
-		
+
 		/* if (Character.isUpperCase(signature.charAt(0))) */
 			return signature;
-		
+
 		/* return Character.toUpperCase(signature.charAt(0)) + signature.substring(1); */
 	}
 
@@ -206,14 +206,14 @@ public class DefaultVariableNameGenerator implements VariableNameGenerator
 	{
 		return signature.substring(1, signature.length()-1);
 	}
-	
+
 	private String generateValidName(String name, boolean appearsOnceFlag)
 	{
 		if (Character.isUpperCase(name.charAt(0)))
 			name = Character.toLowerCase(name.charAt(0)) + name.substring(1);
-		
+
 		if (appearsOnceFlag)
-			if (!this.fieldNames.contains(name) && 
+			if (!this.fieldNames.contains(name) &&
 				!this.localNames.contains(name))
 			{
 				this.localNames.add(name);
@@ -223,8 +223,8 @@ public class DefaultVariableNameGenerator implements VariableNameGenerator
 		for (int index=1; true; index++)
 		{
 			String newName = name + index;
-			
-			if (!this.fieldNames.contains(newName) && 
+
+			if (!this.fieldNames.contains(newName) &&
 				!this.localNames.contains(newName))
 			{
 				this.localNames.add(newName);
@@ -240,31 +240,31 @@ public class DefaultVariableNameGenerator implements VariableNameGenerator
 			this.localNames.add("i");
 			return "i";
 		}
-		
+
 		if (!this.fieldNames.contains("j") && !this.localNames.contains("j"))
 		{
 			this.localNames.add("j");
 			return "j";
 		}
-		
+
 		if (!this.fieldNames.contains("k") && !this.localNames.contains("k"))
 		{
 			this.localNames.add("k");
 			return "k";
 		}
-		
+
 		if (!this.fieldNames.contains("m") && !this.localNames.contains("m"))
 		{
 			this.localNames.add("m");
 			return "m";
 		}
-		
+
 		if (!this.fieldNames.contains("n") && !this.localNames.contains("n"))
 		{
 			this.localNames.add("n");
 			return "n";
 		}
-		
+
 		return generateValidName("i", false);
-	}	
+	}
 }

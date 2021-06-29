@@ -254,7 +254,7 @@ public class AddCastExpressionVisitor extends AbstractJavaSyntaxVisitor {
             boolean forceCast = !unique && (typeMaker.matchCount(typeBounds, expression.getInternalTypeName(), expression.getName(), parameters, false) > 1);
             expression.setParameters(updateParameters(((ClassFileMethodInvocationExpression)expression).getParameterTypes(), parameters, forceCast, unique));
         }
-        
+
         expression.getExpression().accept(this);
     }
 

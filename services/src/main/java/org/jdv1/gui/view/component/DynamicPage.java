@@ -42,7 +42,7 @@ public class DynamicPage
 {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	protected API api;
     protected Container.Entry entry;
     protected TypePage page;
@@ -57,7 +57,7 @@ public class DynamicPage
         Map<String, String> preferences = api.getPreferences();
         Integer currentHashcode = Integer.valueOf(preferences.hashCode());
         putClientProperty("preferences-hashCode", currentHashcode);
-        
+
         String source = api.getSource(entry);
 
         if (source == null) {

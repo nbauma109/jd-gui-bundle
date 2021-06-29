@@ -1,7 +1,7 @@
 package org.jd.gui.util.parser.jdt.core;
 
 public class StringData {
-	
+
     private int startPosition;
     private String text;
     private String owner;

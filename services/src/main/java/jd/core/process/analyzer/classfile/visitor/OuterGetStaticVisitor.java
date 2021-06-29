@@ -1,16 +1,16 @@
 /*******************************************************************************
  * Copyright (C) 2007-2019 Emmanuel Dupuy GPLv3
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -67,21 +67,21 @@ import jd.core.model.instruction.bytecode.instruction.TernaryOperator;
 import jd.core.model.instruction.bytecode.instruction.UnaryOperatorInstruction;
 
 /*
- * Replace 'EntitlementFunctionLibrary.access$000()' 
+ * Replace 'EntitlementFunctionLibrary.access$000()'
  * par 'EntitlementFunctionLibrary.kernelId'
  */
-public class OuterGetStaticVisitor 
+public class OuterGetStaticVisitor
 {
 	protected Map<String, ClassFile> innerClassesMap;
 	protected ConstantPool constants;
-	
+
 	public OuterGetStaticVisitor(
 		HashMap<String, ClassFile> innerClassesMap, ConstantPool constants)
 	{
 		this.innerClassesMap = innerClassesMap;
 		this.constants = constants;
 	}
-	
+
 	public void visit(Instruction instruction)
 	{
 		switch (instruction.opcode)
@@ -131,7 +131,7 @@ public class OuterGetStaticVisitor
 					if (a != null)
 						ai.msg = newInstruction(ai.msg, a);
 					else
-						visit(ai.msg);	
+						visit(ai.msg);
 				}
 			}
 			break;
@@ -238,10 +238,10 @@ public class OuterGetStaticVisitor
 				else
 					visit(iff.value);
 			}
-			break;			
+			break;
 		case ByteCodeConstants.COMPLEXIF:
 			{
-				List<Instruction> branchList = 
+				List<Instruction> branchList =
 					((ComplexConditionalBranchInstruction)instruction).instructions;
 				for (int i=branchList.size()-1; i>=0; --i)
 					visit(branchList.get(i));
@@ -261,7 +261,7 @@ public class OuterGetStaticVisitor
 		case ByteCodeConstants.INVOKESPECIAL:
 		case ByteCodeConstants.INVOKEVIRTUAL:
 			{
-				InvokeNoStaticInstruction insi = 
+				InvokeNoStaticInstruction insi =
 					(InvokeNoStaticInstruction)instruction;
 				Accessor a = match(insi.objectref);
 				if (a != null)
@@ -292,7 +292,7 @@ public class OuterGetStaticVisitor
 				else
 					visit(ls.key);
 			}
-			break;			
+			break;
 		case ByteCodeConstants.MONITORENTER:
 			{
 				MonitorEnter monitorEnter = (MonitorEnter)instruction;
@@ -390,7 +390,7 @@ public class OuterGetStaticVisitor
 				else
 					visit(ri.valueref);
 			}
-			break;			
+			break;
 		case ByteCodeConstants.TABLESWITCH:
 			{
 				TableSwitch ts = (TableSwitch)instruction;
@@ -400,7 +400,7 @@ public class OuterGetStaticVisitor
 				else
 					visit(ts.key);
 			}
-			break;			
+			break;
 		case ByteCodeConstants.TERNARYOPSTORE:
 			{
 				TernaryOpStore tos = (TernaryOpStore)instruction;
@@ -410,8 +410,8 @@ public class OuterGetStaticVisitor
 				else
 					visit(tos.objectref);
 			}
-			break;		
-		case ByteCodeConstants.TERNARYOP:	
+			break;
+		case ByteCodeConstants.TERNARYOP:
 			{
 				TernaryOperator to = (TernaryOperator)instruction;
 				Accessor a = match(to.test);
@@ -430,7 +430,7 @@ public class OuterGetStaticVisitor
 				else
 					visit(to.value2);
 			}
-			break;	
+			break;
 		case ByteCodeConstants.ASSIGNMENT:
 			{
 				AssignmentInstruction ai = (AssignmentInstruction)instruction;
@@ -461,8 +461,8 @@ public class OuterGetStaticVisitor
 					visit(ali.indexref);
 			}
 			break;
-		case ByteCodeConstants.PREINC:			
-		case ByteCodeConstants.POSTINC:		
+		case ByteCodeConstants.PREINC:
+		case ByteCodeConstants.POSTINC:
 			{
 				IncInstruction ii = (IncInstruction)instruction;
 				Accessor a = match(ii.value);
@@ -508,8 +508,8 @@ public class OuterGetStaticVisitor
 		case ByteCodeConstants.GETSTATIC:
 		case ByteCodeConstants.OUTERTHIS:
 		case ByteCodeConstants.GOTO:
-		case ByteCodeConstants.IINC:			
-		case ByteCodeConstants.JSR:			
+		case ByteCodeConstants.IINC:
+		case ByteCodeConstants.JSR:
 		case ByteCodeConstants.LDC:
 		case ByteCodeConstants.LDC2_W:
 		case ByteCodeConstants.NEW:
@@ -522,19 +522,19 @@ public class OuterGetStaticVisitor
 			break;
 		default:
 			System.err.println(
-					"Can not replace accessor in " + 
-					instruction.getClass().getName() + 
+					"Can not replace accessor in " +
+					instruction.getClass().getName() +
 					", opcode=" + instruction.opcode);
 		}
 	}
-	
+
 	public void visit(List<Instruction> instructions)
 	{
 		for (int index=instructions.size()-1; index>=0; --index)
 		{
 			Instruction i = instructions.get(index);
 			Accessor a = match(i);
-			
+
 			if (a != null)
 				instructions.set(index, newInstruction(i, a));
 			else
@@ -544,54 +544,54 @@ public class OuterGetStaticVisitor
 
 	protected Accessor match(Instruction i)
 	{
-		if (i.opcode != ByteCodeConstants.INVOKESTATIC)		
-			return null; 
-		
+		if (i.opcode != ByteCodeConstants.INVOKESTATIC)
+			return null;
+
 		Invokestatic is = (Invokestatic)i;
-		ConstantMethodref cmr = 
+		ConstantMethodref cmr =
 			constants.getConstantMethodref(is.index);
-		ConstantNameAndType cnat = 
+		ConstantNameAndType cnat =
 			constants.getConstantNameAndType(cmr.name_and_type_index);
-		String descriptor = 
+		String descriptor =
 			constants.getConstantUtf8(cnat.descriptor_index);
 
 		// Zero parameter ?
 		if (descriptor.charAt(1) != ')')
 			return null;
 
-		String className = constants.getConstantClassName(cmr.class_index);		
+		String className = constants.getConstantClassName(cmr.class_index);
 		ClassFile classFile = this.innerClassesMap.get(className);
 		if (classFile == null)
 			return null;
-		
-		String name = 
+
+		String name =
 			constants.getConstantUtf8(cnat.name_index);
-		
+
 		Accessor accessor = classFile.getAccessor(name, descriptor);
-		
+
 		if ((accessor == null) ||
 			(accessor.tag != AccessorConstants.ACCESSOR_GETSTATIC))
 			return null;
-		
+
 		return (GetStaticAccessor)accessor;
 	}
-	
+
 	protected Instruction newInstruction(Instruction i, Accessor a)
 	{
 		GetStaticAccessor gsa = (GetStaticAccessor)a;
-		
+
 		int nameIndex = this.constants.addConstantUtf8(gsa.fieldName);
-		int descriptorIndex = 
+		int descriptorIndex =
 			this.constants.addConstantUtf8(gsa.fieldDescriptor);
-		int cnatIndex = 
+		int cnatIndex =
 			this.constants.addConstantNameAndType(nameIndex, descriptorIndex);
-		
-		int classNameIndex = this.constants.addConstantUtf8(gsa.className);	
+
+		int classNameIndex = this.constants.addConstantUtf8(gsa.className);
 		int classIndex = this.constants.addConstantClass(classNameIndex);
-		
-		int cfrIndex = 
+
+		int cfrIndex =
 			constants.addConstantFieldref(classIndex, cnatIndex);
-		
+
 		return new GetStatic(
 			ByteCodeConstants.GETSTATIC, i.offset, i.lineNumber, cfrIndex);
 	}

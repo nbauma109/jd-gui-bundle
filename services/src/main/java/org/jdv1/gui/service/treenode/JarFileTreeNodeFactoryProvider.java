@@ -68,7 +68,7 @@ public class JarFileTreeNodeFactoryProvider extends ZipFileTreeNodeFactoryProvid
 
     protected static class TreeNode extends ZipFileTreeNodeFactoryProvider.TreeNode {
         /**
-		 * 
+		 *
 		 */
 		private static final long serialVersionUID = 1L;
 

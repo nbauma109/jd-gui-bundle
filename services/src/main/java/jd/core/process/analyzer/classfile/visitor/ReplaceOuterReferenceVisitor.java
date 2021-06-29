@@ -1,16 +1,16 @@
 /*******************************************************************************
  * Copyright (C) 2007-2019 Emmanuel Dupuy GPLv3
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -61,12 +61,12 @@ import jd.core.model.instruction.bytecode.instruction.UnaryOperatorInstruction;
  * Replace 'ALoad(1)' in constructor by 'OuterThis()':
  * replace '???.xxx' by 'TestInnerClass.this.xxx'.
  */
-public class ReplaceOuterReferenceVisitor 
+public class ReplaceOuterReferenceVisitor
 {
 	private int opcode;
 	private int index;
 	private int outerThisInstructionIndex;
-	
+
 	public ReplaceOuterReferenceVisitor(
 		int opcode, int index, int outerThisInstructionIndex)
 	{
@@ -74,13 +74,13 @@ public class ReplaceOuterReferenceVisitor
 		this.index = index;
 		this.outerThisInstructionIndex = outerThisInstructionIndex;
 	}
-	
+
 	public void init(int opcode, int index)
 	{
 		this.opcode = opcode;
 		this.index = index;
 	}
-	
+
 	public void visit(Instruction instruction)
 	{
 		switch (instruction.opcode)
@@ -220,10 +220,10 @@ public class ReplaceOuterReferenceVisitor
 				else
 					visit(iff.value);
 			}
-			break;			
+			break;
 		case ByteCodeConstants.COMPLEXIF:
 			{
-				List<Instruction> branchList = 
+				List<Instruction> branchList =
 					((ComplexConditionalBranchInstruction)instruction).instructions;
 				for (int i=branchList.size()-1; i>=0; --i)
 					visit(branchList.get(i));
@@ -242,7 +242,7 @@ public class ReplaceOuterReferenceVisitor
 		case ByteCodeConstants.INVOKESPECIAL:
 		case ByteCodeConstants.INVOKEVIRTUAL:
 			{
-				InvokeNoStaticInstruction insi = 
+				InvokeNoStaticInstruction insi =
 					(InvokeNoStaticInstruction)instruction;
 				if (match(insi.objectref))
 					insi.objectref = newInstruction(insi.objectref);
@@ -270,7 +270,7 @@ public class ReplaceOuterReferenceVisitor
 				else
 					visit(ls.key);
 			}
-			break;			
+			break;
 		case ByteCodeConstants.MONITORENTER:
 			{
 				MonitorEnter monitorEnter = (MonitorEnter)instruction;
@@ -358,7 +358,7 @@ public class ReplaceOuterReferenceVisitor
 				else
 					visit(ri.valueref);
 			}
-			break;			
+			break;
 		case ByteCodeConstants.TABLESWITCH:
 			{
 				TableSwitch ts = (TableSwitch)instruction;
@@ -367,7 +367,7 @@ public class ReplaceOuterReferenceVisitor
 				else
 					visit(ts.key);
 			}
-			break;			
+			break;
 		case ByteCodeConstants.TERNARYOPSTORE:
 			{
 				TernaryOpStore tos = (TernaryOpStore)instruction;
@@ -376,8 +376,8 @@ public class ReplaceOuterReferenceVisitor
 				else
 					visit(tos.objectref);
 			}
-			break;		
-		case ByteCodeConstants.TERNARYOP:	
+			break;
+		case ByteCodeConstants.TERNARYOP:
 			{
 				TernaryOperator to = (TernaryOperator)instruction;
 				if (match(to.test))
@@ -393,7 +393,7 @@ public class ReplaceOuterReferenceVisitor
 				else
 					visit(to.value2);
 			}
-			break;	
+			break;
 		case ByteCodeConstants.ASSIGNMENT:
 			{
 				AssignmentInstruction ai = (AssignmentInstruction)instruction;
@@ -420,8 +420,8 @@ public class ReplaceOuterReferenceVisitor
 					visit(ali.indexref);
 			}
 			break;
-		case ByteCodeConstants.PREINC:			
-		case ByteCodeConstants.POSTINC:		
+		case ByteCodeConstants.PREINC:
+		case ByteCodeConstants.POSTINC:
 			{
 				IncInstruction ii = (IncInstruction)instruction;
 				if (match(ii.value))
@@ -464,8 +464,8 @@ public class ReplaceOuterReferenceVisitor
 		case ByteCodeConstants.GETSTATIC:
 		case ByteCodeConstants.OUTERTHIS:
 		case ByteCodeConstants.GOTO:
-		case ByteCodeConstants.IINC:			
-		case ByteCodeConstants.JSR:			
+		case ByteCodeConstants.IINC:
+		case ByteCodeConstants.JSR:
 		case ByteCodeConstants.LDC:
 		case ByteCodeConstants.LDC2_W:
 		case ByteCodeConstants.NEW:
@@ -478,18 +478,18 @@ public class ReplaceOuterReferenceVisitor
 			break;
 		default:
 			System.err.println(
-					"Can not replace DupLoad in " + 
-					instruction.getClass().getName() + 
+					"Can not replace DupLoad in " +
+					instruction.getClass().getName() +
 					", opcode=" + instruction.opcode);
 		}
 	}
-	
+
 	public void visit(List<Instruction> instructions)
 	{
 		for (int index=instructions.size()-1; index>=0; --index)
 		{
 			Instruction i = instructions.get(index);
-			
+
 			if (match(i))
 				instructions.set(index, newInstruction(i));
 			else
@@ -499,15 +499,15 @@ public class ReplaceOuterReferenceVisitor
 
 	private boolean match(Instruction i)
 	{
-		return 
-			(i.opcode == this.opcode) && 
+		return
+			(i.opcode == this.opcode) &&
 			(((IndexInstruction)i).index == this.index);
 	}
-	
+
 	private Instruction newInstruction(Instruction i)
 	{
 		return new GetStatic(
-			ByteCodeConstants.OUTERTHIS, i.offset, 
+			ByteCodeConstants.OUTERTHIS, i.offset,
 			i.lineNumber, this.outerThisInstructionIndex);
 	}
 }

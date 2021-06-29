@@ -1,16 +1,16 @@
 /*******************************************************************************
  * Copyright (C) 2007-2019 Emmanuel Dupuy GPLv3
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -19,7 +19,7 @@ package jd.core.model.instruction.bytecode;
 
 
 
-public class ByteCodeConstants 
+public class ByteCodeConstants
 {
 	public static final short  NO_OF_OPERANDS_UNDEFINED      = -1;
 	public static final short  NO_OF_OPERANDS_UNPREDICTABLE  = -2;
@@ -28,7 +28,7 @@ public class ByteCodeConstants
 	public static final String ILLEGAL_OPCODE = "<illegal opcode>";
 	public static final String ILLEGAL_TYPE   = "<illegal type>";
 
-	
+
 	/** Java VM opcodes.
 	 */
 	public static final int NOP              = 0;
@@ -236,7 +236,7 @@ public class ByteCodeConstants
 	public static final int IFNONNULL        = 199;
 	public static final int GOTO_W           = 200;
 	public static final int JSR_W            = 201;
-	
+
 	/**
 	 * Non-legal opcodes, may be used by JVM internally.
 	 */
@@ -269,7 +269,7 @@ public class ByteCodeConstants
 	public static final int IMPDEP1                   = 254;
 	public static final int IMPDEP2                   = 255;
 
-	
+
 	// Extension for decompiler
 	public static final int ICONST                    = 256;
 	public static final int LCONST                    = 257;
@@ -291,10 +291,10 @@ public class ByteCodeConstants
 	public static final int XRETURN                   = 273;
 	public static final int INVOKENEW                 = 274;
 	public static final int CONVERT                   = 275;
-	public static final int IMPLICITCONVERT           = 276;	
+	public static final int IMPLICITCONVERT           = 276;
 	public static final int PREINC                    = 277;
-	public static final int POSTINC                   = 278;	
-	public static final int RETURNADDRESSLOAD         = 279;	
+	public static final int POSTINC                   = 278;
+	public static final int RETURNADDRESSLOAD         = 279;
 	public static final int TERNARYOPSTORE            = 280;
 	public static final int TERNARYOP                 = 281;
 	public static final int INITARRAY                 = 282;
@@ -302,8 +302,8 @@ public class ByteCodeConstants
 	public static final int COMPLEXIF                 = 284;
 	public static final int OUTERTHIS                 = 285;
 	public static final int ASSERT                    = 286;
-	
-	
+
+
 	public static final String[] OPCODE_NAMES = {
 	    "nop", "aconst_null", "iconst_m1", "iconst_0", "iconst_1",
 	    "iconst_2", "iconst_3", "iconst_4", "iconst_5", "lconst_0",
@@ -407,49 +407,49 @@ public class ByteCodeConstants
 	    0/*monitorexit*/, NO_OF_OPERANDS_UNPREDICTABLE/*wide*/, 3/*multianewarray*/,
 	    2/*ifnull*/, 2/*ifnonnull*/, 4/*goto_w*/,
 	    4/*jsr_w*/, 0/*breakpoint*/, NO_OF_OPERANDS_UNDEFINED,
-	    NO_OF_OPERANDS_UNDEFINED, NO_OF_OPERANDS_UNDEFINED, 
-	    NO_OF_OPERANDS_UNDEFINED, NO_OF_OPERANDS_UNDEFINED, 
 	    NO_OF_OPERANDS_UNDEFINED, NO_OF_OPERANDS_UNDEFINED,
-	    NO_OF_OPERANDS_UNDEFINED, NO_OF_OPERANDS_UNDEFINED, 
-	    NO_OF_OPERANDS_UNDEFINED, NO_OF_OPERANDS_UNDEFINED, 
 	    NO_OF_OPERANDS_UNDEFINED, NO_OF_OPERANDS_UNDEFINED,
-	    NO_OF_OPERANDS_UNDEFINED, NO_OF_OPERANDS_UNDEFINED, 
-	    NO_OF_OPERANDS_UNDEFINED, NO_OF_OPERANDS_UNDEFINED, 
 	    NO_OF_OPERANDS_UNDEFINED, NO_OF_OPERANDS_UNDEFINED,
-	    NO_OF_OPERANDS_UNDEFINED, NO_OF_OPERANDS_UNDEFINED, 
-	    NO_OF_OPERANDS_UNDEFINED, NO_OF_OPERANDS_UNDEFINED, 
 	    NO_OF_OPERANDS_UNDEFINED, NO_OF_OPERANDS_UNDEFINED,
-	    NO_OF_OPERANDS_UNDEFINED, NO_OF_OPERANDS_UNDEFINED, 
-	    NO_OF_OPERANDS_UNDEFINED, NO_OF_OPERANDS_UNDEFINED, 
 	    NO_OF_OPERANDS_UNDEFINED, NO_OF_OPERANDS_UNDEFINED,
-	    NO_OF_OPERANDS_UNDEFINED, NO_OF_OPERANDS_UNDEFINED, 
-	    NO_OF_OPERANDS_UNDEFINED, NO_OF_OPERANDS_UNDEFINED, 
 	    NO_OF_OPERANDS_UNDEFINED, NO_OF_OPERANDS_UNDEFINED,
-	    NO_OF_OPERANDS_UNDEFINED, NO_OF_OPERANDS_UNDEFINED, 
-	    NO_OF_OPERANDS_UNDEFINED, NO_OF_OPERANDS_UNDEFINED, 
 	    NO_OF_OPERANDS_UNDEFINED, NO_OF_OPERANDS_UNDEFINED,
-	    NO_OF_OPERANDS_UNDEFINED, NO_OF_OPERANDS_UNDEFINED, 
-	    NO_OF_OPERANDS_UNDEFINED, NO_OF_OPERANDS_UNDEFINED, 
 	    NO_OF_OPERANDS_UNDEFINED, NO_OF_OPERANDS_UNDEFINED,
-	    NO_OF_OPERANDS_UNDEFINED, NO_OF_OPERANDS_UNDEFINED, 
+	    NO_OF_OPERANDS_UNDEFINED, NO_OF_OPERANDS_UNDEFINED,
+	    NO_OF_OPERANDS_UNDEFINED, NO_OF_OPERANDS_UNDEFINED,
+	    NO_OF_OPERANDS_UNDEFINED, NO_OF_OPERANDS_UNDEFINED,
+	    NO_OF_OPERANDS_UNDEFINED, NO_OF_OPERANDS_UNDEFINED,
+	    NO_OF_OPERANDS_UNDEFINED, NO_OF_OPERANDS_UNDEFINED,
+	    NO_OF_OPERANDS_UNDEFINED, NO_OF_OPERANDS_UNDEFINED,
+	    NO_OF_OPERANDS_UNDEFINED, NO_OF_OPERANDS_UNDEFINED,
+	    NO_OF_OPERANDS_UNDEFINED, NO_OF_OPERANDS_UNDEFINED,
+	    NO_OF_OPERANDS_UNDEFINED, NO_OF_OPERANDS_UNDEFINED,
+	    NO_OF_OPERANDS_UNDEFINED, NO_OF_OPERANDS_UNDEFINED,
+	    NO_OF_OPERANDS_UNDEFINED, NO_OF_OPERANDS_UNDEFINED,
+	    NO_OF_OPERANDS_UNDEFINED, NO_OF_OPERANDS_UNDEFINED,
+	    NO_OF_OPERANDS_UNDEFINED, NO_OF_OPERANDS_UNDEFINED,
+	    NO_OF_OPERANDS_UNDEFINED, NO_OF_OPERANDS_UNDEFINED,
+	    NO_OF_OPERANDS_UNDEFINED, NO_OF_OPERANDS_UNDEFINED,
+	    NO_OF_OPERANDS_UNDEFINED, NO_OF_OPERANDS_UNDEFINED,
+	    NO_OF_OPERANDS_UNDEFINED, NO_OF_OPERANDS_UNDEFINED,
 	    NO_OF_OPERANDS_RESERVED/*impdep1*/, NO_OF_OPERANDS_RESERVED/*impdep2*/
 	  };
-	  
+
 
 	public static final int CMP_MAX_INDEX = 7;
-	
+
 	public static final int CMP_EQ  = 0;
 	public static final int CMP_LT  = 1;
-	public static final int CMP_GT  = 2;	
-	public static final int CMP_UEQ = 3;	
-	public static final int CMP_UNE = 4;	
+	public static final int CMP_GT  = 2;
+	public static final int CMP_UEQ = 3;
+	public static final int CMP_UNE = 4;
 	public static final int CMP_LE  = 5;
 	public static final int CMP_GE  = 6;
 	public static final int CMP_NE  = 7;
-	
-	public static final String[] CMP_NAMES = { 
+
+	public static final String[] CMP_NAMES = {
 		"==", "<", ">", "", "!", "<=", ">=", "!=" };
-	
+
 
 	public static final byte T_BOOLEAN = 4;
 	public static final byte T_CHAR    = 5;
@@ -475,7 +475,7 @@ public class ByteCodeConstants
 	    "boolean", "char", "float", "double", "byte", "short", "int", "long",
 	    "void", "array", "object", "unknown" // Non-standard
 	};
-	  
+
 	/**
 	 * Types Bit Fields
 	 */
@@ -484,7 +484,7 @@ public class ByteCodeConstants
 	public static final byte TBF_INT_SHORT   = 4;
 	public static final byte TBF_INT_INT     = 8;
 	public static final byte TBF_INT_BOOLEAN = 16;
-	
+
 	/**
 	 * Binary operator constants
 	 */

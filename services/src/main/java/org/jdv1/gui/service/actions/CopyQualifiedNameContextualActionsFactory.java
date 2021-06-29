@@ -33,7 +33,7 @@ public class CopyQualifiedNameContextualActionsFactory implements ContextualActi
 
     public static class CopyQualifiedNameAction extends AbstractAction {
         /**
-		 * 
+		 *
 		 */
 		private static final long serialVersionUID = 1L;
 

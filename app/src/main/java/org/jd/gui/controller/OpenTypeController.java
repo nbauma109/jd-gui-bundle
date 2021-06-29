@@ -56,7 +56,7 @@ public class OpenTypeController implements IndexesChangeListener {
         // Create result cache
         cache = new LinkedHashMap<String, Map<String, Collection>>(CACHE_MAX_ENTRIES*3/2, 0.7f, true) {
             /**
-			 * 
+			 *
 			 */
 			private static final long serialVersionUID = 1L;
 

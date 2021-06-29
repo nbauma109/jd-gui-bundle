@@ -1,16 +1,16 @@
 /*******************************************************************************
  * Copyright (C) 2007-2019 Emmanuel Dupuy GPLv3
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -70,22 +70,22 @@ import jd.core.model.instruction.fast.instruction.FastTry;
 import jd.core.model.instruction.fast.instruction.FastTry.FastCatch;
 
 
-public class CountDupLoadVisitor 
+public class CountDupLoadVisitor
 {
 	private DupStore dupStore;
 	private int counter;
-	
+
 	public CountDupLoadVisitor()
 	{
 		init(null);
 	}
-	
+
 	public void init(DupStore dupStore)
 	{
 		this.dupStore = dupStore;
 		this.counter = 0;
 	}
-	
+
 	public void visit(Instruction instruction)
 	{
 		switch (instruction.opcode)
@@ -143,7 +143,7 @@ public class CountDupLoadVisitor
 			break;
 		case ByteCodeConstants.COMPLEXIF:
 			{
-				List<Instruction> branchList = 
+				List<Instruction> branchList =
 					((ComplexConditionalBranchInstruction)instruction).instructions;
 				for (int i=branchList.size()-1; i>=0; --i)
 				{
@@ -178,7 +178,7 @@ public class CountDupLoadVisitor
 			break;
 		case ByteCodeConstants.LOOKUPSWITCH:
 			visit(((LookupSwitch)instruction).key);
-			break;			
+			break;
 		case ByteCodeConstants.MONITORENTER:
 			visit(((MonitorEnter)instruction).objectref);
 			break;
@@ -215,20 +215,20 @@ public class CountDupLoadVisitor
 			break;
 		case ByteCodeConstants.XRETURN:
 			visit(((ReturnInstruction)instruction).valueref);
-			break;			
+			break;
 		case ByteCodeConstants.TABLESWITCH:
 			visit(((TableSwitch)instruction).key);
-			break;			
+			break;
 		case ByteCodeConstants.TERNARYOPSTORE:
-			visit(((TernaryOpStore)instruction).objectref);			
-			break;			
-		case ByteCodeConstants.TERNARYOP:	
+			visit(((TernaryOpStore)instruction).objectref);
+			break;
+		case ByteCodeConstants.TERNARYOP:
 			{
 				TernaryOperator to = (TernaryOperator)instruction;
-				visit(to.value1);	
+				visit(to.value1);
 				visit(to.value2);
 			}
-			break;				
+			break;
 		case ByteCodeConstants.ASSIGNMENT:
 			{
 				AssignmentInstruction ai = (AssignmentInstruction)instruction;
@@ -243,8 +243,8 @@ public class CountDupLoadVisitor
 				visit(ali.indexref);
 			}
 			break;
-		case ByteCodeConstants.PREINC:			
-		case ByteCodeConstants.POSTINC:			
+		case ByteCodeConstants.PREINC:
+		case ByteCodeConstants.POSTINC:
 			visit(((IncInstruction)instruction).value);
 			break;
 		case ByteCodeConstants.GETFIELD:
@@ -277,13 +277,13 @@ public class CountDupLoadVisitor
 		case FastConstants.DO_WHILE:
 		case FastConstants.IF_:
 			{
-				Instruction test = ((FastTestList)instruction).test;					
+				Instruction test = ((FastTestList)instruction).test;
 				if (test != null)
 					visit(test);
 			}
 		case FastConstants.INFINITE_LOOP:
 			{
-				List<Instruction> instructions = 
+				List<Instruction> instructions =
 					((FastList)instruction).instructions;
 				if (instructions != null)
 					visit(instructions);
@@ -291,7 +291,7 @@ public class CountDupLoadVisitor
 			break;
 		case FastConstants.FOREACH:
 			{
-				FastForEach ffe = (FastForEach)instruction;				
+				FastForEach ffe = (FastForEach)instruction;
 				visit(ffe.variable);
 				visit(ffe.values);
 				visit(ffe.instructions);
@@ -322,7 +322,7 @@ public class CountDupLoadVisitor
 		case FastConstants.SWITCH_STRING:
 			{
 				FastSwitch fs = (FastSwitch)instruction;
-				visit(fs.test);			
+				visit(fs.test);
 				FastSwitch.Pair[] pairs = fs.pairs;
 				for (int i=pairs.length-1; i>=0; --i)
 				{
@@ -335,9 +335,9 @@ public class CountDupLoadVisitor
 		case FastConstants.TRY:
 			{
 				FastTry ft = (FastTry)instruction;
-				visit(ft.instructions);	
+				visit(ft.instructions);
 				if (ft.finallyInstructions != null)
-					visit(ft.finallyInstructions);			
+					visit(ft.finallyInstructions);
 				List<FastCatch> catchs = ft.catches;
 				for (int i=catchs.size()-1; i>=0; --i)
 					visit(catchs.get(i).instructions);
@@ -346,7 +346,7 @@ public class CountDupLoadVisitor
 		case FastConstants.SYNCHRONIZED:
 			{
 				FastSynchronized fsd = (FastSynchronized)instruction;
-				visit(fsd.monitor);	
+				visit(fsd.monitor);
 				visit(fsd.instructions);
 			}
 			break;
@@ -360,7 +360,7 @@ public class CountDupLoadVisitor
 		case FastConstants.DECLARE:
 			{
 				FastDeclaration fd = (FastDeclaration)instruction;
-				if (fd.instruction != null)				
+				if (fd.instruction != null)
 					visit(fd.instruction);
 			}
 			break;
@@ -376,8 +376,8 @@ public class CountDupLoadVisitor
 		case ByteCodeConstants.FCONST:
 		case ByteCodeConstants.DCONST:
 		case ByteCodeConstants.GOTO:
-		case ByteCodeConstants.IINC:			
-		case ByteCodeConstants.JSR:			
+		case ByteCodeConstants.IINC:
+		case ByteCodeConstants.JSR:
 		case ByteCodeConstants.LDC:
 		case ByteCodeConstants.LDC2_W:
 		case ByteCodeConstants.NEW:
@@ -390,22 +390,22 @@ public class CountDupLoadVisitor
 			break;
 		default:
 			System.err.println(
-					"Can not count DupLoad in " + 
-					instruction.getClass().getName() + 
+					"Can not count DupLoad in " +
+					instruction.getClass().getName() +
 					", opcode=" + instruction.opcode);
 		}
 	}
-	
+
 	private void visit(List<Instruction> instructions)
 	{
 		for (int i=instructions.size()-1; i>=0; --i)
 			visit(instructions.get(i));
 	}
-	
+
 	/**
 	 * @return le dernier parent sur lequel une substitution a �t� faite
 	 */
-	public int getCounter() 
+	public int getCounter()
 	{
 		return this.counter;
 	}

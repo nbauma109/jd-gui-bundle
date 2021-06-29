@@ -1,16 +1,16 @@
 /*******************************************************************************
  * Copyright (C) 2007-2019 Emmanuel Dupuy GPLv3
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -77,24 +77,24 @@ import jd.core.model.reference.ReferenceMap;
 import jd.core.util.SignatureUtil;
 
 
-public class ReferenceVisitor 
+public class ReferenceVisitor
 {
 	private ConstantPool constants;
 	private ReferenceMap referenceMap;
-	
+
 	public ReferenceVisitor(ConstantPool constants, ReferenceMap referenceMap)
 	{
 		this.constants = constants;
 		this.referenceMap = referenceMap;
 	}
-	
+
 	public void visit(Instruction instruction)
 	{
 		if (instruction == null)
 			return;
-		
+
 		String internalName;
-		
+
 		switch (instruction.opcode)
 		{
 		case ByteCodeConstants.ARRAYLENGTH:
@@ -115,7 +115,7 @@ public class ReferenceVisitor
 				AssertInstruction ai = (AssertInstruction)instruction;
 				visit(ai.test);
 				visit(ai.msg);
-			}	
+			}
 			break;
 		case ByteCodeConstants.ATHROW:
 			{
@@ -130,7 +130,7 @@ public class ReferenceVisitor
 			}
 			break;
 		case ByteCodeConstants.BINARYOP:
-		case ByteCodeConstants.ASSIGNMENT:	
+		case ByteCodeConstants.ASSIGNMENT:
 			{
 				BinaryOperatorInstruction boi = (BinaryOperatorInstruction)instruction;
 				visit(boi.value1);
@@ -139,7 +139,7 @@ public class ReferenceVisitor
 			break;
 		case ByteCodeConstants.CHECKCAST:
 			{
-				CheckCast checkCast = (CheckCast)instruction;	
+				CheckCast checkCast = (CheckCast)instruction;
 				visitCheckCastAndMultiANewArray(checkCast.index);
 				visit(checkCast.objectref);
 			}
@@ -186,7 +186,7 @@ public class ReferenceVisitor
 			break;
 		case ByteCodeConstants.COMPLEXIF:
 			{
-				List<Instruction> branchList = 
+				List<Instruction> branchList =
 					((ComplexConditionalBranchInstruction)instruction).instructions;
 				for (int i=branchList.size()-1; i>=0; --i)
 					visit(branchList.get(i));
@@ -202,7 +202,7 @@ public class ReferenceVisitor
 		case ByteCodeConstants.INVOKEINTERFACE:
 		case ByteCodeConstants.INVOKESPECIAL:
 		case ByteCodeConstants.INVOKEVIRTUAL:
-			InvokeNoStaticInstruction insi = 
+			InvokeNoStaticInstruction insi =
 				(InvokeNoStaticInstruction)instruction;
 				visit(insi.objectref);
 		case ByteCodeConstants.INVOKESTATIC:
@@ -211,16 +211,16 @@ public class ReferenceVisitor
 				InvokeInstruction ii = (InvokeInstruction)instruction;
 				ConstantMethodref cmr = constants.getConstantMethodref(ii.index);
 				internalName = constants.getConstantClassName(cmr.class_index);
-				addReference(internalName);					
+				addReference(internalName);
 				visit(ii.args);
 			}
-			break;			
+			break;
 		case ByteCodeConstants.LOOKUPSWITCH:
 			{
 				LookupSwitch ls = (LookupSwitch)instruction;
 				visit(ls.key);
 			}
-			break;			
+			break;
 		case ByteCodeConstants.MONITORENTER:
 			{
 				MonitorEnter monitorEnter = (MonitorEnter)instruction;
@@ -235,7 +235,7 @@ public class ReferenceVisitor
 			break;
 		case ByteCodeConstants.MULTIANEWARRAY:
 			{
-				MultiANewArray multiANewArray = (MultiANewArray)instruction;	
+				MultiANewArray multiANewArray = (MultiANewArray)instruction;
 				visitCheckCastAndMultiANewArray(multiANewArray.index);
 				Instruction[] dimensions = multiANewArray.dimensions;
 				for (int i=dimensions.length-1; i>=0; --i)
@@ -256,9 +256,9 @@ public class ReferenceVisitor
 			break;
 		case ByteCodeConstants.ANEWARRAY:
 			{
-				ANewArray aNewArray = (ANewArray)instruction;	
+				ANewArray aNewArray = (ANewArray)instruction;
 				addReference(
-					this.constants.getConstantClassName(aNewArray.index));				
+					this.constants.getConstantClassName(aNewArray.index));
 				visit(aNewArray.dimension);
 			}
 			break;
@@ -286,24 +286,24 @@ public class ReferenceVisitor
 				ReturnInstruction ri = (ReturnInstruction)instruction;
 				visit(ri.valueref);
 			}
-			break;			
+			break;
 		case ByteCodeConstants.TABLESWITCH:
 			{
 				TableSwitch ts = (TableSwitch)instruction;
 				visit(ts.key);
 			}
-			break;			
+			break;
 		case ByteCodeConstants.TERNARYOPSTORE:
 			{
 				TernaryOpStore tos = (TernaryOpStore)instruction;
 				visit(tos.objectref);
 			}
-			break;			
-		case ByteCodeConstants.TERNARYOP:	
+			break;
+		case ByteCodeConstants.TERNARYOP:
 			{
 				TernaryOperator to = (TernaryOperator)instruction;
-				visit(to.test);	
-				visit(to.value1);	
+				visit(to.test);
+				visit(to.value1);
 				visit(to.value2);
 			}
 			break;
@@ -314,50 +314,50 @@ public class ReferenceVisitor
 		case ByteCodeConstants.OUTERTHIS:
 			{
 				IndexInstruction indexInstruction = (IndexInstruction)instruction;
-				ConstantFieldref cfr = 
+				ConstantFieldref cfr =
 					constants.getConstantFieldref(indexInstruction.index);
 				internalName = constants.getConstantClassName(cfr.class_index);
 				addReference(internalName);
 			}
-			break;		
+			break;
 		case ByteCodeConstants.INITARRAY:
 		case ByteCodeConstants.NEWANDINITARRAY:
 			{
 				InitArrayInstruction iai = (InitArrayInstruction)instruction;
-				visit(iai.newArray);			
+				visit(iai.newArray);
 				for (int index=iai.values.size()-1; index>=0; --index)
 					visit(iai.values.get(index));
 			}
-			break;			
+			break;
 		case FastConstants.FOR:
-			FastFor ff = (FastFor)instruction;	
-			visit(ff.init);	
-			visit(ff.inc);	
+			FastFor ff = (FastFor)instruction;
+			visit(ff.init);
+			visit(ff.inc);
 		case FastConstants.WHILE:
 		case FastConstants.DO_WHILE:
 		case FastConstants.IF_:
 			FastTestList ftl = (FastTestList)instruction;
-			visit(ftl.test);	
+			visit(ftl.test);
 		case FastConstants.INFINITE_LOOP:
 			{
-				List<Instruction> instructions = 
+				List<Instruction> instructions =
 						((FastList)instruction).instructions;
 				visit(instructions);
 			}
-			break;		
+			break;
 		case FastConstants.FOREACH:
 			{
-				FastForEach ffe = (FastForEach)instruction;	
+				FastForEach ffe = (FastForEach)instruction;
 				visit(ffe.variable);
-				visit(ffe.values);				
+				visit(ffe.values);
 				visit(ffe.instructions);
-			}	
+			}
 			break;
 		case FastConstants.IF_ELSE:
 			{
 				FastTest2Lists ft2l = (FastTest2Lists)instruction;
-				visit(ft2l.test);	
-				visit(ft2l.instructions);	
+				visit(ft2l.test);
+				visit(ft2l.instructions);
 				visit(ft2l.instructions2);
 			}
 			break;
@@ -377,7 +377,7 @@ public class ReferenceVisitor
 		case FastConstants.SWITCH_STRING:
 			{
 				FastSwitch fs = (FastSwitch)instruction;
-				visit(fs.test);	
+				visit(fs.test);
 				Pair[] pairs = fs.pairs;
 				for (int i=pairs.length-1; i>=0; --i)
 				{
@@ -419,13 +419,13 @@ public class ReferenceVisitor
 			{
 				IndexInstruction indexInstruction = (IndexInstruction)instruction;
 				Constant cst = constants.get(indexInstruction.index);
-				
+
 				if (cst.tag == ConstantConstant.CONSTANT_Class)
 				{
 					ConstantClass cc = (ConstantClass)cst;
-					internalName = constants.getConstantUtf8(cc.name_index); 
+					internalName = constants.getConstantUtf8(cc.name_index);
 					addReference(internalName);
-				}				
+				}
 			}
 			break;
 		case ByteCodeConstants.ACONST_NULL:
@@ -440,10 +440,10 @@ public class ReferenceVisitor
 		case ByteCodeConstants.DCONST:
 		case ByteCodeConstants.DUPLOAD:
 		case ByteCodeConstants.GOTO:
-		case ByteCodeConstants.IINC:			
-		case ByteCodeConstants.PREINC:			
-		case ByteCodeConstants.POSTINC:	
-		case ByteCodeConstants.JSR:			
+		case ByteCodeConstants.IINC:
+		case ByteCodeConstants.PREINC:
+		case ByteCodeConstants.POSTINC:
+		case ByteCodeConstants.JSR:
 		case ByteCodeConstants.LDC2_W:
 		case ByteCodeConstants.NOP:
 		case ByteCodeConstants.SIPUSH:
@@ -454,12 +454,12 @@ public class ReferenceVisitor
 			break;
 		default:
 			System.err.println(
-					"Can not count reference in " + 
-					instruction.getClass().getName() + 
+					"Can not count reference in " +
+					instruction.getClass().getName() +
 					", opcode=" + instruction.opcode);
 		}
 	}
-	
+
 	private void visit(List<Instruction> instructions)
 	{
 		if (instructions != null)
@@ -468,30 +468,30 @@ public class ReferenceVisitor
 				visit(instructions.get(i));
 		}
 	}
-	
+
 	private void visitCheckCastAndMultiANewArray(int index)
 	{
 		Constant c = constants.get(index);
-		
+
 		if (c.tag == ConstantConstant.CONSTANT_Class)
 		{
 			addReference(
 				constants.getConstantUtf8(((ConstantClass)c).name_index));
 		}
 	}
-	
+
 	private void addReference(String signature)
 	{
 		if (signature.charAt(0) == '[')
 		{
 			signature = SignatureUtil.CutArrayDimensionPrefix(signature);
-			
+
 			if (signature.charAt(0) == 'L')
 				referenceMap.add(SignatureUtil.GetInnerName(signature));
 		}
 		else
 		{
-			referenceMap.add(signature);				
-		}		
+			referenceMap.add(signature);
+		}
 	}
 }

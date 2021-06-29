@@ -1,7 +1,7 @@
 package org.jd.gui.util.parser.jdt.core;
 
 public class ReferenceData {
-	
+
 	private String typeName;
     /**
      * Field or method name or null for type
@@ -36,7 +36,7 @@ public class ReferenceData {
 	public void setTypeName(String typeName) {
 		this.typeName = typeName;
 	}
-	
+
 	public String getTypeName() {
 		return typeName;
 	}
