@@ -84,7 +84,6 @@ public class AddCastExpressionVisitor extends AbstractJavaSyntaxVisitor {
         }
     }
 
-
     @Override
     public void visit(StaticInitializerDeclaration declaration) {
         BaseStatement statements = declaration.getStatements();

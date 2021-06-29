@@ -36,7 +36,6 @@ import jd.core.model.reference.ReferenceMap;
 import jd.core.printer.Printer;
 import jd.core.process.analyzer.instruction.bytecode.util.ByteCodeUtil;
 
-
 public class ByteCodeWriter
 {
     private static final String CORRUPTED_CONSTANT_POOL =

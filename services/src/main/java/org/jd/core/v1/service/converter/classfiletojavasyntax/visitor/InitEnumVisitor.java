@@ -17,7 +17,6 @@ import java.util.Comparator;
 
 import static org.jd.core.v1.model.javasyntax.declaration.Declaration.*;
 
-
 public class InitEnumVisitor extends AbstractJavaSyntaxVisitor {
     protected ClassFileBodyDeclaration bodyDeclaration = null;
     protected BodyDeclaration constantBodyDeclaration = null;

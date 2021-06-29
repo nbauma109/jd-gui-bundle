@@ -16,7 +16,6 @@
  ******************************************************************************/
 package jd.core.model.classfile.constant;
 
-
 public class ConstantString extends ConstantValue
 {
     final public int string_index;

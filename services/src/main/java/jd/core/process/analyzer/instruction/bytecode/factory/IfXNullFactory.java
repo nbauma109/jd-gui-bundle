@@ -26,7 +26,6 @@ import jd.core.model.instruction.bytecode.instruction.DupLoad;
 import jd.core.model.instruction.bytecode.instruction.IfInstruction;
 import jd.core.model.instruction.bytecode.instruction.Instruction;
 
-
 public class IfXNullFactory extends InstructionFactory
 {
     public int cmp;

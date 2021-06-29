@@ -20,7 +20,6 @@ import jd.core.model.classfile.ClassFile;
 import jd.core.model.classfile.Method;
 import jd.core.model.instruction.fast.instruction.FastSwitch;
 
-
 public class FastSwitchLayoutBlock extends LayoutBlock
 {
     public ClassFile classFile;

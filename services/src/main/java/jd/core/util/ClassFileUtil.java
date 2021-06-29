@@ -21,7 +21,6 @@ import jd.core.model.classfile.ClassFileConstants;
 import jd.core.model.classfile.ConstantPool;
 import jd.core.model.classfile.Method;
 
-
 /*
  * internalPath:		basic/data/Test.class
  * internalClassName:	basic/data/Test

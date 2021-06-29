@@ -25,7 +25,6 @@ import jd.core.model.instruction.bytecode.ByteCodeConstants;
 import jd.core.model.instruction.bytecode.instruction.Instruction;
 import jd.core.model.instruction.bytecode.instruction.MonitorEnter;
 
-
 public class MonitorEnterFactory extends InstructionFactory
 {
     public int create(

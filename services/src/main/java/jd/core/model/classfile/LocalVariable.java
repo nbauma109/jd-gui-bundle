@@ -16,8 +16,6 @@
  ******************************************************************************/
 package jd.core.model.classfile;
 
-
-
 public class LocalVariable
     implements Comparable<LocalVariable>
 {

@@ -22,9 +22,6 @@ import jd.core.model.instruction.bytecode.ByteCodeConstants;
 import jd.core.model.instruction.bytecode.instruction.BranchInstruction;
 import jd.core.model.instruction.bytecode.instruction.Instruction;
 
-
-
-
 public class InstructionUtil
 {
     public static Instruction getInstructionAt(

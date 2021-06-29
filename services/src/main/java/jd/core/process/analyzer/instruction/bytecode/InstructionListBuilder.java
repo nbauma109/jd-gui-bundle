@@ -36,7 +36,6 @@ import jd.core.process.analyzer.instruction.bytecode.util.ByteCodeUtil;
 import jd.core.util.IntSet;
 import jd.core.util.SignatureUtil;
 
-
 public class InstructionListBuilder
 {
     private static CodeExceptionComparator COMPARATOR =

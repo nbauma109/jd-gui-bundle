@@ -25,7 +25,6 @@ import jd.core.model.classfile.attribute.ParameterAnnotations;
 import jd.core.model.reference.ReferenceMap;
 import jd.core.printer.Printer;
 
-
 public class AnnotationWriter
 {
     public static void WriteParameterAnnotation(

@@ -49,7 +49,6 @@ import jd.core.process.analyzer.classfile.visitor.ReplaceGetStaticVisitor;
 import jd.core.util.SignatureUtil;
 import jd.core.util.StringConstants;
 
-
 /*
  * Recontruction du mot cle '.class' depuis les instructions generees par le
  * JDK 1.4 de SUN :
@@ -328,7 +327,6 @@ public class DotClass14Reconstructor
                     matchingClassFile.getConstantPool();
                 Field[] fields = matchingClassFile.getFields();
                 int j = fields.length;
-
 
                 while (j-- > 0)
                 {

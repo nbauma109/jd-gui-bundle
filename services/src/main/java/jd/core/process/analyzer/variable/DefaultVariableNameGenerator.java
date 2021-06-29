@@ -22,12 +22,10 @@ import jd.core.model.classfile.ClassFile;
 import jd.core.model.classfile.Field;
 import jd.core.util.StringConstants;
 
-
 public class DefaultVariableNameGenerator implements VariableNameGenerator
 {
     private HashSet<String> fieldNames;
     private HashSet<String> localNames;
-
 
     public DefaultVariableNameGenerator(ClassFile classFile)
     {

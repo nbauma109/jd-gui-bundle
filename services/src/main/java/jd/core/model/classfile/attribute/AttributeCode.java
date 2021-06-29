@@ -16,8 +16,6 @@
  ******************************************************************************/
 package jd.core.model.classfile.attribute;
 
-
-
 public class AttributeCode extends Attribute
 {
     //private int max_stack;

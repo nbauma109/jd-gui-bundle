@@ -16,7 +16,6 @@
  ******************************************************************************/
 package jd.core.model.classfile.attribute;
 
-
 public class AttributeConstants
 {
     public static final byte ATTR_UNKNOWN= 0;

@@ -25,7 +25,6 @@ import jd.core.model.instruction.bytecode.ByteCodeConstants;
 import jd.core.model.instruction.bytecode.instruction.BIPush;
 import jd.core.model.instruction.bytecode.instruction.Instruction;
 
-
 public class BIPushFactory extends InstructionFactory
 {
     public int create(

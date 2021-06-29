@@ -24,7 +24,6 @@ import jd.core.model.instruction.bytecode.instruction.Goto;
 import jd.core.model.instruction.bytecode.instruction.Instruction;
 import jd.core.process.analyzer.instruction.bytecode.ComparisonInstructionAnalyzer;
 
-
 /**
  * Transformation de l'ensemble 'if-break' en simple 'if':
  *

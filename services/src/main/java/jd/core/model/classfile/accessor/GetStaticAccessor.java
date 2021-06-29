@@ -16,7 +16,6 @@
  ******************************************************************************/
 package jd.core.model.classfile.accessor;
 
-
 public class GetStaticAccessor extends Accessor
 {
     final public String className;

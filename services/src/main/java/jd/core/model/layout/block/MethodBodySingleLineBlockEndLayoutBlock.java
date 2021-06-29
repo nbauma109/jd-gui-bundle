@@ -16,7 +16,6 @@
  ******************************************************************************/
 package jd.core.model.layout.block;
 
-
 public class MethodBodySingleLineBlockEndLayoutBlock extends BlockLayoutBlock
 {
     public MethodBodySingleLineBlockEndLayoutBlock()

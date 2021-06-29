@@ -21,7 +21,6 @@ import java.util.List;
 import jd.core.model.classfile.ConstantPool;
 import jd.core.model.classfile.LocalVariables;
 
-
 public class InitArrayInstruction extends Instruction
 {
     public Instruction newArray;

@@ -18,7 +18,6 @@ package jd.core.model.layout.block;
 
 import jd.core.model.instruction.bytecode.instruction.Instruction;
 
-
 public class BlockLayoutBlock extends LayoutBlock
 {
     public BlockLayoutBlock other;

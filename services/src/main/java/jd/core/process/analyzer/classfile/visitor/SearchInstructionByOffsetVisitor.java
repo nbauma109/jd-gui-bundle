@@ -52,7 +52,6 @@ import jd.core.model.instruction.bytecode.instruction.TableSwitch;
 import jd.core.model.instruction.bytecode.instruction.TernaryOpStore;
 import jd.core.model.instruction.bytecode.instruction.UnaryOperatorInstruction;
 
-
 /*
  * Utilis� par TernaryOpReconstructor
  */

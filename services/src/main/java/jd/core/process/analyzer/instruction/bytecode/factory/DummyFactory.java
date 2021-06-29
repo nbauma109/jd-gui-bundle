@@ -24,7 +24,6 @@ import jd.core.model.classfile.Method;
 import jd.core.model.instruction.bytecode.ByteCodeConstants;
 import jd.core.model.instruction.bytecode.instruction.Instruction;
 
-
 public class DummyFactory extends InstructionFactory
 {
     public int create(

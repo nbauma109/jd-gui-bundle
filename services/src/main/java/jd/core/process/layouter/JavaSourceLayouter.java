@@ -68,7 +68,6 @@ import jd.core.process.layouter.visitor.InstructionSplitterVisitor;
 import jd.core.process.layouter.visitor.InstructionsSplitterVisitor;
 import jd.core.process.layouter.visitor.MaxLineNumberVisitor;
 
-
 public class JavaSourceLayouter
 {
     InstructionSplitterVisitor instructionSplitterVisitor;
@@ -432,7 +431,6 @@ public class JavaSourceLayouter
             eblb.other = sblb;
             layoutBlockList.add(eblb);
         }
-
 
         if (ff.inc == null)
         {

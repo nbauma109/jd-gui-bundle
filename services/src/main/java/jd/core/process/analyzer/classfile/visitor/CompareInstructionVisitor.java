@@ -53,8 +53,6 @@ import jd.core.model.instruction.bytecode.instruction.TernaryOpStore;
 import jd.core.model.instruction.bytecode.instruction.TernaryOperator;
 import jd.core.model.instruction.bytecode.instruction.UnaryOperatorInstruction;
 
-
-
 public class CompareInstructionVisitor
 {
     public boolean visit(Instruction i1, Instruction i2)

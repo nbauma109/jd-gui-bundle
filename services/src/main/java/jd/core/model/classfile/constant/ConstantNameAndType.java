@@ -16,7 +16,6 @@
  ******************************************************************************/
 package jd.core.model.classfile.constant;
 
-
 public class ConstantNameAndType extends Constant
 {
     public int name_index;

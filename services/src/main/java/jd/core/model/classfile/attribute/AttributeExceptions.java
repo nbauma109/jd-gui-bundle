@@ -16,7 +16,6 @@
  ******************************************************************************/
 package jd.core.model.classfile.attribute;
 
-
 public class AttributeExceptions extends Attribute
 {
     public final int[] exception_index_table;

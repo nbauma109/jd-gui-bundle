@@ -16,7 +16,6 @@
  ******************************************************************************/
 package jd.core.model.instruction.bytecode.instruction;
 
-
 public class LookupSwitch extends Switch
 {
     public int[] keys;

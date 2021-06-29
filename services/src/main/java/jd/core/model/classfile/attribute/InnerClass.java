@@ -16,7 +16,6 @@
  ******************************************************************************/
 package jd.core.model.classfile.attribute;
 
-
 public class InnerClass
 {
     public final int inner_class_index;

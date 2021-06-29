@@ -20,7 +20,6 @@ import jd.core.model.classfile.ConstantPool;
 import jd.core.model.classfile.LocalVariables;
 import jd.core.model.instruction.bytecode.ByteCodeConstants;
 
-
 public class IBinaryOperatorInstruction extends BinaryOperatorInstruction
 {
     public IBinaryOperatorInstruction(

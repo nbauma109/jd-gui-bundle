@@ -55,7 +55,6 @@ import jd.core.model.instruction.bytecode.instruction.TernaryOpStore;
 import jd.core.model.instruction.bytecode.instruction.UnaryOperatorInstruction;
 import jd.core.util.SignatureUtil;
 
-
 /*
  * Elimine les doubles casts et ajoute des casts devant les constantes
  * numeriques si necessaire.

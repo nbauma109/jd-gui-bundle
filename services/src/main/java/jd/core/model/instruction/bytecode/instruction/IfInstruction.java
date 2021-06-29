@@ -18,7 +18,6 @@ package jd.core.model.instruction.bytecode.instruction;
 
 import jd.core.model.instruction.bytecode.ByteCodeConstants;
 
-
 public class IfInstruction extends ConditionalBranchInstruction
 {
     public Instruction value;

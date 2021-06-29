@@ -43,7 +43,6 @@ import jd.core.model.reference.ReferenceMap;
 import jd.core.process.analyzer.classfile.visitor.ReplaceDupLoadVisitor;
 import jd.core.util.StringConstants;
 
-
 /*
  * Recontruction du mot cle '.class' depuis les instructions generees par le
  * compilateur d'Eclipse :

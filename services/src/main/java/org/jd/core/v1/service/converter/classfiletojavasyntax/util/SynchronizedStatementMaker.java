@@ -21,7 +21,6 @@ import org.jd.core.v1.service.converter.classfiletojavasyntax.model.localvariabl
 
 import java.util.Iterator;
 
-
 public class SynchronizedStatementMaker {
 
     public static Statement make(LocalVariableMaker localVariableMaker, Statements statements, Statements tryStatements) {

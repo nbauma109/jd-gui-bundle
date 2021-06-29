@@ -16,7 +16,6 @@
  ******************************************************************************/
 package jd.core.model.classfile.constant;
 
-
 public class ConstantUtf8 extends Constant
 {
     public String bytes;

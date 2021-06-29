@@ -16,8 +16,6 @@
  ******************************************************************************/
 package jd.core.model.instruction.bytecode.instruction;
 
-
-
 public class ImplicitConvertInstruction extends ConvertInstruction
 {
     public ImplicitConvertInstruction(

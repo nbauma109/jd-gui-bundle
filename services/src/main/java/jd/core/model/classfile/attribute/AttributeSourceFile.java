@@ -16,7 +16,6 @@
  ******************************************************************************/
 package jd.core.model.classfile.attribute;
 
-
 public class AttributeSourceFile extends Attribute
 {
     public final int sourcefile_index;

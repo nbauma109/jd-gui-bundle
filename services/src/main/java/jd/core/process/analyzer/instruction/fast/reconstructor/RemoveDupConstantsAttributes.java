@@ -23,7 +23,6 @@ import jd.core.model.instruction.bytecode.instruction.DupStore;
 import jd.core.model.instruction.bytecode.instruction.Instruction;
 import jd.core.process.analyzer.classfile.visitor.ReplaceDupLoadVisitor;
 
-
 /*
  * Retrait des instructions DupLoads & DupStore associ�s � une constante ou un
  * attribut:

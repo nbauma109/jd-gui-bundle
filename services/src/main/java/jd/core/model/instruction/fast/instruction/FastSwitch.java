@@ -23,7 +23,6 @@ import jd.core.model.classfile.LocalVariables;
 import jd.core.model.instruction.bytecode.instruction.BranchInstruction;
 import jd.core.model.instruction.bytecode.instruction.Instruction;
 
-
 /**
  * while, do-while & if
  */

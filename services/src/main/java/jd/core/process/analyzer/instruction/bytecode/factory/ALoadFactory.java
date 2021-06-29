@@ -25,7 +25,6 @@ import jd.core.model.instruction.bytecode.ByteCodeConstants;
 import jd.core.model.instruction.bytecode.instruction.ALoad;
 import jd.core.model.instruction.bytecode.instruction.Instruction;
 
-
 public class ALoadFactory extends InstructionFactory
 {
     public int create(

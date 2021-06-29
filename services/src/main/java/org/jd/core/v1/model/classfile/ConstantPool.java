@@ -7,7 +7,6 @@
 
 package org.jd.core.v1.model.classfile;
 
-
 import org.jd.core.v1.model.classfile.constant.*;
 
 public class ConstantPool {

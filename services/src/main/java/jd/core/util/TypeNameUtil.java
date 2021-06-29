@@ -16,7 +16,6 @@
  ******************************************************************************/
 package jd.core.util;
 
-
 /*
  * internalPath:		basic/data/Test.class
  * internalClassName:	basic/data/Test

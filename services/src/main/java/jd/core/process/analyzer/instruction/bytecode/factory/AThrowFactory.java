@@ -25,7 +25,6 @@ import jd.core.model.instruction.bytecode.ByteCodeConstants;
 import jd.core.model.instruction.bytecode.instruction.AThrow;
 import jd.core.model.instruction.bytecode.instruction.Instruction;
 
-
 public class AThrowFactory extends InstructionFactory
 {
     public int create(

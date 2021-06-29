@@ -16,7 +16,6 @@
  ******************************************************************************/
 package jd.core.model.reference;
 
-
 public class Reference
 {
     private String internalName;

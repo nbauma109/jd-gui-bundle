@@ -19,9 +19,6 @@ package jd.core.model.reference;
 import java.util.Collection;
 import java.util.HashMap;
 
-
-
-
 public class ReferenceMap
 {
     private HashMap<String, Reference> references;

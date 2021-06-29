@@ -49,8 +49,6 @@ import jd.core.model.reference.ReferenceMap;
 import jd.core.process.analyzer.classfile.visitor.ReferenceVisitor;
 import jd.core.util.StringConstants;
 
-
-
 public class ReferenceAnalyzer
 {
     public static void Analyze(

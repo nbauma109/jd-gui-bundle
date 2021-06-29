@@ -43,8 +43,6 @@ import jd.core.model.classfile.attribute.LineNumber;
 import jd.core.model.classfile.attribute.ParameterAnnotations;
 import jd.core.model.classfile.attribute.UnknowAttribute;
 
-
-
 public class AttributeDeserializer
 {
     public static Attribute[] Deserialize(

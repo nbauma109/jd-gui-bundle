@@ -16,7 +16,6 @@
  ******************************************************************************/
 package jd.core.model.classfile.attribute;
 
-
 public class AttributeInnerClasses extends Attribute
 {
     public final InnerClass[] classes;

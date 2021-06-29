@@ -20,7 +20,6 @@ import java.util.ArrayList;
 
 import jd.core.model.instruction.bytecode.ByteCodeConstants;
 
-
 public class SignatureUtil
 {
     /**

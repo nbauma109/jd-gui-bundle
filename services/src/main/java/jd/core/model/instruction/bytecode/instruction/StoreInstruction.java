@@ -18,7 +18,6 @@ package jd.core.model.instruction.bytecode.instruction;
 
 import jd.core.model.instruction.bytecode.instruction.attribute.ValuerefAttribute;
 
-
 public class StoreInstruction
     extends LoadInstruction implements ValuerefAttribute
 {

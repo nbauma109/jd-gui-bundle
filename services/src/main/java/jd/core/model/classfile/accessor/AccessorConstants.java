@@ -16,7 +16,6 @@
  ******************************************************************************/
 package jd.core.model.classfile.accessor;
 
-
 public class AccessorConstants
 {
     public static final byte ACCESSOR_GETSTATIC= 1;

@@ -18,7 +18,6 @@ package jd.core.model.instruction.bytecode.instruction;
 
 import jd.core.model.instruction.bytecode.instruction.attribute.ValuerefAttribute;
 
-
 public class PutStatic extends GetStatic implements ValuerefAttribute
 {
     public Instruction valueref;

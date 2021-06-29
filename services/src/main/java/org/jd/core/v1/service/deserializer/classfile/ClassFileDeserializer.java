@@ -89,7 +89,6 @@ public class ClassFileDeserializer {
                 }
             }
 
-
             if (!innerClassFiles.isEmpty()) {
                 classFile.setInnerClassFiles(innerClassFiles);
             }

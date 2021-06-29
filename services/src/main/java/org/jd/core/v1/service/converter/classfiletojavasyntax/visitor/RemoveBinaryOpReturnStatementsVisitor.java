@@ -18,7 +18,6 @@ import org.jd.core.v1.model.javasyntax.statement.Statements;
 import org.jd.core.v1.service.converter.classfiletojavasyntax.model.javasyntax.expression.ClassFileLocalVariableReferenceExpression;
 import org.jd.core.v1.service.converter.classfiletojavasyntax.util.LocalVariableMaker;
 
-
 public class RemoveBinaryOpReturnStatementsVisitor extends AbstractJavaSyntaxVisitor {
     protected LocalVariableMaker localVariableMaker;
 

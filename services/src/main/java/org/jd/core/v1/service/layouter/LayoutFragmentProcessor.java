@@ -22,7 +22,6 @@ import java.util.Map;
 
 import static org.jd.core.v1.api.printer.Printer.UNKNOWN_LINE_NUMBER;
 
-
 /**
  * Layout (compact, expend, move) a list of fragments.<br><br>
  *

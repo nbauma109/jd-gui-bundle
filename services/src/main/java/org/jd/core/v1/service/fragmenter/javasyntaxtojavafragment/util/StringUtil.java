@@ -7,7 +7,6 @@
 
 package org.jd.core.v1.service.fragmenter.javasyntaxtojavafragment.util;
 
-
 public class StringUtil {
 
     public static String escapeString(String s) {

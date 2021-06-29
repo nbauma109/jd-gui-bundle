@@ -16,7 +16,6 @@
  ******************************************************************************/
 package jd.core.util;
 
-
 public class StringConstants
 {
     public static final String CLASS_CONSTRUCTOR = "<clinit>";

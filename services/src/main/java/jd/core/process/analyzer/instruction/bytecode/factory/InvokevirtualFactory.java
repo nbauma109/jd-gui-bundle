@@ -29,7 +29,6 @@ import jd.core.model.instruction.bytecode.instruction.Instruction;
 import jd.core.model.instruction.bytecode.instruction.Invokevirtual;
 import jd.core.util.InvalidParameterException;
 
-
 public class InvokevirtualFactory extends InstructionFactory
 {
     public int create(

@@ -25,7 +25,6 @@ import jd.core.model.instruction.bytecode.ByteCodeConstants;
 import jd.core.model.instruction.bytecode.instruction.ConvertInstruction;
 import jd.core.model.instruction.bytecode.instruction.Instruction;
 
-
 public class ConvertInstructionFactory extends InstructionFactory
 {
     private String signature;

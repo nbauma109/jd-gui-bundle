@@ -31,7 +31,6 @@ import jd.core.model.instruction.bytecode.instruction.PutStatic;
 import jd.core.model.instruction.fast.FastConstants;
 import jd.core.process.analyzer.classfile.visitor.SearchInstructionByOpcodeVisitor;
 
-
 public class InitStaticFieldsReconstructor
 {
     public static void Reconstruct(ClassFile classFile)

@@ -25,7 +25,6 @@ import jd.core.model.instruction.bytecode.ByteCodeConstants;
 import jd.core.model.instruction.bytecode.instruction.AAStore;
 import jd.core.model.instruction.bytecode.instruction.Instruction;
 
-
 public class AAStoreFactory extends InstructionFactory
 {
     public int create(

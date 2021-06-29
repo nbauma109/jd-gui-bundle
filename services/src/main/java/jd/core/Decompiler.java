@@ -21,8 +21,6 @@ import jd.core.loader.LoaderException;
 import jd.core.preferences.Preferences;
 import jd.core.printer.Printer;
 
-
-
 public interface Decompiler
 {
     public void decompile(

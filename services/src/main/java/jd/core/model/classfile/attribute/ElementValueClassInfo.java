@@ -16,7 +16,6 @@
  ******************************************************************************/
 package jd.core.model.classfile.attribute;
 
-
 public class ElementValueClassInfo extends ElementValue
 {
     final public int class_info_index;

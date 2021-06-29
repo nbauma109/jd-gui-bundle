@@ -24,7 +24,6 @@ import jd.core.model.instruction.bytecode.instruction.Instruction;
 import jd.core.process.analyzer.classfile.visitor.ReplaceDupLoadVisitor;
 import jd.core.process.analyzer.instruction.fast.visitor.CountDupLoadVisitor;
 
-
 /**
  * Efface les instructions DupStore si elles sont associ�es � une seule
  * instruction DupLoad.

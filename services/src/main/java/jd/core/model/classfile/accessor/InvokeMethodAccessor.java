@@ -18,7 +18,6 @@ package jd.core.model.classfile.accessor;
 
 import java.util.List;
 
-
 public class InvokeMethodAccessor extends Accessor
 {
     final public String className;

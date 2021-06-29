@@ -19,7 +19,6 @@ package jd.core.model.instruction.bytecode.instruction;
 import jd.core.model.classfile.ConstantPool;
 import jd.core.model.classfile.LocalVariables;
 
-
 public class AssignmentInstruction extends BinaryOperatorInstruction
 {
     public AssignmentInstruction(

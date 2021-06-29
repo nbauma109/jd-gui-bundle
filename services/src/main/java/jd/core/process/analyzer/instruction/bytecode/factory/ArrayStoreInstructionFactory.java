@@ -25,7 +25,6 @@ import jd.core.model.instruction.bytecode.ByteCodeConstants;
 import jd.core.model.instruction.bytecode.instruction.ArrayStoreInstruction;
 import jd.core.model.instruction.bytecode.instruction.Instruction;
 
-
 public class ArrayStoreInstructionFactory extends InstructionFactory
 {
     private String signature;

@@ -16,7 +16,6 @@
  ******************************************************************************/
 package jd.core.model.classfile.accessor;
 
-
 public class PutFieldAccessor extends Accessor
 {
     final public String className;

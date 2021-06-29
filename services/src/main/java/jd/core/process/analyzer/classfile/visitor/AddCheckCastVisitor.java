@@ -61,7 +61,6 @@ import jd.core.model.instruction.bytecode.instruction.UnaryOperatorInstruction;
 import jd.core.util.SignatureUtil;
 import jd.core.util.StringConstants;
 
-
 /*
  * Ajout de 'cast' sur les instructions 'throw', 'astore', 'invokeXXX',
  * 'putfield', 'putstatic' et 'xreturn'

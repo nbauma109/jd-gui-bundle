@@ -16,7 +16,6 @@
  ******************************************************************************/
 package jd.core.model.classfile.constant;
 
-
 public class ConstantInteger extends ConstantValue
 {
     final public int bytes;

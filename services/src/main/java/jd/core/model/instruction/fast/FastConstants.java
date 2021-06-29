@@ -67,6 +67,5 @@ public class FastConstants extends ByteCodeConstants
     public static final int TYPE_ECLIPSE_677_FINALLY       = 13;
     public static final int TYPE_ECLIPSE_677_CATCH_FINALLY = 14;
 
-
     public static final String LABEL_PREFIX = "label";
 }

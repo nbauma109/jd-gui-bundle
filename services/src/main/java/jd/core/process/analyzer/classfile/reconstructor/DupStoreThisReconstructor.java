@@ -26,7 +26,6 @@ import jd.core.model.instruction.bytecode.instruction.Instruction;
 import jd.core.model.instruction.bytecode.instruction.MonitorEnter;
 import jd.core.process.analyzer.classfile.visitor.ReplaceDupLoadVisitor;
 
-
 /*
  * Elimine la s�quence suivante:
  * DupStore( ALoad(0) )

@@ -16,8 +16,6 @@
  ******************************************************************************/
 package jd.core.model.instruction.bytecode.instruction;
 
-
-
 public abstract class ConstInstruction extends Instruction
 {
     public int value;

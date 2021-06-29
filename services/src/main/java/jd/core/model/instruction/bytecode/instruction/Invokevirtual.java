@@ -18,8 +18,6 @@ package jd.core.model.instruction.bytecode.instruction;
 
 import java.util.List;
 
-
-
 public class Invokevirtual extends InvokeNoStaticInstruction
 {
     public Invokevirtual(

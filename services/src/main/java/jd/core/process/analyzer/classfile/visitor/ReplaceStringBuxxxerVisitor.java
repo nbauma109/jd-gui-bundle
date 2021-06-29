@@ -62,8 +62,6 @@ import jd.core.model.instruction.bytecode.instruction.TernaryOperator;
 import jd.core.model.instruction.bytecode.instruction.UnaryOperatorInstruction;
 import jd.core.util.StringConstants;
 
-
-
 public class ReplaceStringBuxxxerVisitor
 {
     private ConstantPool constants;
@@ -509,7 +507,6 @@ public class ReplaceStringBuxxxerVisitor
                     instruction.opcode);
         }
     }
-
 
     private void replaceInArgs(List<Instruction> args)
     {

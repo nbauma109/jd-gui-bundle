@@ -16,7 +16,6 @@
  ******************************************************************************/
 package jd.core.model.classfile.constant;
 
-
 public class ConstantDouble extends ConstantValue
 {
     final public double bytes;

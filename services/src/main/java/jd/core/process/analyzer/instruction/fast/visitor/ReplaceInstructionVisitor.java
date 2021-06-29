@@ -59,7 +59,6 @@ import jd.core.model.instruction.fast.instruction.FastSynchronized;
 import jd.core.model.instruction.fast.instruction.FastTestList;
 import jd.core.model.instruction.fast.instruction.FastTry;
 
-
 /*
  * Utilis� par TernaryOpReconstructor
  */

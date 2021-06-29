@@ -18,8 +18,6 @@ package jd.core.model.instruction.bytecode.instruction;
 
 import java.util.List;
 
-
-
 public class Invokespecial extends InvokeNoStaticInstruction
 {
     public Invokespecial(int opcode, int offset, int lineNumber, int index,

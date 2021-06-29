@@ -34,7 +34,6 @@ import jd.core.process.analyzer.classfile.visitor.ReplaceOuterAccessorVisitor;
 import jd.core.process.analyzer.classfile.visitor.ReplaceOuterReferenceVisitor;
 import jd.core.util.SignatureUtil;
 
-
 /*
  * Recontruction des references externes dans le corps des methodes des classes
  * internes.
@@ -52,7 +51,6 @@ public class OuterReferenceReconstructor
     private OuterGetFieldVisitor outerGetFieldVisitor;
     private OuterPutFieldVisitor outerPutFieldVisitor;
     private OuterInvokeMethodVisitor outerMethodVisitor;
-
 
     public OuterReferenceReconstructor(
         HashMap<String, ClassFile> innerClassesMap, ClassFile classFile)

@@ -16,7 +16,6 @@
  ******************************************************************************/
 package jd.core.model.classfile.attribute;
 
-
 public class ElementValueAnnotationValue extends ElementValue
 {
     final public Annotation annotation_value;

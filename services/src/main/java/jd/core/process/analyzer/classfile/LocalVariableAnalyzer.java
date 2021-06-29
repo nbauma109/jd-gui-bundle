@@ -59,7 +59,6 @@ import jd.core.util.SignatureUtil;
 import jd.core.util.StringConstants;
 import jd.core.util.UtilConstants;
 
-
 public class LocalVariableAnalyzer
 {
     /**
@@ -1656,7 +1655,6 @@ public class LocalVariableAnalyzer
 
         ((IConst)ri.valueref).signature = returnedSignature;
     }
-
 
     private static String GetReturnedSignature(
             ClassFile classFile, Method method)

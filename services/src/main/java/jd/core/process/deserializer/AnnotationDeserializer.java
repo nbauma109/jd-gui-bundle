@@ -29,7 +29,6 @@ import jd.core.model.classfile.attribute.ElementValueEnumConstValue;
 import jd.core.model.classfile.attribute.ElementValuePair;
 import jd.core.model.classfile.attribute.ElementValuePrimitiveType;
 
-
 public class AnnotationDeserializer
 {
     public static Annotation[] Deserialize(DataInput di)

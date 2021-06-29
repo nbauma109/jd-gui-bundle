@@ -7,7 +7,6 @@
 
 package org.jdv1.gui.api.feature;
 
-
 import java.util.Collection;
 import java.util.concurrent.Future;
 

@@ -69,7 +69,6 @@ public class BasicBlock {
     public static final BasicBlock END = new ImmutableBasicBlock(TYPE_END);
     public static final BasicBlock RETURN = new ImmutableBasicBlock(TYPE_RETURN);
 
-
     protected ControlFlowGraph controlFlowGraph;
 
     protected int index;

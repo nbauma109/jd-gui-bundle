@@ -18,7 +18,6 @@ package jd.core.model.classfile.constant;
 
 import java.util.List;
 
-
 public class ConstantMethodref extends Constant
 {
     final public int class_index;

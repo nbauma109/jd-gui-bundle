@@ -2552,7 +2552,6 @@ public class ClassFileWriter
         this.addSpace = false;
     }
 
-
     static
     {
         keywords = new HashSet<String>();

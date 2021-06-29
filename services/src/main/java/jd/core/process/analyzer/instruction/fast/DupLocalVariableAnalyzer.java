@@ -34,8 +34,6 @@ import jd.core.model.instruction.fast.instruction.FastTest2Lists;
 import jd.core.model.instruction.fast.instruction.FastTry;
 import jd.core.util.StringConstants;
 
-
-
 public class DupLocalVariableAnalyzer
 {
     public static void Declare(

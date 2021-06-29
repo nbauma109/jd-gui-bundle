@@ -16,7 +16,6 @@
  ******************************************************************************/
 package jd.core.model.layout.block;
 
-
 public class OffsetLayoutBlock extends LayoutBlock
 {
     public int offset;

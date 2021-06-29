@@ -16,7 +16,6 @@
  ******************************************************************************/
 package jd.core.model.classfile.attribute;
 
-
 public class ElementValuePrimitiveType extends ElementValue
 {
     /*

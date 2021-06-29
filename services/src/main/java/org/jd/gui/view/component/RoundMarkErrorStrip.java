@@ -175,7 +175,6 @@ public class RoundMarkErrorStrip extends JComponent {
         setCaretMarkerColor(new Color(0x96c5fe));
     }
 
-
     /**
      * Overridden so we only start listening for parser notices when this
      * component (and presumably the text area) are visible.
@@ -195,7 +194,6 @@ public class RoundMarkErrorStrip extends JComponent {
         refreshMarkers();
     }
 
-
     /**
      * Manually manages layout since this component uses no layout manager.
      */
@@ -207,7 +205,6 @@ public class RoundMarkErrorStrip extends JComponent {
         }
         listener.caretUpdate(null); // Force recalculation of caret line pos
     }
-
 
     /**
      * Returns a "brighter" color.
@@ -231,7 +228,6 @@ public class RoundMarkErrorStrip extends JComponent {
         }
         return brighter;
     }
-
 
     /**
      * Added for JD-GUI.
@@ -258,7 +254,6 @@ public class RoundMarkErrorStrip extends JComponent {
         return darker;
     }
 
-
     /**
      * returns the color to use when painting the caret marker.
      *
@@ -268,7 +263,6 @@ public class RoundMarkErrorStrip extends JComponent {
     public Color getCaretMarkerColor() {
         return caretMarkerColor;
     }
-
 
     /**
      * Returns whether the caret's position should be drawn.
@@ -280,7 +274,6 @@ public class RoundMarkErrorStrip extends JComponent {
         return followCaret;
     }
 
-
     /**
      * {@inheritDoc}
      */
@@ -289,7 +282,6 @@ public class RoundMarkErrorStrip extends JComponent {
         int height = textArea.getPreferredScrollableViewportSize().height;
         return new Dimension(PREFERRED_WIDTH, height);
     }
-
 
     /**
      * Returns the minimum severity a parser notice must be for it to be
@@ -303,7 +295,6 @@ public class RoundMarkErrorStrip extends JComponent {
         return levelThreshold;
     }
 
-
     /**
      * Returns whether "mark all" highlights are shown in this error strip.
      *
@@ -314,7 +305,6 @@ public class RoundMarkErrorStrip extends JComponent {
         return showMarkAll;
     }
 
-
     /**
      * Returns whether marked occurrences are shown in this error strip.
      *
@@ -324,7 +314,6 @@ public class RoundMarkErrorStrip extends JComponent {
     public boolean getShowMarkedOccurrences() {
         return showMarkedOccurrences;
     }
-
 
     /**
      * {@inheritDoc}
@@ -340,7 +329,6 @@ public class RoundMarkErrorStrip extends JComponent {
         return text;
     }
 
-
     /**
      * Returns the y-offset in this component corresponding to a line in the
      * text component.
@@ -354,7 +342,6 @@ public class RoundMarkErrorStrip extends JComponent {
         float lineCount = textArea.getLineCount();
         return (int)(((line-1)/(lineCount-1)) * h) - 2;
     }
-
 
     /**
      * Overridden to (possibly) draw the caret's position.
@@ -370,7 +357,6 @@ public class RoundMarkErrorStrip extends JComponent {
         }
     }
 
-
     /**
      * Returns a possibly brighter component for a color.
      *
@@ -384,7 +370,6 @@ public class RoundMarkErrorStrip extends JComponent {
         return i;
     }
 
-
     /**
      * Returns a possibly darker component for a color.
      *
@@ -394,7 +379,6 @@ public class RoundMarkErrorStrip extends JComponent {
     private static final int possiblyDarker(int i) {
         return i -= (int)(i*0.4f);
     }
-
 
     /**
      * Refreshes the markers displayed in this error strip.
@@ -438,7 +422,6 @@ public class RoundMarkErrorStrip extends JComponent {
 
     }
 
-
     /**
      * Adds markers for a list of ranges in the document.
      *
@@ -472,7 +455,6 @@ public class RoundMarkErrorStrip extends JComponent {
         }
     }
 
-
     /**
      * {@inheritDoc}
      */
@@ -490,7 +472,6 @@ public class RoundMarkErrorStrip extends JComponent {
                 RSyntaxTextArea.MARK_ALL_OCCURRENCES_CHANGED_PROPERTY, listener);
     }
 
-
     /**
      * Sets the color to use when painting the caret marker.
      *
@@ -503,7 +484,6 @@ public class RoundMarkErrorStrip extends JComponent {
             listener.caretUpdate(null); // Force repaint
         }
     }
-
 
     /**
      * Toggles whether the caret's current location should be drawn.
@@ -523,7 +503,6 @@ public class RoundMarkErrorStrip extends JComponent {
         }
     }
 
-
     /**
      * Sets the minimum severity a parser notice must be for it to be displayed
      * in this error strip.  This should be one of the constants defined in
@@ -541,7 +520,6 @@ public class RoundMarkErrorStrip extends JComponent {
         }
     }
 
-
     /**
      * Sets whether "mark all" highlights are shown in this error strip.
      *
@@ -557,7 +535,6 @@ public class RoundMarkErrorStrip extends JComponent {
         }
     }
 
-
     /**
      * Sets whether marked occurrences are shown in this error strip.
      *
@@ -572,7 +549,6 @@ public class RoundMarkErrorStrip extends JComponent {
             }
         }
     }
-
 
     /**
      * Returns the line in the text area corresponding to a y-offset in this
@@ -591,7 +567,6 @@ public class RoundMarkErrorStrip extends JComponent {
         }
         return line;
     }
-
 
     /**
      * Listens for events in the error strip and its markers.
@@ -674,7 +649,6 @@ public class RoundMarkErrorStrip extends JComponent {
         }
 
     }
-
 
     /**
      * A notice that wraps a "marked occurrence."
@@ -768,7 +742,6 @@ public class RoundMarkErrorStrip extends JComponent {
         }
 
     }
-
 
     /**
      * A "marker" in this error strip, representing one or more notices.
@@ -915,6 +888,5 @@ public class RoundMarkErrorStrip extends JComponent {
         }
 
     }
-
 
 }

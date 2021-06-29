@@ -20,7 +20,6 @@ import jd.core.model.classfile.ClassFile;
 import jd.core.model.classfile.ConstantPool;
 import jd.core.model.classfile.Method;
 
-
 public class InstructionListException extends RuntimeException
 {
     private static final long serialVersionUID = -2987531947933382754L;

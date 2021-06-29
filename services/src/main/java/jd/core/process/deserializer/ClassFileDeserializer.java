@@ -46,8 +46,6 @@ import jd.core.model.classfile.constant.ConstantString;
 import jd.core.model.classfile.constant.ConstantUtf8;
 import jd.core.util.StringConstants;
 
-
-
 public class ClassFileDeserializer
 {
     public static ClassFile Deserialize(Loader loader, String internalClassPath)

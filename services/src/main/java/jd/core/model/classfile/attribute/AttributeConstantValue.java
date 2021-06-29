@@ -16,7 +16,6 @@
  ******************************************************************************/
 package jd.core.model.classfile.attribute;
 
-
 public class AttributeConstantValue extends Attribute
 {
     public final int constantvalue_index;

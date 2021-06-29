@@ -16,7 +16,6 @@
  ******************************************************************************/
 package jd.core.model.classfile.attribute;
 
-
 public class AttributeNumberTable extends Attribute
 {
     public final LineNumber[] line_number_table;

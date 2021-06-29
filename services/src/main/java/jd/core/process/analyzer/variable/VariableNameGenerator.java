@@ -16,7 +16,6 @@
  ******************************************************************************/
 package jd.core.process.analyzer.variable;
 
-
 public interface VariableNameGenerator
 {
     public void clearLocalNames();

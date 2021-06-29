@@ -66,7 +66,6 @@ import jd.core.model.instruction.fast.instruction.FastTry;
 import jd.core.model.instruction.fast.instruction.FastSwitch.Pair;
 import jd.core.model.instruction.fast.instruction.FastTry.FastCatch;
 
-
 /*
  * Utilis� par TernaryOpReconstructor
  */

@@ -21,7 +21,6 @@ import jd.core.model.classfile.Method;
 import jd.core.model.instruction.bytecode.instruction.Instruction;
 import jd.core.model.instruction.fast.instruction.FastSwitch;
 
-
 public class CaseLayoutBlock extends LayoutBlock
 {
     public ClassFile classFile;

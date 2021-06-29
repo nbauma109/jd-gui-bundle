@@ -16,7 +16,6 @@
  ******************************************************************************/
 package jd.core.model.classfile.attribute;
 
-
 public class ElementValueArrayValue extends ElementValue
 {
     final public ElementValue[] values;

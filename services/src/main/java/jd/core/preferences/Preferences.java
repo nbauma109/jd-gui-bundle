@@ -16,7 +16,6 @@
  ******************************************************************************/
 package jd.core.preferences;
 
-
 public class Preferences
 {
     protected boolean showDefaultConstructor;

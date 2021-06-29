@@ -28,7 +28,6 @@ import jd.core.model.instruction.bytecode.instruction.GetStatic;
 import jd.core.model.instruction.bytecode.instruction.Instruction;
 import jd.core.util.SignatureUtil;
 
-
 /*
  * Replace 'this.this$3.this$2.this$1.this$0.xxx' by 'TestInnerClass.this.xxx'
  */

@@ -18,7 +18,6 @@ package jd.core.model.classfile.attribute;
 
 import jd.core.model.classfile.LocalVariable;
 
-
 public class AttributeLocalVariableTable extends Attribute
 {
     public final LocalVariable[] local_variable_table;

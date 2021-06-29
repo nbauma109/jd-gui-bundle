@@ -16,11 +16,9 @@
  ******************************************************************************/
 package jd.core.printer;
 
-
 public interface Printer
 {
     public static int UNKNOWN_LINE_NUMBER = 0;
-
 
     public void print(byte b);
     public void print(char c);

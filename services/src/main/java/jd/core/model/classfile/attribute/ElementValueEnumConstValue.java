@@ -16,7 +16,6 @@
  ******************************************************************************/
 package jd.core.model.classfile.attribute;
 
-
 public class ElementValueEnumConstValue extends ElementValue
 {
     final public int type_name_index;

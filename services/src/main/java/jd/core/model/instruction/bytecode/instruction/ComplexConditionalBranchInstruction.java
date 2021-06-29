@@ -22,7 +22,6 @@ import jd.core.model.classfile.ConstantPool;
 import jd.core.model.classfile.LocalVariables;
 import jd.core.model.instruction.fast.FastConstants;
 
-
 public class ComplexConditionalBranchInstruction extends ConditionalBranchInstruction
 {
     public List<Instruction> instructions;

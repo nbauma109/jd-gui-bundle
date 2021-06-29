@@ -75,7 +75,6 @@ import jd.core.process.analyzer.variable.DefaultVariableNameGenerator;
 import jd.core.util.SignatureUtil;
 import jd.core.util.StringConstants;
 
-
 public class ClassFileAnalyzer
 {
     public static void Analyze(ReferenceMap referenceMap, ClassFile classFile)

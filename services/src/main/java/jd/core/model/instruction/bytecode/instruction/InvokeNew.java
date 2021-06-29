@@ -20,7 +20,6 @@ import java.util.List;
 
 import jd.core.model.instruction.fast.FastConstants;
 
-
 public class InvokeNew extends InvokeInstruction
 {
     public int enumValueFieldRefIndex;

@@ -18,7 +18,6 @@ package jd.core.model.classfile;
 
 import jd.core.model.classfile.attribute.Attribute;
 
-
 public class FieldOrMethod extends Base
 {
     public int name_index;

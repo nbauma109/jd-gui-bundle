@@ -16,7 +16,6 @@
  ******************************************************************************/
 package jd.core.model.instruction.bytecode.instruction;
 
-
 public class TableSwitch extends Switch
 {
     public int low;

@@ -16,7 +16,6 @@
  ******************************************************************************/
 package jd.core.model.instruction.bytecode.instruction;
 
-
 public abstract class BranchInstruction extends Instruction
 {
     public int branch;

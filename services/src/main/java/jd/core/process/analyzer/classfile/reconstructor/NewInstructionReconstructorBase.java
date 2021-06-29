@@ -30,7 +30,6 @@ import jd.core.model.instruction.bytecode.instruction.Instruction;
 import jd.core.model.instruction.bytecode.instruction.InvokeNew;
 import jd.core.util.UtilConstants;
 
-
 public class NewInstructionReconstructorBase
 {
     /*

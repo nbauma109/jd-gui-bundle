@@ -34,7 +34,6 @@ import jd.core.util.InvalidParameterException;
 import jd.core.util.StringConstants;
 import jd.core.util.StringToIndexMap;
 
-
 public class ConstantPool
 {
     private ArrayList<Constant> listOfConstants;
@@ -76,8 +75,6 @@ public class ConstantPool
     public final int signatureAttributeNameIndex;
     public final int sourceFileAttributeNameIndex;
     public final int syntheticAttributeNameIndex;
-
-
 
     public ConstantPool(Constant[] constants)
     {

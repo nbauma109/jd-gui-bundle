@@ -30,7 +30,6 @@ import jd.core.model.instruction.bytecode.instruction.NewArray;
 import jd.core.model.instruction.bytecode.instruction.SIPush;
 import jd.core.process.analyzer.util.ReconstructorUtil;
 
-
 /*
  * Recontruction des initialisation de tableaux depuis le motif :
  * DupStore0 ( NewArray | ANewArray ... )

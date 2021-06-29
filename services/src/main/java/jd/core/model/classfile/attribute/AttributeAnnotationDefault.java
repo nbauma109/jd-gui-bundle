@@ -16,7 +16,6 @@
  ******************************************************************************/
 package jd.core.model.classfile.attribute;
 
-
 public class AttributeAnnotationDefault extends Attribute
 {
     public final ElementValue default_value;

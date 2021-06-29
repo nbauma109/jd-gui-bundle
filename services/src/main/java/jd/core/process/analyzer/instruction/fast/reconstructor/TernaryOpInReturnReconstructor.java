@@ -26,7 +26,6 @@ import jd.core.model.instruction.bytecode.instruction.Instruction;
 import jd.core.model.instruction.bytecode.instruction.ReturnInstruction;
 import jd.core.process.analyzer.instruction.bytecode.ComparisonInstructionAnalyzer;
 
-
 /*
  * Recontruction de l'instruction 'return (b1 == 1);' depuis la sequence :
  * 46: if (b1 == 1)

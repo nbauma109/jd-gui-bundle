@@ -32,7 +32,6 @@ import jd.core.model.instruction.bytecode.instruction.Invokespecial;
 import jd.core.model.instruction.bytecode.instruction.New;
 import jd.core.process.analyzer.util.ReconstructorUtil;
 
-
 /*
  * Recontruction de l'instruction 'new' depuis le motif :
  * DupStore( New(java/lang/Long) )

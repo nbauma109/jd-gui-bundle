@@ -32,8 +32,6 @@ import jd.core.model.classfile.attribute.LineNumber;
 import jd.core.model.classfile.attribute.ParameterAnnotations;
 import jd.core.model.instruction.bytecode.instruction.Instruction;
 
-
-
 public class Method extends FieldOrMethod
 {
     private boolean containsError;

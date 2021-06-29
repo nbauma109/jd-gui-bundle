@@ -22,7 +22,6 @@ import jd.core.model.classfile.ConstantPool;
 import jd.core.model.classfile.LocalVariables;
 import jd.core.model.classfile.constant.ConstantMethodref;
 
-
 public abstract class InvokeInstruction extends IndexInstruction
 {
     public List<Instruction> args;

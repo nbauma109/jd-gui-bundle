@@ -25,7 +25,6 @@ import jd.core.model.instruction.bytecode.ByteCodeConstants;
 import jd.core.model.instruction.bytecode.instruction.BinaryOperatorInstruction;
 import jd.core.model.instruction.bytecode.instruction.Instruction;
 
-
 public class CmpFactory extends BinaryOperatorFactory
 {
     public CmpFactory(

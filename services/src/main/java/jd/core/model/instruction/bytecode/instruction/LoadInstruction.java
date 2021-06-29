@@ -19,7 +19,6 @@ package jd.core.model.instruction.bytecode.instruction;
 import jd.core.model.classfile.ConstantPool;
 import jd.core.model.classfile.LocalVariables;
 
-
 public class LoadInstruction extends IndexInstruction
 {
     private String signature;

@@ -13,7 +13,6 @@ import org.jd.core.v1.model.javasyntax.type.Type;
 import org.jd.core.v1.service.converter.classfiletojavasyntax.model.localvariable.AbstractLocalVariable;
 import org.jd.core.v1.service.converter.classfiletojavasyntax.model.localvariable.LocalVariableReference;
 
-
 public class ClassFileFormalParameter extends FormalParameter implements LocalVariableReference {
     protected AbstractLocalVariable localVariable;
 

@@ -231,7 +231,6 @@ public class TabbedPanel<T extends JComponent & UriGettable> extends JPanel impl
         }
     }
 
-
     // --- Popup menu actions --- //
     public void removeComponent(Component component) {
         tabbedPane.remove(component);

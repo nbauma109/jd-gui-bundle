@@ -16,7 +16,6 @@
  ******************************************************************************/
 package jd.core.model.classfile.attribute;
 
-
 public class AttributeEnclosingMethod extends Attribute
 {
     public final int class_index;

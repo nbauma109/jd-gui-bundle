@@ -30,7 +30,6 @@ import jd.core.model.instruction.bytecode.instruction.LoadInstruction;
 import jd.core.model.instruction.bytecode.instruction.Ret;
 import jd.core.model.instruction.bytecode.instruction.StoreInstruction;
 
-
 public class WideFactory extends InstructionFactory
 {
     public int create(

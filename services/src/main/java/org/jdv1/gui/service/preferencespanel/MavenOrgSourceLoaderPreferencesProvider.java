@@ -132,7 +132,6 @@ public class MavenOrgSourceLoaderPreferencesProvider extends JPanel implements P
         this.listener = listener;
     }
 
-
     // --- DocumentListener --- //
     @Override public void insertUpdate(DocumentEvent e) { onTextChange(); }
     @Override public void removeUpdate(DocumentEvent e) { onTextChange(); }

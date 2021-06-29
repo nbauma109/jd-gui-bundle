@@ -22,7 +22,6 @@ import jd.core.model.classfile.attribute.AttributeConstants;
 import jd.core.model.classfile.attribute.AttributeRuntimeAnnotations;
 import jd.core.model.classfile.attribute.AttributeSignature;
 
-
 public class Base
 {
     public int access_flags;

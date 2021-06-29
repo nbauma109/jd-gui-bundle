@@ -16,7 +16,6 @@
  ******************************************************************************/
 package jd.core.model.instruction.bytecode.instruction;
 
-
 public abstract class ArrayInstruction extends Instruction
 {
     public Instruction arrayref;

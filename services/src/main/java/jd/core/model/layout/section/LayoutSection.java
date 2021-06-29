@@ -16,7 +16,6 @@
  ******************************************************************************/
 package jd.core.model.layout.section;
 
-
 public class LayoutSection implements Comparable<LayoutSection>
 {
     public int index;

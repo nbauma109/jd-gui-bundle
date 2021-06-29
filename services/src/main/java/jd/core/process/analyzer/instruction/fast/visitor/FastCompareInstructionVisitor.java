@@ -25,7 +25,6 @@ import jd.core.model.instruction.fast.instruction.FastTry;
 import jd.core.model.instruction.fast.instruction.FastTry.FastCatch;
 import jd.core.process.analyzer.classfile.visitor.CompareInstructionVisitor;
 
-
 public class FastCompareInstructionVisitor extends CompareInstructionVisitor
 {
     public boolean visit(

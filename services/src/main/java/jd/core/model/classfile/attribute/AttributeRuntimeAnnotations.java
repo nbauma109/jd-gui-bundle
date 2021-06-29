@@ -16,7 +16,6 @@
  ******************************************************************************/
 package jd.core.model.classfile.attribute;
 
-
 public class AttributeRuntimeAnnotations extends Attribute
 {
     public final Annotation[] annotations;

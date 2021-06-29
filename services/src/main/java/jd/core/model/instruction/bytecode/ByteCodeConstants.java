@@ -16,9 +16,6 @@
  ******************************************************************************/
 package jd.core.model.instruction.bytecode;
 
-
-
-
 public class ByteCodeConstants
 {
     public static final short  NO_OF_OPERANDS_UNDEFINED      = -1;
@@ -27,7 +24,6 @@ public class ByteCodeConstants
 
     public static final String ILLEGAL_OPCODE = "<illegal opcode>";
     public static final String ILLEGAL_TYPE   = "<illegal type>";
-
 
     /** Java VM opcodes.
      */
@@ -269,7 +265,6 @@ public class ByteCodeConstants
     public static final int IMPDEP1                   = 254;
     public static final int IMPDEP2                   = 255;
 
-
     // Extension for decompiler
     public static final int ICONST                    = 256;
     public static final int LCONST                    = 257;
@@ -302,7 +297,6 @@ public class ByteCodeConstants
     public static final int COMPLEXIF                 = 284;
     public static final int OUTERTHIS                 = 285;
     public static final int ASSERT                    = 286;
-
 
     public static final String[] OPCODE_NAMES = {
         "nop", "aconst_null", "iconst_m1", "iconst_0", "iconst_1",
@@ -435,7 +429,6 @@ public class ByteCodeConstants
         NO_OF_OPERANDS_RESERVED/*impdep1*/, NO_OF_OPERANDS_RESERVED/*impdep2*/
       };
 
-
     public static final int CMP_MAX_INDEX = 7;
 
     public static final int CMP_EQ  = 0;
@@ -449,7 +442,6 @@ public class ByteCodeConstants
 
     public static final String[] CMP_NAMES = {
         "==", "<", ">", "", "!", "<=", ">=", "!=" };
-
 
     public static final byte T_BOOLEAN = 4;
     public static final byte T_CHAR    = 5;

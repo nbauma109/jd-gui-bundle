@@ -22,7 +22,6 @@ import jd.core.model.instruction.bytecode.instruction.DupStore;
 import jd.core.model.instruction.bytecode.instruction.Instruction;
 import jd.core.process.analyzer.classfile.visitor.ReplaceDupLoadVisitor;
 
-
 public class ReconstructorUtil
 {
     public static Instruction ReplaceDupLoad(

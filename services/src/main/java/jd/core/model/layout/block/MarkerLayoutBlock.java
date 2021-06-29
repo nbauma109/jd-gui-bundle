@@ -19,7 +19,6 @@ package jd.core.model.layout.block;
 import jd.core.model.classfile.ClassFile;
 import jd.core.model.instruction.bytecode.instruction.Instruction;
 
-
 public class MarkerLayoutBlock extends LayoutBlock
 {
     public ClassFile classFile;

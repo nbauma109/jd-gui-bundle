@@ -29,7 +29,6 @@ import jd.core.model.instruction.bytecode.instruction.Instruction;
 import jd.core.model.instruction.bytecode.instruction.Invokespecial;
 import jd.core.util.InvalidParameterException;
 
-
 public class InvokespecialFactory extends InstructionFactory
 {
     public int create(

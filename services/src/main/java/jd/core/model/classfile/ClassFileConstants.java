@@ -16,7 +16,6 @@
  ******************************************************************************/
 package jd.core.model.classfile;
 
-
 public class ClassFileConstants
 {
     // Access flag for Class, Field, Method, Nested class

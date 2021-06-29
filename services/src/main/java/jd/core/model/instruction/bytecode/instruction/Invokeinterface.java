@@ -18,7 +18,6 @@ package jd.core.model.instruction.bytecode.instruction;
 
 import java.util.List;
 
-
 public class Invokeinterface extends InvokeNoStaticInstruction
 {
     public Invokeinterface(

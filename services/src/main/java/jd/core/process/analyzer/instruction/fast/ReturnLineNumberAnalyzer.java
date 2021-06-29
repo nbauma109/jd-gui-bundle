@@ -27,7 +27,6 @@ import jd.core.model.instruction.fast.instruction.FastSwitch;
 import jd.core.model.instruction.fast.instruction.FastTest2Lists;
 import jd.core.model.instruction.fast.instruction.FastTry;
 
-
 /*
  * Le numero de ligne des instructions 'return' genere par les compilateurs
  * sont faux et perturbe l'affichage des sources

@@ -25,7 +25,6 @@ import jd.core.model.instruction.bytecode.ByteCodeConstants;
 import jd.core.model.instruction.bytecode.instruction.ImplicitConvertInstruction;
 import jd.core.model.instruction.bytecode.instruction.Instruction;
 
-
 public class ImplicitConvertInstructionFactory extends InstructionFactory
 {
     private String signature;

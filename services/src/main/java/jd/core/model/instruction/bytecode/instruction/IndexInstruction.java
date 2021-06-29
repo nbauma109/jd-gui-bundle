@@ -16,8 +16,6 @@
  ******************************************************************************/
 package jd.core.model.instruction.bytecode.instruction;
 
-
-
 public abstract class IndexInstruction extends Instruction
 {
     public int index;

@@ -33,7 +33,6 @@ import jd.core.model.instruction.bytecode.instruction.PutStatic;
 import jd.core.model.instruction.bytecode.instruction.StoreInstruction;
 import jd.core.process.analyzer.classfile.visitor.CompareInstructionVisitor;
 
-
 /*
  * Recontruction des operateurs d'assignation depuis les motifs :
  * 1) Operation sur les attributs de classes:

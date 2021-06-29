@@ -27,7 +27,6 @@ import jd.core.model.instruction.bytecode.instruction.TernaryOperator;
 import jd.core.process.analyzer.instruction.bytecode.ComparisonInstructionAnalyzer;
 import jd.core.process.analyzer.instruction.fast.visitor.ReplaceInstructionVisitor;
 
-
 /*
  * Reconstruction des operateurs ternaires.
  * Contenu de la liste d'instructions :

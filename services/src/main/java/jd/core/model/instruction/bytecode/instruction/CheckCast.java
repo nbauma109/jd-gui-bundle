@@ -24,7 +24,6 @@ import jd.core.model.classfile.constant.ConstantConstant;
 import jd.core.model.classfile.constant.ConstantUtf8;
 import jd.core.util.SignatureUtil;
 
-
 public class CheckCast extends IndexInstruction
 {
     public Instruction objectref;

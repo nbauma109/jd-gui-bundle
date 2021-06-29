@@ -30,8 +30,6 @@ import jd.core.model.instruction.bytecode.instruction.Instruction;
 import jd.core.util.SignatureUtil;
 import jd.core.util.StringConstants;
 
-
-
 public class ClassFile extends Base
 {
     private int minor_version;

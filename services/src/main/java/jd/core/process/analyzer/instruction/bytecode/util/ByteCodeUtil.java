@@ -18,7 +18,6 @@ package jd.core.process.analyzer.instruction.bytecode.util;
 
 import jd.core.model.instruction.bytecode.ByteCodeConstants;
 
-
 public class ByteCodeUtil
 {
     public static int NextTableSwitchOffset(byte[] code, int index)

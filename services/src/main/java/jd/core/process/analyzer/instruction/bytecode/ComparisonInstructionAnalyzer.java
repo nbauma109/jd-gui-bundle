@@ -28,7 +28,6 @@ import jd.core.model.instruction.bytecode.instruction.Goto;
 import jd.core.model.instruction.bytecode.instruction.Instruction;
 import jd.core.model.instruction.bytecode.instruction.TernaryOperator;
 
-
 /**
  * Aggrege les instructions 'if'
  */

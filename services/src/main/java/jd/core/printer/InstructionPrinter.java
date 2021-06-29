@@ -18,7 +18,6 @@ package jd.core.printer;
 
 import java.util.ArrayList;
 
-
 public class InstructionPrinter implements Printer
 {
     protected Printer printer;

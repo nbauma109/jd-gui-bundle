@@ -44,7 +44,6 @@ import jd.core.process.analyzer.classfile.visitor.CompareInstructionVisitor;
 import jd.core.process.analyzer.classfile.visitor.ReplaceDupLoadVisitor;
 import jd.core.process.analyzer.classfile.visitor.SearchDupLoadInstructionVisitor;
 
-
 /*
  * Recontruction des affectations multiples depuis le motif :
  * DupStore( ??? )

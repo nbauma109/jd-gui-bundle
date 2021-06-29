@@ -23,7 +23,6 @@ import jd.core.model.classfile.constant.ConstantValue;
 import jd.core.model.instruction.bytecode.instruction.Instruction;
 import jd.core.util.UtilConstants;
 
-
 public class Field extends FieldOrMethod
 {
     private ValueAndMethod valueAndMethod = null;

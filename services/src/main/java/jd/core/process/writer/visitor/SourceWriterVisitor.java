@@ -92,7 +92,6 @@ import jd.core.util.StringConstants;
 import jd.core.util.StringUtil;
 import jd.core.util.UtilConstants;
 
-
 public class SourceWriterVisitor
 {
     protected Loader loader;
@@ -2229,7 +2228,6 @@ public class SourceWriterVisitor
 
         return lineNumber;
     }
-
 
     private int writePutStatic(PutStatic putStatic)
     {

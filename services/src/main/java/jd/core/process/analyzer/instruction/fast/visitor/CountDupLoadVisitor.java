@@ -69,7 +69,6 @@ import jd.core.model.instruction.fast.instruction.FastTestList;
 import jd.core.model.instruction.fast.instruction.FastTry;
 import jd.core.model.instruction.fast.instruction.FastTry.FastCatch;
 
-
 public class CountDupLoadVisitor
 {
     private DupStore dupStore;

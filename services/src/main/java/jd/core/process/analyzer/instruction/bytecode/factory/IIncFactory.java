@@ -27,7 +27,6 @@ import jd.core.model.instruction.bytecode.instruction.ILoad;
 import jd.core.model.instruction.bytecode.instruction.IncInstruction;
 import jd.core.model.instruction.bytecode.instruction.Instruction;
 
-
 public class IIncFactory extends InstructionFactory
 {
     public int create(

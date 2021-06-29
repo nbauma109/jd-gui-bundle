@@ -93,7 +93,6 @@ public class UnmodifiableTypes extends Types {
         throw new UnsupportedOperationException();
     }
 
-
     // --- ListIterator --- //
     private class UnmodifiableTypesListIterator implements ListIterator<Type> {
         protected ListIterator<Type> listIterator;

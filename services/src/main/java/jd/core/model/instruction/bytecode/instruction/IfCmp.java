@@ -18,7 +18,6 @@ package jd.core.model.instruction.bytecode.instruction;
 
 import jd.core.model.instruction.bytecode.ByteCodeConstants;
 
-
 public class IfCmp extends ConditionalBranchInstruction
 {
     public Instruction value1;

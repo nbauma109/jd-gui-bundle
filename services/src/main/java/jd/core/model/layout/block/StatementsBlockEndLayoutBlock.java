@@ -16,7 +16,6 @@
  ******************************************************************************/
 package jd.core.model.layout.block;
 
-
 public class StatementsBlockEndLayoutBlock extends BlockLayoutBlock
 {
     public StatementsBlockEndLayoutBlock(int preferedLineCount)

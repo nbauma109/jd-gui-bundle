@@ -25,7 +25,6 @@ import jd.core.model.instruction.bytecode.ByteCodeConstants;
 import jd.core.model.instruction.bytecode.instruction.Instruction;
 import jd.core.model.instruction.bytecode.instruction.UnaryOperatorInstruction;
 
-
 public class UnaryOperatorFactory extends InstructionFactory
 {
     private int priority;

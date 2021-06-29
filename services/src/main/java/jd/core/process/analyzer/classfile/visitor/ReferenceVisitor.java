@@ -76,7 +76,6 @@ import jd.core.model.instruction.fast.instruction.FastTry.FastCatch;
 import jd.core.model.reference.ReferenceMap;
 import jd.core.util.SignatureUtil;
 
-
 public class ReferenceVisitor
 {
     private ConstantPool constants;

@@ -30,8 +30,6 @@ import jd.core.model.instruction.bytecode.instruction.PutField;
 import jd.core.model.instruction.bytecode.instruction.TernaryOperator;
 import jd.core.model.instruction.fast.FastConstants;
 
-
-
 public class MinLineNumberVisitor
 {
     public static int visit(Instruction instruction)

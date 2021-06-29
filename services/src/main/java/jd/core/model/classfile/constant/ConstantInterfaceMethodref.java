@@ -16,7 +16,6 @@
  ******************************************************************************/
 package jd.core.model.classfile.constant;
 
-
 public class ConstantInterfaceMethodref extends ConstantMethodref
 {
     public ConstantInterfaceMethodref(byte tag,

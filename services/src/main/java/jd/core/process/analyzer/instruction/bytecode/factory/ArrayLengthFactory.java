@@ -25,7 +25,6 @@ import jd.core.model.instruction.bytecode.ByteCodeConstants;
 import jd.core.model.instruction.bytecode.instruction.ArrayLength;
 import jd.core.model.instruction.bytecode.instruction.Instruction;
 
-
 public class ArrayLengthFactory extends InstructionFactory
 {
     public int create(

@@ -16,7 +16,6 @@
  ******************************************************************************/
 package jd.core.model.classfile.attribute;
 
-
 public class ElementValueContants
 {
     public static final byte EV_UNKNOWN= 0;

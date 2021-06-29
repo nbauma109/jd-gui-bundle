@@ -20,7 +20,6 @@ import jd.core.model.classfile.ClassFile;
 import jd.core.model.classfile.Method;
 import jd.core.model.instruction.bytecode.instruction.Instruction;
 
-
 public class DeclareLayoutBlock extends LayoutBlock
 {
     public ClassFile classFile;

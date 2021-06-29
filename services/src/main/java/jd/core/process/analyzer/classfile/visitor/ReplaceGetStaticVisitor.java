@@ -56,7 +56,6 @@ import jd.core.model.instruction.bytecode.instruction.TernaryOpStore;
 import jd.core.model.instruction.bytecode.instruction.TernaryOperator;
 import jd.core.model.instruction.bytecode.instruction.UnaryOperatorInstruction;
 
-
 public class ReplaceGetStaticVisitor
 {
     private int index;

@@ -29,7 +29,6 @@ import jd.core.model.instruction.bytecode.instruction.Instruction;
 import jd.core.model.instruction.bytecode.instruction.Invokestatic;
 import jd.core.util.InvalidParameterException;
 
-
 public class InvokestaticFactory extends InstructionFactory
 {
     public int create(

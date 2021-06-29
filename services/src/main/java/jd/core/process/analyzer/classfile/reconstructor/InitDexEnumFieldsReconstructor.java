@@ -39,7 +39,6 @@ import jd.core.model.instruction.fast.FastConstants;
 import jd.core.model.instruction.fast.instruction.FastDeclaration;
 import jd.core.util.StringConstants;
 
-
 /*
  * Les valeurs des Enum des classes produites par "javac" sont correctement
  * reconnues par "InitStaticFieldsReconstructor.Reconstruct(...)".
