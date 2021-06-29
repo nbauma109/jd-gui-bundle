@@ -4,6 +4,7 @@
  * This is a Copyleft license that gives the user the right to use,
  * copy and modify the code freely for non-commercial purposes.
  */
+
 package org.jd.core.v1.model.javafragment;
 
 import org.jd.core.v1.model.fragment.StartFlexibleBlockFragment;
@@ -29,28 +30,38 @@ public class StartBlockFragment extends StartFlexibleBlockFragment implements Ja
 
     @Override
     public boolean incLineCount(boolean force) {
-        if (lineCount >= maximalLineCount) {
+        if (lineCount < maximalLineCount) {
+            lineCount++;
+
+            if (!force) {
+                // Update end body fragment
+                if ((lineCount == 1) && (end.getLineCount() == 0)) {
+                    end.setLineCount(lineCount);
+                }
+            }
+
+            return true;
+        } else {
             return false;
         }
-        lineCount++;
-        // Update end body fragment
-        if (!force && lineCount == 1 && end.getLineCount() == 0) {
-            end.setLineCount(lineCount);
-        }
-        return true;
     }
 
     @Override
     public boolean decLineCount(boolean force) {
-        if (lineCount <= minimalLineCount) {
+        if (lineCount > minimalLineCount) {
+            lineCount--;
+
+            if (!force) {
+                // Update end body fragment
+                if (lineCount == 1) {
+                    end.setLineCount(lineCount);
+                }
+            }
+
+            return true;
+        } else {
             return false;
         }
-        lineCount--;
-        // Update end body fragment
-        if (!force && lineCount == 1) {
-            end.setLineCount(lineCount);
-        }
-        return true;
     }
 
     @Override

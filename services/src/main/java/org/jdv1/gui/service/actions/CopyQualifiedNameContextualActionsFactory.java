@@ -7,14 +7,6 @@
 
 package org.jdv1.gui.service.actions;
 
-import org.jd.core.v1.util.StringConstants;
-import org.jd.gui.api.API;
-import org.jd.gui.api.model.Container;
-import org.jd.gui.api.model.Type;
-import org.jd.gui.service.actions.InvalidFormatException;
-import org.jd.gui.spi.ContextualActionsFactory;
-import org.jd.gui.spi.TypeFactory;
-
 import java.awt.Toolkit;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
@@ -25,21 +17,30 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ImageIcon;
 
+import org.jd.gui.api.model.Container;
+import org.jd.gui.api.model.Type;
+import org.jd.gui.service.actions.InvalidFormatException;
+import org.jd.gui.spi.ContextualActionsFactory;
+import org.jd.gui.spi.TypeFactory;
+import org.jd.gui.api.API;
+
 public class CopyQualifiedNameContextualActionsFactory implements ContextualActionsFactory {
 
-    @Override
+	@Override
     public Collection<Action> make(org.jd.gui.api.API api, Container.Entry entry, String fragment) {
         return Collections.<Action>singletonList(new CopyQualifiedNameAction(api, entry, fragment));
     }
 
     public static class CopyQualifiedNameAction extends AbstractAction {
+        /**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
 
-        private static final long serialVersionUID = 1L;
+		protected static final ImageIcon ICON = new ImageIcon(CopyQualifiedNameAction.class.getClassLoader().getResource("org/jd/gui/images/cpyqual_menu.png"));
 
-        protected static final ImageIcon ICON = new ImageIcon(CopyQualifiedNameAction.class.getClassLoader().getResource("org/jd/gui/images/cpyqual_menu.png"));
-
-        protected transient API api;
-        protected transient Container.Entry entry;
+        protected API api;
+        protected Container.Entry entry;
         protected String fragment;
 
         public CopyQualifiedNameAction(API api, Container.Entry entry, String fragment) {
@@ -52,7 +53,6 @@ public class CopyQualifiedNameContextualActionsFactory implements ContextualActi
             putValue(SMALL_ICON, ICON);
         }
 
-        @Override
         public void actionPerformed(ActionEvent e) {
             TypeFactory typeFactory = api.getTypeFactory(entry);
 
@@ -77,22 +77,23 @@ public class CopyQualifiedNameContextualActionsFactory implements ContextualActi
                             if (dashIndex == lastDashIndex) {
                                 // See jd.gui.api.feature.UriOpenable
                                 throw new InvalidFormatException("fragment: " + fragment);
-                            }
-                            String name = fragment.substring(dashIndex + 1, lastDashIndex);
-                            String descriptor = fragment.substring(lastDashIndex + 1);
-
-                            if (descriptor.startsWith("(")) {
-                                for (Type.Method method : type.getMethods()) {
-                                    if (method.getName().equals(name) && method.getDescriptor().equals(descriptor)) {
-                                        sb.append('.').append(method.getDisplayName());
-                                        break;
-                                    }
-                                }
                             } else {
-                                for (Type.Field field : type.getFields()) {
-                                    if (field.getName().equals(name) && field.getDescriptor().equals(descriptor)) {
-                                        sb.append('.').append(field.getDisplayName());
-                                        break;
+                                String name = fragment.substring(dashIndex + 1, lastDashIndex);
+                                String descriptor = fragment.substring(lastDashIndex + 1);
+
+                                if (descriptor.startsWith("(")) {
+                                    for (Type.Method method : type.getMethods()) {
+                                        if (method.getName().equals(name) && method.getDescriptor().equals(descriptor)) {
+                                            sb.append('.').append(method.getDisplayName());
+                                            break;
+                                        }
+                                    }
+                                } else {
+                                    for (Type.Field field : type.getFields()) {
+                                        if (field.getName().equals(name) && field.getDescriptor().equals(descriptor)) {
+                                            sb.append('.').append(field.getDisplayName());
+                                            break;
+                                        }
                                     }
                                 }
                             }
@@ -109,7 +110,7 @@ public class CopyQualifiedNameContextualActionsFactory implements ContextualActi
             String rootPath = entry.getContainer().getRoot().getUri().getPath();
             String qualifiedName = path.substring(rootPath.length()).replace('/', '.');
 
-            if (qualifiedName.endsWith(StringConstants.CLASS_FILE_SUFFIX)) {
+            if (qualifiedName.endsWith(".class")) {
                 qualifiedName = qualifiedName.substring(0, qualifiedName.length()-6);
             }
 

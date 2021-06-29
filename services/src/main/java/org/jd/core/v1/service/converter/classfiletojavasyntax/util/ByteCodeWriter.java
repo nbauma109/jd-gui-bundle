@@ -96,27 +96,22 @@ import org.jd.core.v1.model.classfile.constant.*;
  */
 public class ByteCodeWriter {
 
-    public static final String ILLEGAL_OPCODE = "<illegal opcode>";
-
-    private ByteCodeWriter() {
-        super();
-    }
-
     public static String write(String linePrefix, Method method) {
         AttributeCode attributeCode = method.getAttribute("Code");
 
         if (attributeCode == null) {
             return null;
+        } else {
+            ConstantPool constants = method.getConstants();
+            StringBuilder sb = new StringBuilder(5 * 1024);
+
+            writeByteCode(linePrefix, sb, constants, attributeCode);
+            writeLineNumberTable(linePrefix, sb, attributeCode);
+            writeLocalVariableTable(linePrefix, sb, attributeCode);
+            writeExceptionTable(linePrefix, sb, constants, attributeCode);
+
+            return sb.toString();
         }
-        ConstantPool constants = method.getConstants();
-        StringBuilder sb = new StringBuilder(5 * 1024);
-
-        writeByteCode(linePrefix, sb, constants, attributeCode);
-        writeLineNumberTable(linePrefix, sb, attributeCode);
-        writeLocalVariableTable(linePrefix, sb, attributeCode);
-        writeExceptionTable(linePrefix, sb, constants, attributeCode);
-
-        return sb.toString();
     }
 
     public static String write(String linePrefix, Method method, int fromOffset, int toOffset) {
@@ -124,14 +119,15 @@ public class ByteCodeWriter {
 
         if (attributeCode == null) {
             return null;
+        } else {
+            ConstantPool constants = method.getConstants();
+            StringBuilder sb = new StringBuilder(1024);
+            byte[] code = attributeCode.getCode();
+
+            writeByteCode(linePrefix, sb, constants, code, fromOffset, toOffset);
+
+            return sb.toString();
         }
-        ConstantPool constants = method.getConstants();
-        StringBuilder sb = new StringBuilder(1024);
-        byte[] code = attributeCode.getCode();
-
-        writeByteCode(linePrefix, sb, constants, code, fromOffset, toOffset);
-
-        return sb.toString();
     }
 
     protected static void writeByteCode(String linePrefix, StringBuilder sb, ConstantPool constants, AttributeCode attributeCode) {
@@ -197,7 +193,7 @@ public class ByteCodeWriter {
 
                     int npairs = ((code[i++] & 255) << 24) | ((code[i++] & 255) << 16) | ((code[i++] & 255) << 8) | (code[i++] & 255);
 
-                    for (int k = 0; k < npairs; k++) {
+                    for (int j = 0, k = 0; k < npairs; k++) {
                         sb.append(", ").append(((code[i++] & 255) << 24) | ((code[i++] & 255) << 16) | ((code[i++] & 255) << 8) | (code[i++] & 255));
                         sb.append(" -> ").append(offset + (((code[i++] & 255) << 24) | ((code[i++] & 255) << 16) | ((code[i++] & 255) << 8) | (code[i++] & 255)));
                     }
@@ -287,23 +283,23 @@ public class ByteCodeWriter {
 
     protected static void writeLDC(StringBuilder sb, ConstantPool constants, Constant constant) {
         switch (constant.getTag()) {
-            case Constant.CONSTANT_INTEGER:
+            case Constant.CONSTANT_Integer:
                 sb.append(' ').append(((ConstantInteger) constant).getValue());
                 break;
-            case Constant.CONSTANT_FLOAT:
+            case Constant.CONSTANT_Float:
                 sb.append(' ').append(((ConstantFloat) constant).getValue());
                 break;
-            case Constant.CONSTANT_CLASS:
+            case Constant.CONSTANT_Class:
                 int typeNameIndex = ((ConstantClass) constant).getNameIndex();
                 sb.append(' ').append(((ConstantUtf8)constants.getConstant(typeNameIndex)).getValue());
                 break;
-            case Constant.CONSTANT_LONG:
+            case Constant.CONSTANT_Long:
                 sb.append(' ').append(((ConstantLong) constant).getValue());
                 break;
-            case Constant.CONSTANT_DOUBLE:
+            case Constant.CONSTANT_Double:
                 sb.append(' ').append(((ConstantDouble) constant).getValue());
                 break;
-            case Constant.CONSTANT_STRING:
+            case Constant.CONSTANT_String:
                 sb.append(" '");
                 int stringIndex = ((ConstantString) constant).getStringIndex();
                 String str = constants.getConstantUtf8(stringIndex);
@@ -427,22 +423,22 @@ public class ByteCodeWriter {
         "tableswitch", "lookupswitch", "ireturn", "lreturn", "freturn",
         "dreturn", "areturn", "return", "getstatic", "putstatic", "getfield",
         "putfield", "invokevirtual", "invokespecial", "invokestatic",
-        "invokeinterface", ILLEGAL_OPCODE, "new", "newarray", "anewarray",
+        "invokeinterface", "<illegal opcode>", "new", "newarray", "anewarray",
         "arraylength", "athrow", "checkcast", "instanceof", "monitorenter",
         "monitorexit", "wide", "multianewarray", "ifnull", "ifnonnull",
-        "goto_w", "jsr_w", "breakpoint", ILLEGAL_OPCODE, ILLEGAL_OPCODE,
-        ILLEGAL_OPCODE, ILLEGAL_OPCODE, ILLEGAL_OPCODE, ILLEGAL_OPCODE,
-        ILLEGAL_OPCODE, ILLEGAL_OPCODE, ILLEGAL_OPCODE, ILLEGAL_OPCODE,
-        ILLEGAL_OPCODE, ILLEGAL_OPCODE, ILLEGAL_OPCODE, ILLEGAL_OPCODE,
-        ILLEGAL_OPCODE, ILLEGAL_OPCODE, ILLEGAL_OPCODE, ILLEGAL_OPCODE,
-        ILLEGAL_OPCODE, ILLEGAL_OPCODE, ILLEGAL_OPCODE, ILLEGAL_OPCODE,
-        ILLEGAL_OPCODE, ILLEGAL_OPCODE, ILLEGAL_OPCODE, ILLEGAL_OPCODE,
-        ILLEGAL_OPCODE, ILLEGAL_OPCODE, ILLEGAL_OPCODE, ILLEGAL_OPCODE,
-        ILLEGAL_OPCODE, ILLEGAL_OPCODE, ILLEGAL_OPCODE, ILLEGAL_OPCODE,
-        ILLEGAL_OPCODE, ILLEGAL_OPCODE, ILLEGAL_OPCODE, ILLEGAL_OPCODE,
-        ILLEGAL_OPCODE, ILLEGAL_OPCODE, ILLEGAL_OPCODE, ILLEGAL_OPCODE,
-        ILLEGAL_OPCODE, ILLEGAL_OPCODE, ILLEGAL_OPCODE, ILLEGAL_OPCODE,
-        ILLEGAL_OPCODE, ILLEGAL_OPCODE, ILLEGAL_OPCODE, ILLEGAL_OPCODE,
-        ILLEGAL_OPCODE, "impdep1", "impdep2"
+        "goto_w", "jsr_w", "breakpoint", "<illegal opcode>", "<illegal opcode>",
+        "<illegal opcode>", "<illegal opcode>", "<illegal opcode>", "<illegal opcode>",
+        "<illegal opcode>", "<illegal opcode>", "<illegal opcode>", "<illegal opcode>",
+        "<illegal opcode>", "<illegal opcode>", "<illegal opcode>", "<illegal opcode>",
+        "<illegal opcode>", "<illegal opcode>", "<illegal opcode>", "<illegal opcode>",
+        "<illegal opcode>", "<illegal opcode>", "<illegal opcode>", "<illegal opcode>",
+        "<illegal opcode>", "<illegal opcode>", "<illegal opcode>", "<illegal opcode>",
+        "<illegal opcode>", "<illegal opcode>", "<illegal opcode>", "<illegal opcode>",
+        "<illegal opcode>", "<illegal opcode>", "<illegal opcode>", "<illegal opcode>",
+        "<illegal opcode>", "<illegal opcode>", "<illegal opcode>", "<illegal opcode>",
+        "<illegal opcode>", "<illegal opcode>", "<illegal opcode>", "<illegal opcode>",
+        "<illegal opcode>", "<illegal opcode>", "<illegal opcode>", "<illegal opcode>",
+        "<illegal opcode>", "<illegal opcode>", "<illegal opcode>", "<illegal opcode>",
+        "<illegal opcode>", "impdep1", "impdep2"
     };
 }

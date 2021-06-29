@@ -7,17 +7,16 @@
 
 package org.jdv1.gui.model.container;
 
-import org.jd.gui.api.API;
+import java.nio.file.Path;
+
 import org.jd.gui.api.model.Container;
 import org.jd.gui.model.container.GenericContainer;
-
-import java.nio.file.Path;
+import org.jd.gui.api.API;
 
 public class KarContainer extends GenericContainer {
     public KarContainer(API api, Container.Entry parentEntry, Path rootPath) {
         super(api, parentEntry, rootPath);
     }
 
-    @Override
     public String getType() { return "kar"; }
 }

@@ -9,7 +9,7 @@ package org.jd.core.v1.model.javasyntax.reference;
 
 import org.jd.core.v1.model.javasyntax.expression.Expression;
 
-public class ExpressionElementValue implements BaseElementValue {
+public class ExpressionElementValue implements ElementValue {
     protected Expression expression;
 
     public ExpressionElementValue(Expression expression) {

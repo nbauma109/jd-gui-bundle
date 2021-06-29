@@ -7,13 +7,13 @@
 
 package org.jdv1.gui.service.fileloader;
 
-import org.jd.gui.service.extension.ExtensionService;
-import org.jd.gui.spi.FileLoader;
-
 import java.io.File;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Map;
+
+import org.jd.gui.service.extension.ExtensionService;
+import org.jd.gui.spi.FileLoader;
+import org.jd.gui.api.API;
 
 public class FileLoaderService {
     protected static final FileLoaderService FILE_LOADER_SERVICE = new FileLoaderService();
@@ -22,7 +22,7 @@ public class FileLoaderService {
 
     protected final Collection<FileLoader> providers = ExtensionService.getInstance().load(FileLoader.class);
 
-    protected Map<String, FileLoader> mapProviders = new HashMap<>();
+    protected HashMap<String, FileLoader> mapProviders = new HashMap<>();
 
     protected FileLoaderService() {
         for (FileLoader provider : providers) {
@@ -32,14 +32,15 @@ public class FileLoaderService {
         }
     }
 
-    public FileLoader get(File file) {
+    public FileLoader get(API api, File file) {
         String name = file.getName();
         int lastDot = name.lastIndexOf('.');
         String extension = name.substring(lastDot+1);
-        return mapProviders.get(extension);
+        FileLoader provider = mapProviders.get(extension);
+        return provider;
     }
 
-    public Map<String, FileLoader> getMapProviders() {
+    public HashMap<String, FileLoader> getMapProviders() {
         return mapProviders;
     }
 }

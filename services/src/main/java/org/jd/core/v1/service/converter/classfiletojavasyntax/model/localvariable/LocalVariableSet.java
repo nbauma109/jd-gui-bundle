@@ -28,9 +28,7 @@ public class LocalVariableSet {
             if (lv == null) {
                 array[index] = newLV;
             } else if (lv.fromOffset < newLV.fromOffset) {
-                if (newLV == lv) {
-                    throw new IllegalStateException("newLV == lv");
-                }
+                assert newLV != lv;
                 newLV.setNext(lv);
                 array[index] = newLV;
             } else {
@@ -43,14 +41,10 @@ public class LocalVariableSet {
                     lv = lv.getNext();
                 }
 
-                if (previous == newLV) {
-                    throw new IllegalStateException("previous == newLV");
-                }
+                assert previous != newLV;
                 previous.setNext(newLV);
 
-                if (newLV == lv) {
-                    throw new IllegalStateException("newLV == lv");
-                }
+                assert newLV != lv;
                 newLV.setNext(lv);
             }
         }
@@ -152,9 +146,7 @@ public class LocalVariableSet {
                     if (previous == null) {
                         array[index] = glv;
                     } else {
-                        if (previous == glv) {
-                            throw new IllegalStateException("previous == glv");
-                        }
+                        assert previous != glv;
                         previous.setNext(glv);
                     }
 

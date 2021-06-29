@@ -14,14 +14,13 @@ import org.jd.gui.spi.UriLoader;
 import java.net.URI;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Map;
 
 public class UriLoaderService {
     protected static final UriLoaderService URI_LOADER_SERVICE = new UriLoaderService();
 
     public static UriLoaderService getInstance() { return URI_LOADER_SERVICE; }
 
-    protected Map<String, UriLoader> mapProviders = new HashMap<>();
+    protected HashMap<String, UriLoader> mapProviders = new HashMap<>();
 
     protected UriLoaderService() {
         Collection<UriLoader> providers = ExtensionService.getInstance().load(UriLoader.class);
@@ -38,7 +37,8 @@ public class UriLoaderService {
 
         if (provider.accept(api, uri)) {
             return provider;
+        } else {
+            return null;
         }
-        return null;
     }
 }

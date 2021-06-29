@@ -50,9 +50,4 @@ public class BooleanExpression extends AbstractLineNumberExpression {
     public String toString() {
         return "BooleanExpression{" + value + "}";
     }
-
-	@Override
-	public Expression copyTo(int lineNumber) {
-		return new BooleanExpression(lineNumber, value);
-	}
 }

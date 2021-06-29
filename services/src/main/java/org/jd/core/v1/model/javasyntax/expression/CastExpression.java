@@ -65,9 +65,4 @@ public class CastExpression extends AbstractLineNumberTypeExpression {
     public String toString() {
         return "CastExpression{cast (" + type + ") " + expression + "}";
     }
-
-	@Override
-	public Expression copyTo(int lineNumber) {
-		return new CastExpression(lineNumber, type, expression, explicit);
-	}
 }

@@ -9,8 +9,6 @@ package org.jd.core.v1.model.javasyntax.statement;
 
 import org.jd.core.v1.model.javasyntax.expression.Expression;
 
-import java.util.Objects;
-
 public class ReturnExpressionStatement implements Statement {
     protected int lineNumber;
     protected Expression expression;
@@ -22,7 +20,7 @@ public class ReturnExpressionStatement implements Statement {
     public ReturnExpressionStatement(int lineNumber, Expression expression) {
         this.lineNumber = lineNumber;
         this.expression = expression;
-        Objects.requireNonNull(expression);
+        assert expression != null;
     }
 
     @Override
@@ -40,7 +38,7 @@ public class ReturnExpressionStatement implements Statement {
     }
 
     public void setExpression(Expression expression) {
-        Objects.requireNonNull(expression);
+        assert expression != null;
         this.expression = expression;
     }
 

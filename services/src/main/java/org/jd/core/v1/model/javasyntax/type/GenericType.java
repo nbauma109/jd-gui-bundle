@@ -40,12 +40,11 @@ public class GenericType implements Type {
 
     @Override
     public Type createType(int dimension) {
-        if (dimension < 0) {
-            throw new IllegalArgumentException("GenericType.createType(dim) : create type with negative dimension");
-        }
+        assert dimension >= 0;
         if (this.dimension == dimension)
             return this;
-        return new GenericType(name, dimension);
+        else
+            return new GenericType(name, dimension);
     }
 
     @Override

@@ -7,18 +7,17 @@
 
 package org.jd.gui.controller;
 
-import org.jd.core.v1.service.converter.classfiletojavasyntax.util.ExceptionUtil;
 import org.jd.gui.api.API;
 import org.jd.gui.api.feature.SourcesSavable;
+import org.jd.core.v1.service.converter.classfiletojavasyntax.util.ExceptionUtil;
 import org.jd.gui.view.SaveAllSourcesView;
 
+import javax.swing.*;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.concurrent.ScheduledExecutorService;
-
-import javax.swing.JFrame;
 
 public class SaveAllSourcesController implements SourcesSavable.Controller, SourcesSavable.Listener {
     protected API api;
@@ -69,7 +68,7 @@ public class SaveAllSourcesController implements SourcesSavable.Controller, Sour
                 if (cancel) {
                     Files.deleteIfExists(path);
                 }
-            } catch (Exception t) {
+            } catch (Throwable t) {
                 assert ExceptionUtil.printStackTrace(t);
             }
 
@@ -82,14 +81,13 @@ public class SaveAllSourcesController implements SourcesSavable.Controller, Sour
     protected void onCanceled() { cancel = true; }
 
     // --- SourcesSavable.Controller --- //
-    @Override
-    public boolean isCancelled() { return cancel; }
+    @Override public boolean isCancelled() { return cancel; }
 
     // --- SourcesSavable.Listener --- //
     @Override
     public void pathSaved(Path path) {
         if (((counter++) & mask) == 0) {
-            saveAllSourcesView.updateProgressBar(counter++);
+            saveAllSourcesView.updateProgressBar(counter);
         }
     }
 }

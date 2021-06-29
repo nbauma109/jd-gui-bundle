@@ -7,13 +7,19 @@
 
 package org.jd.gui.service.extension;
 
-import org.jd.core.v1.service.converter.classfiletojavasyntax.util.ExceptionUtil;
-
 import java.io.File;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ServiceLoader;
+
+import org.jd.core.v1.service.converter.classfiletojavasyntax.util.ExceptionUtil;
 
 public class ExtensionService {
     protected static final ExtensionService EXTENSION_SERVICE = new ExtensionService();
@@ -32,7 +38,7 @@ public class ExtensionService {
             File extDirectory = new File(baseDirectory, "ext");
 
             if (extDirectory.exists() && extDirectory.isDirectory()) {
-                List<URL> urls = new ArrayList<>();
+                ArrayList<URL> urls = new ArrayList<>();
 
                 searchJarAndMetaInf(urls, extDirectory);
 
@@ -66,7 +72,7 @@ public class ExtensionService {
     }
 
     public <T> Collection<T> load(Class<T> service) {
-        List<T> list = new ArrayList<>();
+        ArrayList<T> list = new ArrayList<>();
         Iterator<T> iterator = ServiceLoader.load(service, extensionClassLoader).iterator();
 
         while (iterator.hasNext()) {

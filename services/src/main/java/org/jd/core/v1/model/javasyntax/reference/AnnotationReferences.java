@@ -12,9 +12,6 @@ import org.jd.core.v1.util.DefaultList;
 import java.util.Collection;
 
 public class AnnotationReferences<T extends AnnotationReference> extends DefaultList<T> implements BaseAnnotationReference {
-
-    private static final long serialVersionUID = 1L;
-
     public AnnotationReferences() {
     }
 

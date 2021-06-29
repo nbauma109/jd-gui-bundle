@@ -7,19 +7,26 @@
 
 package org.jd.gui.model.container;
 
-import org.jd.core.v1.service.converter.classfiletojavasyntax.util.ExceptionUtil;
-import org.jd.gui.api.API;
-import org.jd.gui.api.model.Container;
-import org.jd.gui.model.container.entry.path.SimpleEntryPath;
-import org.jd.gui.spi.ContainerFactory;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.nio.file.*;
-import java.util.*;
+import java.nio.file.DirectoryStream;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
+
+import org.jd.gui.api.model.Container;
+import org.jd.gui.spi.ContainerFactory;
+import org.jd.core.v1.service.converter.classfiletojavasyntax.util.ExceptionUtil;
+import org.jd.gui.api.API;
 
 public class GenericContainer implements Container {
     protected static final long TIMESTAMP = System.currentTimeMillis();
@@ -37,7 +44,6 @@ public class GenericContainer implements Container {
             this.api = api;
             this.rootNameCount = rootPath.getNameCount();
             this.root = new Entry(parentEntry, rootPath, new URI(uri.getScheme(), uri.getHost(), uri.getPath() + "!/", null)) {
-                @Override
                 public Entry newChildEntry(Path fsPath) {
                     return new Entry(parent, fsPath, null);
                 }
@@ -47,9 +53,7 @@ public class GenericContainer implements Container {
         }
     }
 
-    @Override
     public String getType() { return "generic"; }
-    @Override
     public Container.Entry getRoot() { return root; }
 
     protected class Entry implements Container.Entry {
@@ -58,7 +62,7 @@ public class GenericContainer implements Container {
         protected String strPath;
         protected URI uri;
         protected Boolean isDirectory;
-        protected Map<Container.EntryPath, Container.Entry> children;
+        protected Collection<Container.Entry> children;
 
         public Entry(Container.Entry parent, Path fsPath, URI uri) {
             this.parent = parent;
@@ -71,12 +75,9 @@ public class GenericContainer implements Container {
 
         public Entry newChildEntry(Path fsPath) { return new Entry(this, fsPath, null); }
 
-        @Override
         public Container getContainer() { return GenericContainer.this; }
-        @Override
         public Container.Entry getParent() { return parent; }
 
-        @Override
         public URI getUri() {
             if (uri == null) {
                 try {
@@ -89,7 +90,6 @@ public class GenericContainer implements Container {
             return uri;
         }
 
-        @Override
         public String getPath() {
             if (strPath == null) {
                 int nameCount = fsPath.getNameCount();
@@ -110,7 +110,6 @@ public class GenericContainer implements Container {
             return strPath;
         }
 
-        @Override
         public boolean isDirectory() {
             if (isDirectory == null) {
                 isDirectory = Boolean.valueOf(Files.isDirectory(fsPath));
@@ -118,7 +117,6 @@ public class GenericContainer implements Container {
             return isDirectory;
         }
 
-        @Override
         public long length() {
             try {
                 return Files.size(fsPath);
@@ -128,7 +126,6 @@ public class GenericContainer implements Container {
             }
         }
 
-        @Override
         public InputStream getInputStream() {
             try {
                 return Files.newInputStream(fsPath);
@@ -138,8 +135,7 @@ public class GenericContainer implements Container {
             }
         }
 
-        @Override
-        public Map<Container.EntryPath, Container.Entry> getChildren() {
+        public Collection<Container.Entry> getChildren() {
             if (children == null) {
                 try {
                     if (Files.isDirectory(fsPath)) {
@@ -154,54 +150,52 @@ public class GenericContainer implements Container {
             return children;
         }
 
-        protected NavigableMap<Container.EntryPath, Container.Entry> loadChildrenFromDirectoryEntry() throws IOException {
+        protected Collection<Container.Entry> loadChildrenFromDirectoryEntry() throws IOException {
             try (DirectoryStream<Path> stream = Files.newDirectoryStream(fsPath)) {
-                NavigableMap<Container.EntryPath, Container.Entry> children = new TreeMap<>(ContainerEntryComparator.COMPARATOR);
+                ArrayList<Container.Entry> children = new ArrayList<>();
                 int parentNameCount = fsPath.getNameCount();
 
                 for (Path subPath : stream) {
                     if (subPath.getNameCount() > parentNameCount) {
-                        Container.Entry newChildEntry = newChildEntry(subPath);
-                        Container.EntryPath newChildEntryPath = new SimpleEntryPath(newChildEntry.getPath(), newChildEntry.isDirectory());
-                        children.put(newChildEntryPath, newChildEntry);
+                        children.add(newChildEntry(subPath));
                     }
                 }
 
-                return Collections.unmodifiableNavigableMap(children);
+                children.sort(ContainerEntryComparator.COMPARATOR);
+                return Collections.unmodifiableCollection(children);
             }
         }
 
-        @SuppressWarnings("resource")
-        protected Map<Container.EntryPath, Container.Entry> loadChildrenFromFileEntry() throws IOException {
+        protected Collection<Container.Entry> loadChildrenFromFileEntry() throws IOException {
             StringBuilder suffix = new StringBuilder(".").append(TIMESTAMP).append('.').append(tmpFileCounter++).append('.').append(fsPath.getFileName().toString());
             File tmpFile = File.createTempFile("jd-gui.tmp.", suffix.toString());
             Path tmpPath = Paths.get(tmpFile.toURI());
 
-            Files.delete(tmpFile.toPath());
+            tmpFile.delete();
             tmpFile.deleteOnExit();
             Files.copy(fsPath, tmpPath);
 
-            @SuppressWarnings("all")
-            // Resource leak : The file system cannot be closed until the application is shutdown
-            FileSystem subFileSystem = FileSystems.newFileSystem(tmpPath, (ClassLoader)null);
+            FileSystem subFileSystem = FileSystems.newFileSystem(tmpPath, null);
 
-            Iterator<Path> rootDirectories = subFileSystem.getRootDirectories().iterator();
+            if (subFileSystem != null) {
+                Iterator<Path> rootDirectories = subFileSystem.getRootDirectories().iterator();
 
-            if (rootDirectories.hasNext()) {
-                Path rootPath = rootDirectories.next();
-                ContainerFactory containerFactory = api.getContainerFactory(rootPath);
+                if (rootDirectories.hasNext()) {
+                    Path rootPath = rootDirectories.next();
+                    ContainerFactory containerFactory = api.getContainerFactory(rootPath);
 
-                if (containerFactory != null) {
-                    Container container = containerFactory.make(api, this, rootPath);
+                    if (containerFactory != null) {
+                        Container container = containerFactory.make(api, this, rootPath);
 
-                    if (container != null) {
-                        return container.getRoot().getChildren();
+                        if (container != null) {
+                            return container.getRoot().getChildren();
+                        }
                     }
                 }
             }
 
-            Files.delete(tmpFile.toPath());
-            return Collections.emptyMap();
+            tmpFile.delete();
+            return Collections.emptyList();
         }
     }
 }

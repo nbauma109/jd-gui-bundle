@@ -9,11 +9,8 @@ package org.jd.gui.view.renderer;
 
 import org.jd.gui.view.bean.OpenTypeListCellBean;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
-
 import javax.swing.*;
+import java.awt.*;
 
 public class OpenTypeListCellRenderer implements ListCellRenderer<OpenTypeListCellBean> {
     protected Color textSelectionColor;
@@ -24,8 +21,7 @@ public class OpenTypeListCellRenderer implements ListCellRenderer<OpenTypeListCe
     protected Color backgroundNonSelectionColor;
 
     protected JPanel panel;
-    protected JLabel label;
-    protected JLabel info;
+    protected JLabel label, info;
 
     public OpenTypeListCellRenderer() {
         textSelectionColor = UIManager.getColor("List.selectionForeground");
@@ -37,25 +33,24 @@ public class OpenTypeListCellRenderer implements ListCellRenderer<OpenTypeListCe
         infoNonSelectionColor = infoColor(textNonSelectionColor);
 
         panel = new JPanel(new BorderLayout());
-        label = new JLabel();
-        panel.add(label, BorderLayout.WEST);
-        info = new JLabel();
-        panel.add(info, BorderLayout.CENTER);
+        panel.add(label = new JLabel(), BorderLayout.WEST);
+        panel.add(info = new JLabel(), BorderLayout.CENTER);
     }
 
-    protected static Color infoColor(Color c) {
+    static protected Color infoColor(Color c) {
         if (c.getRed() + c.getGreen() + c.getBlue() > (3*127)) {
             return new Color(
                     (int)((c.getRed()-127)  *0.7 + 127),
                     (int)((c.getGreen()-127)*0.7 + 127),
                     (int)((c.getBlue()-127) *0.7 + 127),
                     c.getAlpha());
+        } else {
+            return new Color(
+                    (int)(127 - (127-c.getRed())  *0.7),
+                    (int)(127 - (127-c.getGreen())*0.7),
+                    (int)(127 - (127-c.getBlue()) *0.7),
+                    c.getAlpha());
         }
-        return new Color(
-                (int)(127 - (127-c.getRed())  *0.7),
-                (int)(127 - (127-c.getGreen())*0.7),
-                (int)(127 - (127-c.getBlue()) *0.7),
-                c.getAlpha());
     }
 
     @Override

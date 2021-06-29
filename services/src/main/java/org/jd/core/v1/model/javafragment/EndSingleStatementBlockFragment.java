@@ -4,6 +4,7 @@
  * This is a Copyleft license that gives the user the right to use,
  * copy and modify the code freely for non-commercial purposes.
  */
+
 package org.jd.core.v1.model.javafragment;
 
 import org.jd.core.v1.model.fragment.EndFlexibleBlockFragment;
@@ -27,27 +28,37 @@ public class EndSingleStatementBlockFragment extends EndFlexibleBlockFragment im
 
     @Override
     public boolean incLineCount(boolean force) {
-        if (lineCount >= maximalLineCount) {
+        if (lineCount < maximalLineCount) {
+            lineCount++;
+
+            if (!force) {
+                // Update start body fragment
+                if (start.getLineCount() == 0) {
+                    start.setLineCount(1);
+                }
+            }
+
+            return true;
+        } else {
             return false;
         }
-        lineCount++;
-        // Update start body fragment
-        if (!force && start.getLineCount() == 0) {
-            start.setLineCount(1);
-        }
-        return true;
     }
 
     @Override
     public boolean decLineCount(boolean force) {
-        if (lineCount <= minimalLineCount) {
+        if (lineCount > minimalLineCount) {
+            lineCount--;
+
+            if (!force) {
+                if (lineCount == 0) {
+                    start.setLineCount(0);
+                }
+            }
+
+            return true;
+        } else {
             return false;
         }
-        lineCount--;
-        if (!force && lineCount == 0) {
-            start.setLineCount(0);
-        }
-        return true;
     }
 
     @Override

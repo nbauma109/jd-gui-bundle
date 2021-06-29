@@ -11,7 +11,7 @@ public class ConstantUtf8 extends ConstantValue {
     protected String value;
 
     public ConstantUtf8(String value) {
-        super(CONSTANT_UTF8);
+        super(CONSTANT_Utf8);
         this.value = value;
     }
 

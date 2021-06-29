@@ -7,10 +7,11 @@
 
 package org.jdv1.gui.api.feature;
 
-import org.jd.gui.api.model.Indexes;
 
 import java.util.Collection;
 import java.util.concurrent.Future;
+
+import org.jd.gui.api.model.Indexes;
 
 public interface IndexesChangeListener {
     void indexesChanged(Collection<Future<Indexes>> collectionOfFutureIndexes);

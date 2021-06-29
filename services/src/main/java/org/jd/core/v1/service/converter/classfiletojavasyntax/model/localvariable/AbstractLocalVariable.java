@@ -13,7 +13,6 @@ import org.jd.core.v1.util.DefaultList;
 
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 public abstract class AbstractLocalVariable {
     protected Frame frame;
@@ -24,14 +23,14 @@ public abstract class AbstractLocalVariable {
     protected int toOffset;
     protected String name;
     protected DefaultList<LocalVariableReference> references = new DefaultList<>();
-    protected Set<AbstractLocalVariable> variablesOnRight = null;
-    protected Set<AbstractLocalVariable> variablesOnLeft = null;
+    protected HashSet<AbstractLocalVariable> variablesOnRight = null;
+    protected HashSet<AbstractLocalVariable> variablesOnLeft = null;
 
-    protected AbstractLocalVariable(int index, int offset, String name) {
+    public AbstractLocalVariable(int index, int offset, String name) {
         this(index, offset, name, (offset == 0));
     }
 
-    protected AbstractLocalVariable(int index, int offset, String name, boolean declared) {
+    public AbstractLocalVariable(int index, int offset, String name, boolean declared) {
         this.declared = declared;
         this.index = index;
         this.fromOffset = offset;
@@ -53,22 +52,20 @@ public abstract class AbstractLocalVariable {
     public int getFromOffset() { return fromOffset; }
 
     public void setFromOffset(int fromOffset) {
-        if (fromOffset > toOffset) {
-            throw new IllegalArgumentException("fromOffset > toOffset");
-        }
+        assert fromOffset <= toOffset;
         this.fromOffset = fromOffset;
     }
 
     public int getToOffset() { return toOffset; }
 
-    public void setFromToOffset(int offset) {
+    public void setToOffset(int offset) {
         if (this.fromOffset > offset)
             this.fromOffset = offset;
         if (this.toOffset < offset)
             this.toOffset = offset;
     }
 
-    public void setToOffset(int offset) {
+    public void setToOffset(int offset, boolean force) {
         this.toOffset = offset;
     }
 

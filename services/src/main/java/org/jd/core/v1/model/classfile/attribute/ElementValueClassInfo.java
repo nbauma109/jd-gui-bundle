@@ -7,7 +7,7 @@
 
 package org.jd.core.v1.model.classfile.attribute;
 
-public class ElementValueClassInfo implements AttributeElementValue {
+public class ElementValueClassInfo implements ElementValue {
     protected String classInfo;
 
     public ElementValueClassInfo(String classInfo) {

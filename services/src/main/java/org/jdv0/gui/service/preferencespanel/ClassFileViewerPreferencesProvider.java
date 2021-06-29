@@ -7,8 +7,6 @@
 
 package org.jdv0.gui.service.preferencespanel;
 
-import org.jd.gui.spi.PreferencesPanel;
-
 import java.awt.Color;
 import java.awt.GridLayout;
 import java.util.Map;
@@ -17,16 +15,19 @@ import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 
-import static org.jd.gui.util.decompiler.GuiPreferences.DISPLAY_DEFAULT_CONSTRUCTOR;
-import static org.jd.gui.util.decompiler.GuiPreferences.ESCAPE_UNICODE_CHARACTERS;
-import static org.jd.gui.util.decompiler.GuiPreferences.OMIT_THIS_PREFIX;
-import static org.jd.gui.util.decompiler.GuiPreferences.REALIGN_LINE_NUMBERS;
+import org.jd.gui.spi.PreferencesPanel;
 
 public class ClassFileViewerPreferencesProvider extends JPanel implements PreferencesPanel {
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	protected static final String ESCAPE_UNICODE_CHARACTERS = "ClassFileViewerPreferences.escapeUnicodeCharacters";
+    protected static final String OMIT_THIS_PREFIX = "ClassFileViewerPreferences.omitThisPrefix";
+    protected static final String REALIGN_LINE_NUMBERS = "ClassFileViewerPreferences.realignLineNumbers";
+    protected static final String DISPLAY_DEFAULT_CONSTRUCTOR = "ClassFileViewerPreferences.displayDefaultConstructor";
 
-    private static final long serialVersionUID = 1L;
-
-    protected transient PreferencesPanel.PreferencesPanelChangeListener listener = null;
+    protected PreferencesPanel.PreferencesPanelChangeListener listener = null;
     protected JCheckBox escapeUnicodeCharactersCheckBox;
     protected JCheckBox omitThisPrefixCheckBox;
     protected JCheckBox realignLineNumbersCheckBox;
@@ -47,18 +48,13 @@ public class ClassFileViewerPreferencesProvider extends JPanel implements Prefer
     }
 
     // --- PreferencesPanel --- //
-    @Override
-    public String getPreferencesGroupTitle() { return "Viewer"; }
-    @Override
-    public String getPreferencesPanelTitle() { return "Class file"; }
-    @Override
-    public JComponent getPanel() { return this; }
+    @Override public String getPreferencesGroupTitle() { return "Viewer"; }
+    @Override public String getPreferencesPanelTitle() { return "Class file"; }
+    @Override public JComponent getPanel() { return this; }
 
-    @Override
-    public void init(Color errorBackgroundColor) {}
+    @Override public void init(Color errorBackgroundColor) {}
 
-    @Override
-    public boolean isActivated() { return true; }
+    @Override public boolean isActivated() { return true; }
 
     @Override
     public void loadPreferences(Map<String, String> preferences) {
@@ -76,9 +72,7 @@ public class ClassFileViewerPreferencesProvider extends JPanel implements Prefer
         preferences.put(DISPLAY_DEFAULT_CONSTRUCTOR, Boolean.toString(displayDefaultConstructorCheckBox.isSelected()));
     }
 
-    @Override
-    public boolean arePreferencesValid() { return true; }
+    @Override public boolean arePreferencesValid() { return true; }
 
-    @Override
-    public void addPreferencesChangeListener(PreferencesPanel.PreferencesPanelChangeListener listener) {}
+    @Override public void addPreferencesChangeListener(PreferencesPanel.PreferencesPanelChangeListener listener) {}
 }

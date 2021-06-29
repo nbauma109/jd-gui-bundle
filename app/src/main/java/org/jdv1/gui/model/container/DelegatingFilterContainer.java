@@ -7,13 +7,16 @@
 
 package org.jdv1.gui.model.container;
 
-import org.jd.gui.api.model.Container;
-import org.jd.gui.model.container.entry.path.SimpleEntryPath;
-
 import java.io.InputStream;
 import java.net.URI;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
+import org.jd.gui.api.model.Container;
 
 public class DelegatingFilterContainer implements Container {
     protected static final URI DEFAULT_ROOT_URI = URI.create("file:.");
@@ -37,59 +40,58 @@ public class DelegatingFilterContainer implements Container {
         }
     }
 
-    @Override
-    public String getType() { return container.getType(); }
-    @Override
-    public Container.Entry getRoot() { return root; }
+    @Override public String getType() { return container.getType(); }
+    @Override public Container.Entry getRoot() { return root; }
 
     public Container.Entry getEntry(URI uri) { return uriToDelegatedEntry.get(uri); }
     public Set<URI> getUris() { return validEntries; }
 
     protected DelegatedEntry getDelegatedEntry(Container.Entry entry) {
         URI uri = entry.getUri();
-        return uriToDelegatedEntry.computeIfAbsent(uri, k -> new DelegatedEntry(entry));
+        DelegatedEntry delegatedEntry = uriToDelegatedEntry.get(uri);
+        if (delegatedEntry == null) {
+            uriToDelegatedEntry.put(uri, delegatedEntry =new DelegatedEntry(entry));
+        }
+        return delegatedEntry;
     }
 
     protected DelegatedContainer getDelegatedContainer(Container container) {
         Entry root = container.getRoot();
         URI uri = (root == null) ? DEFAULT_ROOT_URI : root.getUri();
-        return uriToDelegatedContainer.computeIfAbsent(uri, k -> new DelegatedContainer(container));
+        DelegatedContainer delegatedContainer = uriToDelegatedContainer.get(uri);
+        if (delegatedContainer == null) {
+            uriToDelegatedContainer.put(uri, delegatedContainer =new DelegatedContainer(container));
+        }
+        return delegatedContainer;
     }
 
     protected class DelegatedEntry implements Entry, Comparable<DelegatedEntry> {
         protected Entry entry;
-        protected Map<Container.EntryPath, Container.Entry> children;
+        protected Collection<Entry> children;
 
         public DelegatedEntry(Entry entry) {
             this.entry = entry;
         }
 
-        @Override
-        public Container getContainer() { return getDelegatedContainer(entry.getContainer()); }
-        @Override
-        public Entry getParent() { return getDelegatedEntry(entry.getParent()); }
-        @Override
-        public URI getUri() { return entry.getUri(); }
-        @Override
-        public String getPath() { return entry.getPath(); }
-        @Override
-        public boolean isDirectory() { return entry.isDirectory(); }
-        @Override
-        public long length() { return entry.length(); }
-        @Override
-        public InputStream getInputStream() { return entry.getInputStream(); }
+        @Override public Container getContainer() { return getDelegatedContainer(entry.getContainer()); }
+        @Override public Entry getParent() { return getDelegatedEntry(entry.getParent()); }
+        @Override public URI getUri() { return entry.getUri(); }
+        @Override public String getPath() { return entry.getPath(); }
+        @Override public boolean isDirectory() { return entry.isDirectory(); }
+        @Override public long length() { return entry.length(); }
+        @Override public InputStream getInputStream() { return entry.getInputStream(); }
 
         @Override
-        public Map<Container.EntryPath, Container.Entry> getChildren() {
+        public Collection<Entry> getChildren() {
             if (children == null) {
-                children = entry.getChildren().values().stream().filter(child -> validEntries.contains(child.getUri()))
-                        .collect(Collectors.toMap(SimpleEntryPath::new, this::getDelegEntry));
+                children = new ArrayList<>();
+                for (Entry child : entry.getChildren()) {
+                    if (validEntries.contains(child.getUri())) {
+                        children.add(getDelegatedEntry(child));
+                    }
+                }
             }
             return children;
-        }
-
-        private DelegatedEntry getDelegEntry(Container.Entry entry) {
-            return getDelegatedEntry(entry);
         }
 
         @Override
@@ -114,9 +116,7 @@ public class DelegatingFilterContainer implements Container {
             this.container = container;
         }
 
-        @Override
-        public String getType() { return container.getType(); }
-        @Override
-        public Entry getRoot() { return getDelegatedEntry(container.getRoot()); }
+        @Override public String getType() { return container.getType(); }
+        @Override public Entry getRoot() { return getDelegatedEntry(container.getRoot()); }
     }
 }

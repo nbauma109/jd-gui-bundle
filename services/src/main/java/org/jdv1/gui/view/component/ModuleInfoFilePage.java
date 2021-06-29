@@ -7,10 +7,32 @@
 
 package org.jdv1.gui.view.component;
 
-import org.fife.ui.rsyntaxtextarea.*;
+import static org.jd.core.v1.api.printer.Printer.MODULE;
+import static org.jd.core.v1.api.printer.Printer.PACKAGE;
+import static org.jd.core.v1.api.printer.Printer.TYPE;
+
+import java.awt.Point;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.Future;
+import java.util.regex.Pattern;
+
+import javax.swing.text.Segment;
+
+import org.fife.ui.rsyntaxtextarea.AbstractTokenMaker;
+import org.fife.ui.rsyntaxtextarea.AbstractTokenMakerFactory;
+import org.fife.ui.rsyntaxtextarea.DocumentRange;
+import org.fife.ui.rsyntaxtextarea.RSyntaxUtilities;
+import org.fife.ui.rsyntaxtextarea.Token;
+import org.fife.ui.rsyntaxtextarea.TokenMakerFactory;
+import org.fife.ui.rsyntaxtextarea.TokenMap;
 import org.fife.ui.rtextarea.Marker;
 import org.jd.core.v1.service.converter.classfiletojavasyntax.util.ExceptionUtil;
-import org.jd.core.v1.util.StringConstants;
 import org.jd.gui.api.API;
 import org.jd.gui.api.model.Container;
 import org.jd.gui.api.model.Indexes;
@@ -22,25 +44,11 @@ import org.jd.gui.util.parser.jdt.core.ReferenceData;
 import org.jdv1.gui.util.decompiler.StringBuilderPrinter;
 import org.jdv1.gui.util.index.IndexesUtil;
 
-import java.awt.Point;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.*;
-import java.util.concurrent.Future;
-import java.util.regex.Pattern;
-
-import javax.swing.text.Segment;
-
-import static org.jd.core.v1.api.printer.Printer.MODULE;
-import static org.jd.core.v1.api.printer.Printer.PACKAGE;
-import static org.jd.core.v1.api.printer.Printer.TYPE;
-import static org.jd.gui.util.decompiler.GuiPreferences.ESCAPE_UNICODE_CHARACTERS;
-
 public class ModuleInfoFilePage extends ClassFilePage {
 
-    private static final long serialVersionUID = 1L;
-
-    public static final String SYNTAX_STYLE_JAVA_MODULE = "text/java-module";
+	private static final long serialVersionUID = 1L;
+	
+	public static final String SYNTAX_STYLE_JAVA_MODULE = "text/java-module";
 
     static {
         // Add a new token maker for Java 9+ module
@@ -61,7 +69,7 @@ public class ModuleInfoFilePage extends ClassFilePage {
             listener.getTypeDeclarations().clear();
 
             // Init preferences
-            boolean unicodeEscape = Boolean.parseBoolean(preferences.getOrDefault(ESCAPE_UNICODE_CHARACTERS, Boolean.FALSE.toString()));
+            boolean unicodeEscape = getPreferenceValue(preferences, ESCAPE_UNICODE_CHARACTERS, false);
 
             // Init loader
             ContainerLoader loader = new ContainerLoader(entry);
@@ -72,12 +80,12 @@ public class ModuleInfoFilePage extends ClassFilePage {
 
             // Format internal name
             String entryPath = entry.getPath();
-            assert entryPath.endsWith(StringConstants.CLASS_FILE_SUFFIX);
+            assert entryPath.endsWith(".class");
             String entryInternalName = entryPath.substring(0, entryPath.length() - 6); // 6 = ".class".length()
 
             // Decompile class file
             DECOMPILER.decompile(loader, printer, entryInternalName);
-        } catch (Exception t) {
+        } catch (Throwable t) {
             assert ExceptionUtil.printStackTrace(t);
             setText("// INTERNAL ERROR //");
         }
@@ -105,8 +113,7 @@ public class ModuleInfoFilePage extends ClassFilePage {
 
                 switch (moduleInfoReferenceData.type) {
                     case TYPE:
-                        fragment = moduleInfoReferenceData.getTypeName();
-                        entries = IndexesUtil.findInternalTypeName(collectionOfFutureIndexes, fragment);
+                        entries = IndexesUtil.findInternalTypeName(collectionOfFutureIndexes, fragment = moduleInfoReferenceData.getTypeName());
                         break;
                     case PACKAGE:
                         entries = IndexesUtil.find(collectionOfFutureIndexes, "packageDeclarations", moduleInfoReferenceData.getTypeName());
@@ -122,7 +129,7 @@ public class ModuleInfoFilePage extends ClassFilePage {
                     api.openURI(uri);
                 } else {
                     String rootUri = entry.getContainer().getRoot().getUri().toString();
-                    List<Container.Entry> sameContainerEntries = new ArrayList<>();
+                    ArrayList<Container.Entry> sameContainerEntries = new ArrayList<>();
 
                     for (Container.Entry entry : entries) {
                         if (entry.getUri().toString().startsWith(rootUri)) {
@@ -130,9 +137,9 @@ public class ModuleInfoFilePage extends ClassFilePage {
                         }
                     }
 
-                    if (!sameContainerEntries.isEmpty()) {
+                    if (sameContainerEntries.size() > 0) {
                         api.openURI(x, y, sameContainerEntries, null, fragment);
-                    } else if (!entries.isEmpty()) {
+                    } else if (entries.size() > 0) {
                         api.openURI(x, y, entries, null, fragment);
                     }
                 }
@@ -145,7 +152,7 @@ public class ModuleInfoFilePage extends ClassFilePage {
     // --- UriOpenable --- //
     @Override
     public boolean openUri(URI uri) {
-        List<DocumentRange> ranges = new ArrayList<>();
+        ArrayList<DocumentRange> ranges = new ArrayList<>();
         String fragment = uri.getFragment();
         String query = uri.getQuery();
 
@@ -201,7 +208,7 @@ public class ModuleInfoFilePage extends ClassFilePage {
             }
         }
 
-        if (!ranges.isEmpty()) {
+        if ((ranges != null) && !ranges.isEmpty()) {
             textArea.setMarkAllHighlightColor(SELECT_HIGHLIGHT_COLOR);
             Marker.markAll(textArea, ranges);
             ranges.sort(null);
@@ -226,7 +233,6 @@ public class ModuleInfoFilePage extends ClassFilePage {
             try {
                 for (Future<Indexes> futureIndexes : collectionOfFutureIndexes) {
                     if (futureIndexes.isDone()) {
-                        @SuppressWarnings("rawtypes")
                         Map<String, Collection> index;
                         String key;
 
@@ -251,10 +257,6 @@ public class ModuleInfoFilePage extends ClassFilePage {
                         }
                     }
                 }
-            } catch (InterruptedException e) {
-                assert ExceptionUtil.printStackTrace(e);
-                // Restore interrupted state...
-                Thread.currentThread().interrupt();
             } catch (Exception e) {
                 assert ExceptionUtil.printStackTrace(e);
             }
@@ -280,7 +282,7 @@ public class ModuleInfoFilePage extends ClassFilePage {
     }
 
     public class ModuleInfoFilePrinter extends StringBuilderPrinter {
-        protected Map<String, ReferenceData> referencesCache = new HashMap<>();
+        protected HashMap<String, ReferenceData> referencesCache = new HashMap<>();
 
         @Override
         public void start(int maxLineNumber, int majorVersion, int minorVersion) {}
@@ -300,11 +302,13 @@ public class ModuleInfoFilePage extends ClassFilePage {
         @Override
         public void printReference(int type, String internalTypeName, String name, String descriptor, String ownerInternalName) {
             String key = (type == MODULE) ? name : internalTypeName;
-            ReferenceData reference = referencesCache.computeIfAbsent(key, k -> {
-                ReferenceData moduleInfoReferenceData = new ModuleInfoReferenceData(type, internalTypeName, name, descriptor, ownerInternalName);
-                listener.getReferences().add(moduleInfoReferenceData);
-                return moduleInfoReferenceData;
-            });
+            ReferenceData reference = referencesCache.get(key);
+
+            if (reference == null) {
+                reference = new ModuleInfoReferenceData(type, internalTypeName, name, descriptor, ownerInternalName);
+                referencesCache.put(key, reference);
+                listener.getReferences().add(reference);
+            }
 
             addHyperlink(new HyperlinkReferenceData(stringBuffer.length(), name.length(), reference));
             super.printReference(type, internalTypeName, name, descriptor, ownerInternalName);
@@ -317,16 +321,16 @@ public class ModuleInfoFilePage extends ClassFilePage {
         public TokenMap getWordsToHighlight() {
             TokenMap tokenMap = new TokenMap();
 
-            tokenMap.put("exports", TokenTypes.RESERVED_WORD);
-            tokenMap.put("module", TokenTypes.RESERVED_WORD);
-            tokenMap.put("open", TokenTypes.RESERVED_WORD);
-            tokenMap.put("opens", TokenTypes.RESERVED_WORD);
-            tokenMap.put("provides", TokenTypes.RESERVED_WORD);
-            tokenMap.put("requires", TokenTypes.RESERVED_WORD);
-            tokenMap.put("to", TokenTypes.RESERVED_WORD);
-            tokenMap.put("transitive", TokenTypes.RESERVED_WORD);
-            tokenMap.put("uses", TokenTypes.RESERVED_WORD);
-            tokenMap.put("with", TokenTypes.RESERVED_WORD);
+            tokenMap.put("exports", Token.RESERVED_WORD);
+            tokenMap.put("module", Token.RESERVED_WORD);
+            tokenMap.put("open", Token.RESERVED_WORD);
+            tokenMap.put("opens", Token.RESERVED_WORD);
+            tokenMap.put("provides", Token.RESERVED_WORD);
+            tokenMap.put("requires", Token.RESERVED_WORD);
+            tokenMap.put("to", Token.RESERVED_WORD);
+            tokenMap.put("transitive", Token.RESERVED_WORD);
+            tokenMap.put("uses", Token.RESERVED_WORD);
+            tokenMap.put("with", Token.RESERVED_WORD);
 
             return tokenMap;
         }
@@ -334,7 +338,7 @@ public class ModuleInfoFilePage extends ClassFilePage {
         @Override
         public void addToken(Segment segment, int start, int end, int tokenType, int startOffset) {
             // This assumes all keywords, etc. were parsed as "identifiers."
-            if (tokenType==TokenTypes.IDENTIFIER) {
+            if (tokenType==Token.IDENTIFIER) {
                 int value = wordsToHighlight.get(segment, start, end);
                 if (value != -1) {
                     tokenType = value;
@@ -360,33 +364,33 @@ public class ModuleInfoFilePage extends ClassFilePage {
                 char c = array[i];
 
                 switch (currentTokenType) {
-                    case TokenTypes.NULL:
+                    case Token.NULL:
                         currentTokenStart = i;   // Starting a new token here.
                         if (RSyntaxUtilities.isLetter(c) || (c == '_')) {
-                            currentTokenType = TokenTypes.IDENTIFIER;
+                            currentTokenType = Token.IDENTIFIER;
                         } else {
-                            currentTokenType = TokenTypes.WHITESPACE;
+                            currentTokenType = Token.WHITESPACE;
                         }
                         break;
                     default: // Should never happen
-                    case TokenTypes.WHITESPACE:
+                    case Token.WHITESPACE:
                         if (RSyntaxUtilities.isLetter(c) || (c == '_')) {
-                            addToken(text, currentTokenStart, i-1, TokenTypes.WHITESPACE, newStartOffset+currentTokenStart);
+                            addToken(text, currentTokenStart, i-1, Token.WHITESPACE, newStartOffset+currentTokenStart);
                             currentTokenStart = i;
-                            currentTokenType = TokenTypes.IDENTIFIER;
+                            currentTokenType = Token.IDENTIFIER;
                         }
                         break;
-                    case TokenTypes.IDENTIFIER:
+                    case Token.IDENTIFIER:
                         if (!RSyntaxUtilities.isLetterOrDigit(c) && (c != '_') && (c != '.')) {
-                            addToken(text, currentTokenStart, i-1, TokenTypes.IDENTIFIER, newStartOffset+currentTokenStart);
+                            addToken(text, currentTokenStart, i-1, Token.IDENTIFIER, newStartOffset+currentTokenStart);
                             currentTokenStart = i;
-                            currentTokenType = TokenTypes.WHITESPACE;
+                            currentTokenType = Token.WHITESPACE;
                         }
                         break;
                 }
             }
 
-            if (currentTokenType == TokenTypes.NULL) {
+            if (currentTokenType == Token.NULL) {
                 addNullToken();
             }else {
                 addToken(text, currentTokenStart,end-1, currentTokenType, newStartOffset+currentTokenStart);

@@ -28,7 +28,6 @@ public class TernaryOperatorExpression extends AbstractLineNumberTypeExpression 
         this.falseExpression = falseExpression;
     }
 
-    @Override
     public Expression getCondition() {
         return condition;
     }
@@ -72,9 +71,4 @@ public class TernaryOperatorExpression extends AbstractLineNumberTypeExpression 
     public String toString() {
         return "TernaryOperatorExpression{" + condition + " ? " + trueExpression + " : " + falseExpression + "}";
     }
-
-	@Override
-	public Expression copyTo(int lineNumber) {
-		return new TernaryOperatorExpression(lineNumber, type, condition, trueExpression, falseExpression);
-	}
 }

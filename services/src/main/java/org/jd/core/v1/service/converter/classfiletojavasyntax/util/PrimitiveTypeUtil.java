@@ -14,11 +14,6 @@ import org.jd.core.v1.model.javasyntax.type.Type;
 import static org.jd.core.v1.model.javasyntax.type.PrimitiveType.*;
 
 public class PrimitiveTypeUtil {
-
-    private PrimitiveTypeUtil() {
-        super();
-    }
-
     public static Type getPrimitiveTypeFromDescriptor(String descriptor) {
         int dimension = 0;
 
@@ -28,8 +23,9 @@ public class PrimitiveTypeUtil {
 
         if (dimension == 0) {
             return PrimitiveType.getPrimitiveType(descriptor.charAt(dimension));
+        } else {
+            return new ObjectType(descriptor.substring(dimension), dimension);
         }
-        return new ObjectType(descriptor.substring(dimension), dimension);
     }
 
     public static PrimitiveType getPrimitiveTypeFromValue(int value) {
@@ -106,7 +102,7 @@ public class PrimitiveTypeUtil {
             case  9: return TYPE_SHORT;
             case 10: return TYPE_INT;
             case 11: return TYPE_LONG;
-            default: throw new IllegalStateException();
+            default: assert false; return null;
         }
     }
 }

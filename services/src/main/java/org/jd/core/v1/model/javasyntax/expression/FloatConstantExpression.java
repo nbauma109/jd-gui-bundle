@@ -22,7 +22,6 @@ public class FloatConstantExpression extends AbstractLineNumberTypeExpression {
         this.value = value;
     }
 
-    @Override
     public float getFloatValue() {
         return value;
     }
@@ -39,9 +38,4 @@ public class FloatConstantExpression extends AbstractLineNumberTypeExpression {
     public String toString() {
         return "FloatConstantExpression{" + value + "}";
     }
-
-	@Override
-	public Expression copyTo(int lineNumber) {
-		return new FloatConstantExpression(lineNumber, value);
-	}
 }

@@ -64,6 +64,5 @@ import java.util.Map;
  * </ul>
  */
 public interface Indexes {
-    @SuppressWarnings("rawtypes")
     Map<String, Collection> getIndex(String name);
 }

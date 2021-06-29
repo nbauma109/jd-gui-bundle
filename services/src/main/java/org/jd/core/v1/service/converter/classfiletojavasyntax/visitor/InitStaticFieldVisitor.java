@@ -9,9 +9,11 @@ package org.jd.core.v1.service.converter.classfiletojavasyntax.visitor;
 
 import org.jd.core.v1.model.javasyntax.AbstractJavaSyntaxVisitor;
 import org.jd.core.v1.model.javasyntax.declaration.*;
+import org.jd.core.v1.model.javasyntax.expression.BinaryOperatorExpression;
 import org.jd.core.v1.model.javasyntax.expression.Expression;
 import org.jd.core.v1.model.javasyntax.expression.FieldReferenceExpression;
 import org.jd.core.v1.model.javasyntax.statement.BaseStatement;
+import org.jd.core.v1.model.javasyntax.statement.ExpressionStatement;
 import org.jd.core.v1.model.javasyntax.statement.Statement;
 import org.jd.core.v1.model.javasyntax.statement.Statements;
 import org.jd.core.v1.model.javasyntax.type.PrimitiveType;
@@ -23,13 +25,12 @@ import org.jd.core.v1.util.DefaultList;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class InitStaticFieldVisitor extends AbstractJavaSyntaxVisitor {
     protected SearchFirstLineNumberVisitor searchFirstLineNumberVisitor = new SearchFirstLineNumberVisitor();
     protected SearchLocalVariableReferenceVisitor searchLocalVariableReferenceVisitor = new SearchLocalVariableReferenceVisitor();
     protected String internalTypeName;
-    protected Map<String, FieldDeclarator> fields = new HashMap<>();
+    protected HashMap<String, FieldDeclarator> fields = new HashMap<>();
     protected List<ClassFileConstructorOrMethodDeclaration> methods;
     protected Boolean deleteStaticDeclaration;
 
@@ -106,6 +107,7 @@ public class InitStaticFieldVisitor extends AbstractJavaSyntaxVisitor {
     public void visit(InstanceInitializerDeclaration declaration) {}
 
     @Override
+    @SuppressWarnings("unchecked")
     public void visit(StaticInitializerDeclaration declaration) {
         ClassFileStaticInitializerDeclaration sid = (ClassFileStaticInitializerDeclaration) declaration;
 
@@ -116,7 +118,7 @@ public class InitStaticFieldVisitor extends AbstractJavaSyntaxVisitor {
                 DefaultList<Statement> list = statements.getList();
 
                 // Multiple statements
-                if ((!list.isEmpty()) && isAssertionsDisabledStatement(list.getFirst())) {
+                if ((list.size() > 0) && isAssertionsDisabledStatement(list.getFirst())) {
                     // Remove assert initialization statement
                     list.removeFirst();
                 }

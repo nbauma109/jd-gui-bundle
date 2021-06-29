@@ -10,17 +10,13 @@ package org.jd.core.v1.service.converter.classfiletojavasyntax.model.cfg;
 import org.jd.core.v1.model.classfile.Method;
 import org.jd.core.v1.util.DefaultList;
 
-import java.util.Set;
+import java.util.HashSet;
 
 public class ControlFlowGraph {
     protected Method method;
     protected DefaultList<BasicBlock> list = new DefaultList<BasicBlock>() {
-
-        private static final long serialVersionUID = 1L;
-
-        @Override
         public BasicBlock remove(int index) {
-            throw new UnsupportedOperationException();
+            throw new RuntimeException("Unexpected call");
         }
     };
     protected int[] offsetToLineNumbers = null;
@@ -63,7 +59,7 @@ public class ControlFlowGraph {
         return basicBlock;
     }
 
-    public BasicBlock newBasicBlock(int type, int fromOffset, int toOffset, Set<BasicBlock> predecessors) {
+    public BasicBlock newBasicBlock(int type, int fromOffset, int toOffset, HashSet<BasicBlock> predecessors) {
         BasicBlock basicBlock = new BasicBlock(this, list.size(), type, fromOffset, toOffset, true, predecessors);
         list.add(basicBlock);
         return basicBlock;
@@ -74,6 +70,6 @@ public class ControlFlowGraph {
     }
 
     public int getLineNumber(int offset) {
-        return (offsetToLineNumbers == null || offset < 0) ? 0 : offsetToLineNumbers[offset];
+        return (offsetToLineNumbers == null) ? 0 : offsetToLineNumbers[offset];
     }
 }

@@ -7,13 +7,6 @@
 
 package org.jd.gui.controller;
 
-import org.jd.gui.api.API;
-import org.jd.gui.api.model.Container;
-import org.jd.gui.api.model.Indexes;
-import org.jd.gui.util.net.UriUtil;
-import org.jd.gui.view.OpenTypeHierarchyView;
-import org.jdv1.gui.api.feature.IndexesChangeListener;
-
 import java.awt.Point;
 import java.net.URI;
 import java.util.Collection;
@@ -23,6 +16,13 @@ import java.util.function.Consumer;
 
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
+
+import org.jd.gui.api.API;
+import org.jd.gui.api.model.Container;
+import org.jd.gui.api.model.Indexes;
+import org.jd.gui.util.net.UriUtil;
+import org.jd.gui.view.OpenTypeHierarchyView;
+import org.jdv1.gui.api.feature.IndexesChangeListener;
 
 public class OpenTypeHierarchyController implements IndexesChangeListener {
     protected API api;

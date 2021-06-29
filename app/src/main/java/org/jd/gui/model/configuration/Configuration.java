@@ -9,8 +9,7 @@ package org.jd.gui.model.configuration;
 
 import org.jd.gui.Constants;
 
-import java.awt.Dimension;
-import java.awt.Point;
+import java.awt.*;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 public class Configuration {
-    protected Point mainWindowLocation;
+	protected Point mainWindowLocation;
     protected Dimension mainWindowSize;
     protected boolean mainWindowMaximize;
     protected String lookAndFeel;

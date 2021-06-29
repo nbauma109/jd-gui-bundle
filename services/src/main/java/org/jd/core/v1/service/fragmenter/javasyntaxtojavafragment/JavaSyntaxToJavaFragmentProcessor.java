@@ -10,7 +10,8 @@ package org.jd.core.v1.service.fragmenter.javasyntaxtojavafragment;
 import org.jd.core.v1.api.loader.Loader;
 import org.jd.core.v1.model.javafragment.ImportsFragment;
 import org.jd.core.v1.model.javasyntax.CompilationUnit;
-import org.jd.core.v1.model.message.DecompileContext;
+import org.jd.core.v1.model.message.Message;
+import org.jd.core.v1.model.processor.Processor;
 import org.jd.core.v1.service.fragmenter.javasyntaxtojavafragment.visitor.CompilationUnitVisitor;
 import org.jd.core.v1.service.fragmenter.javasyntaxtojavafragment.visitor.SearchImportsVisitor;
 
@@ -20,20 +21,21 @@ import org.jd.core.v1.service.fragmenter.javasyntaxtojavafragment.visitor.Search
  * Input:  {@link org.jd.core.v1.model.javasyntax.CompilationUnit}<br>
  * Output: List<{@link org.jd.core.v1.model.fragment.Fragment}><br>
  */
-public class JavaSyntaxToJavaFragmentProcessor {
+public class JavaSyntaxToJavaFragmentProcessor implements Processor {
 
-    public void process(CompilationUnit compilationUnit, DecompileContext decompileContext) {
-        Loader loader = decompileContext.getLoader();
-        String mainInternalTypeName = decompileContext.getMainInternalTypeName();
-        int majorVersion = decompileContext.getMajorVersion();
+    public void process(Message message) throws Exception {
+        Loader loader = message.getHeader("loader");
+        String mainInternalTypeName = message.getHeader("mainInternalTypeName");
+        int majorVersion = message.getHeader("majorVersion");
+        CompilationUnit compilationUnit = message.getBody();
 
         SearchImportsVisitor importsVisitor = new SearchImportsVisitor(loader, mainInternalTypeName);
         importsVisitor.visit(compilationUnit);
         ImportsFragment importsFragment = importsVisitor.getImportsFragment();
-        decompileContext.setMaxLineNumber(importsVisitor.getMaxLineNumber());
+        message.setHeader("maxLineNumber", importsVisitor.getMaxLineNumber());
 
         CompilationUnitVisitor visitor = new CompilationUnitVisitor(loader, mainInternalTypeName, majorVersion, importsFragment);
         visitor.visit(compilationUnit);
-        decompileContext.setBody(visitor.getFragments());
+        message.setBody(visitor.getFragments());
     }
 }

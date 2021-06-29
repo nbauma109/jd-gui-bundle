@@ -50,9 +50,4 @@ public class EnumConstantReferenceExpression extends AbstractLineNumberExpressio
     public String toString() {
         return "EnumConstantReferenceExpression{type=" + type + ", name=" + name + "}";
     }
-
-	@Override
-	public Expression copyTo(int lineNumber) {
-		return new EnumConstantReferenceExpression(lineNumber, type, name);
-	}
 }

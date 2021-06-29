@@ -10,9 +10,8 @@ package org.jd.gui.spi;
 import org.jd.gui.api.API;
 import org.jd.gui.api.model.Container;
 
+import javax.swing.*;
 import java.util.Collection;
-
-import javax.swing.Action;
 
 public interface ContextualActionsFactory {
     String GROUP_NAME = "GroupNameKey";

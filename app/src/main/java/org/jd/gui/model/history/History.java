@@ -9,12 +9,11 @@ package org.jd.gui.model.history;
 
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.List;
 
 public class History {
     protected URI            current = null;
-    protected List<URI> backward = new ArrayList<>();
-    protected List<URI> forward = new ArrayList<>();
+    protected ArrayList<URI> backward = new ArrayList<>();
+    protected ArrayList<URI> forward = new ArrayList<>();
 
     public void add(URI uri) {
         if (current == null) {

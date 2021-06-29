@@ -7,10 +7,6 @@
 
 package org.jd.gui.view.component.panel;
 
-import org.jd.gui.api.API;
-import org.jd.gui.api.feature.*;
-import org.jd.gui.service.platform.PlatformService;
-
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -20,13 +16,26 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import javax.swing.*;
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.Icon;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+
+import org.jd.gui.api.feature.PageChangeListener;
+import org.jd.gui.api.feature.PageChangeable;
+import org.jd.gui.api.feature.PreferencesChangeListener;
+import org.jd.gui.api.feature.UriGettable;
+import org.jd.gui.api.feature.UriOpenable;
+import org.jd.gui.service.platform.PlatformService;
+import org.jd.gui.api.API;
+import org.jd.gui.view.component.panel.TabbedPanel;
 
 @SuppressWarnings("unchecked")
-public class MainTabbedPanel<T extends JComponent & UriGettable> extends TabbedPanel<T> implements UriOpenable, PageChangeListener {
-
-    private static final long serialVersionUID = 1L;
-    protected transient List<PageChangeListener> pageChangedListeners = new ArrayList<>();
+public class MainTabbedPanel<T extends JComponent & UriGettable> extends TabbedPanel<T> implements UriOpenable, PreferencesChangeListener, PageChangeListener {
+    protected ArrayList<PageChangeListener> pageChangedListeners = new ArrayList<>();
     // Flag to prevent the event cascades
     protected boolean pageChangedListenersEnabled = true;
 
@@ -36,8 +45,7 @@ public class MainTabbedPanel<T extends JComponent & UriGettable> extends TabbedP
 
     @Override
     public void create() {
-        cardLayout = new CardLayout();
-        setLayout(cardLayout);
+        setLayout(cardLayout = new CardLayout());
 
         Color bg = darker(getBackground());
 
@@ -100,23 +108,23 @@ public class MainTabbedPanel<T extends JComponent & UriGettable> extends TabbedP
                 }
             }
         });
-        add("tabs", tabbedPane);
+		add("tabs", tabbedPane);
 
-        setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, darker(darker(bg))));
-    }
+		setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, darker(darker(bg))));
+	}
 
-    protected String getFileManagerLabel() {
+	protected String getFileManagerLabel() {
         switch (PlatformService.getInstance().getOs()) {
-            case LINUX:
+            case Linux:
                 return "your file manager";
-            case MAC_OSX:
+            case MacOSX:
                 return "the Finder";
             default:
                 return "Explorer";
         }
     }
 
-    protected JLabel newLabel(String text, Color fontColor) {
+	protected JLabel newLabel(String text, Color fontColor) {
         JLabel label = new JLabel(text);
         label.setForeground(fontColor);
         return label;
@@ -132,14 +140,14 @@ public class MainTabbedPanel<T extends JComponent & UriGettable> extends TabbedP
 
     public List<T> getPages() {
         int i = tabbedPane.getTabCount();
-        List<T> pages = new ArrayList<>(i);
+        ArrayList<T> pages = new ArrayList<>(i);
         while (i-- > 0) {
             pages.add((T)tabbedPane.getComponentAt(i));
         }
         return pages;
     }
 
-    public List<PageChangeListener> getPageChangedListeners() {
+    public ArrayList<PageChangeListener> getPageChangedListeners() {
         return pageChangedListeners;
     }
 
@@ -171,7 +179,7 @@ public class MainTabbedPanel<T extends JComponent & UriGettable> extends TabbedP
 
     // --- PageChangedListener --- //
     @Override
-    public <U extends JComponent & UriGettable> void pageChanged(U page) {
+    public <T extends JComponent & UriGettable> void pageChanged(T page) {
         // Store active page for current sub tabbed pane
         Component subPage = tabbedPane.getSelectedComponent();
 
@@ -180,7 +188,7 @@ public class MainTabbedPanel<T extends JComponent & UriGettable> extends TabbedP
         }
 
         if (page == null) {
-            page = (U)subPage;
+            page = (T)subPage;
         }
 
         // Forward event

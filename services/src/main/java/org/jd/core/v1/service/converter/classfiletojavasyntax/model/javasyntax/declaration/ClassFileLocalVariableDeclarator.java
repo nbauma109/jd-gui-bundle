@@ -25,12 +25,10 @@ public class ClassFileLocalVariableDeclarator extends LocalVariableDeclarator im
         this.localVariable = localVariable;
     }
 
-    @Override
     public String getName() {
         return localVariable.getName();
     }
 
-    @Override
     public void setName(String name) {
         localVariable.setName(name);
     }

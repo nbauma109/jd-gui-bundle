@@ -4,9 +4,27 @@
  * This is a Copyleft license that gives the user the right to use,
  * copy and modify the code freely for non-commercial purposes.
  */
+
 package org.jdv1.gui.service.indexer;
 
-import org.eclipse.jdt.core.dom.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+
+import org.eclipse.jdt.core.dom.AbstractTypeDeclaration;
+import org.eclipse.jdt.core.dom.ClassInstanceCreation;
+import org.eclipse.jdt.core.dom.FieldAccess;
+import org.eclipse.jdt.core.dom.FieldDeclaration;
+import org.eclipse.jdt.core.dom.MethodDeclaration;
+import org.eclipse.jdt.core.dom.MethodInvocation;
+import org.eclipse.jdt.core.dom.PackageDeclaration;
+import org.eclipse.jdt.core.dom.SimpleType;
+import org.eclipse.jdt.core.dom.StringLiteral;
+import org.eclipse.jdt.core.dom.Type;
+import org.eclipse.jdt.core.dom.TypeDeclaration;
+import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 import org.jd.core.v1.api.loader.LoaderException;
 import org.jd.core.v1.service.converter.classfiletojavasyntax.util.ExceptionUtil;
 import org.jd.gui.api.API;
@@ -16,230 +34,233 @@ import org.jd.gui.service.indexer.AbstractIndexerProvider;
 import org.jd.gui.util.parser.jdt.ASTParserFactory;
 import org.jd.gui.util.parser.jdt.core.AbstractJavaListener;
 
-import java.util.*;
-
-/** Unsafe thread implementation of java file indexer. */
+/**
+ * Unsafe thread implementation of java file indexer.
+ */
 public class JavaFileIndexerProvider extends AbstractIndexerProvider {
-    @Override
-    public String[] getSelectors() {
-        return appendSelectors("*:file:*.java");
-    }
 
-    @Override
-    @SuppressWarnings({ "rawtypes" })
-    public void index(API api, Container.Entry entry, Indexes indexes) {
-        Listener listener = new Listener(entry);
+	@Override
+	public String[] getSelectors() {
+		return appendSelectors("*:file:*.java");
+	}
 
-        try {
-            ASTParserFactory.getInstance().newASTParser(entry, listener);
-        } catch (LoaderException e) {
-            assert ExceptionUtil.printStackTrace(e);
-        }
+	@Override
+	@SuppressWarnings("unchecked")
+	public void index(API api, Container.Entry entry, Indexes indexes) {
+		Listener listener = new Listener(entry);
 
-        // Append sets to indexes
-        addToIndexes(indexes, "typeDeclarations", listener.getTypeDeclarationSet(), entry);
-        addToIndexes(indexes, "constructorDeclarations", listener.getConstructorDeclarationSet(), entry);
-        addToIndexes(indexes, "methodDeclarations", listener.getMethodDeclarationSet(), entry);
-        addToIndexes(indexes, "fieldDeclarations", listener.getFieldDeclarationSet(), entry);
-        addToIndexes(indexes, "typeReferences", listener.getTypeReferenceSet(), entry);
-        addToIndexes(indexes, "constructorReferences", listener.getConstructorReferenceSet(), entry);
-        addToIndexes(indexes, "methodReferences", listener.getMethodReferenceSet(), entry);
-        addToIndexes(indexes, "fieldReferences", listener.getFieldReferenceSet(), entry);
-        addToIndexes(indexes, "strings", listener.getStringSet(), entry);
+		try {
+			ASTParserFactory.getInstance().newASTParser(entry, listener);
+		} catch (LoaderException e) {
+			assert ExceptionUtil.printStackTrace(e);
+		}
 
-        // Populate map [super type name : [sub type name]]
-        Map<String, Collection> index = indexes.getIndex("subTypeNames");
+		// Append sets to indexes
+		addToIndexes(indexes, "typeDeclarations", listener.getTypeDeclarationSet(), entry);
+		addToIndexes(indexes, "constructorDeclarations", listener.getConstructorDeclarationSet(), entry);
+		addToIndexes(indexes, "methodDeclarations", listener.getMethodDeclarationSet(), entry);
+		addToIndexes(indexes, "fieldDeclarations", listener.getFieldDeclarationSet(), entry);
+		addToIndexes(indexes, "typeReferences", listener.getTypeReferenceSet(), entry);
+		addToIndexes(indexes, "constructorReferences", listener.getConstructorReferenceSet(), entry);
+		addToIndexes(indexes, "methodReferences", listener.getMethodReferenceSet(), entry);
+		addToIndexes(indexes, "fieldReferences", listener.getFieldReferenceSet(), entry);
+		addToIndexes(indexes, "strings", listener.getStringSet(), entry);
 
-        String typeName;
-        for (Map.Entry<String, Set<String>> e : listener.getSuperTypeNamesMap().entrySet()) {
-            typeName = e.getKey();
+		// Populate map [super type name : [sub type name]]
+		Map<String, Collection> index = indexes.getIndex("subTypeNames");
 
-            for (String superTypeName : e.getValue()) {
-                index.get(superTypeName).add(typeName);
-            }
-        }
-    }
+		for (Map.Entry<String, HashSet<String>> e : listener.getSuperTypeNamesMap().entrySet()) {
+			String typeName = e.getKey();
 
-    protected static class Listener extends AbstractJavaListener {
-        protected Set<String> typeDeclarationSet = new HashSet<>();
-        protected Set<String> constructorDeclarationSet = new HashSet<>();
-        protected Set<String> methodDeclarationSet = new HashSet<>();
-        protected Set<String> fieldDeclarationSet = new HashSet<>();
-        protected Set<String> typeReferenceSet = new HashSet<>();
-        protected Set<String> constructorReferenceSet = new HashSet<>();
-        protected Set<String> methodReferenceSet = new HashSet<>();
-        protected Set<String> fieldReferenceSet = new HashSet<>();
-        protected Set<String> stringSet = new HashSet<>();
-        protected Map<String, Set<String>> superTypeNamesMap = new HashMap<>();
+			for (String superTypeName : e.getValue()) {
+				index.get(superTypeName).add(typeName);
+			}
+		}
+	}
 
-        protected StringBuilder sbTypeDeclaration = new StringBuilder();
+	protected static class Listener extends AbstractJavaListener {
 
-        public Listener(Container.Entry entry) {
-            super(entry);
-        }
+		protected HashSet<String> typeDeclarationSet = new HashSet<>();
+		protected HashSet<String> constructorDeclarationSet = new HashSet<>();
+		protected HashSet<String> methodDeclarationSet = new HashSet<>();
+		protected HashSet<String> fieldDeclarationSet = new HashSet<>();
+		protected HashSet<String> typeReferenceSet = new HashSet<>();
+		protected HashSet<String> constructorReferenceSet = new HashSet<>();
+		protected HashSet<String> methodReferenceSet = new HashSet<>();
+		protected HashSet<String> fieldReferenceSet = new HashSet<>();
+		protected HashSet<String> stringSet = new HashSet<>();
+		protected HashMap<String, HashSet<String>> superTypeNamesMap = new HashMap<>();
 
-        public Set<String> getTypeDeclarationSet() {
-            return typeDeclarationSet;
-        }
+		protected StringBuilder sbTypeDeclaration = new StringBuilder();
 
-        public Set<String> getConstructorDeclarationSet() {
-            return constructorDeclarationSet;
-        }
+		public Listener(Container.Entry entry) {
+			super(entry);
+		}
 
-        public Set<String> getMethodDeclarationSet() {
-            return methodDeclarationSet;
-        }
+		public HashSet<String> getTypeDeclarationSet() {
+			return typeDeclarationSet;
+		}
 
-        public Set<String> getFieldDeclarationSet() {
-            return fieldDeclarationSet;
-        }
+		public HashSet<String> getConstructorDeclarationSet() {
+			return constructorDeclarationSet;
+		}
 
-        public Set<String> getTypeReferenceSet() {
-            return typeReferenceSet;
-        }
+		public HashSet<String> getMethodDeclarationSet() {
+			return methodDeclarationSet;
+		}
 
-        public Set<String> getConstructorReferenceSet() {
-            return constructorReferenceSet;
-        }
+		public HashSet<String> getFieldDeclarationSet() {
+			return fieldDeclarationSet;
+		}
 
-        public Set<String> getMethodReferenceSet() {
-            return methodReferenceSet;
-        }
+		public HashSet<String> getTypeReferenceSet() {
+			return typeReferenceSet;
+		}
 
-        public Set<String> getFieldReferenceSet() {
-            return fieldReferenceSet;
-        }
+		public HashSet<String> getConstructorReferenceSet() {
+			return constructorReferenceSet;
+		}
 
-        public Set<String> getStringSet() {
-            return stringSet;
-        }
+		public HashSet<String> getMethodReferenceSet() {
+			return methodReferenceSet;
+		}
 
-        public Map<String, Set<String>> getSuperTypeNamesMap() {
-            return superTypeNamesMap;
-        }
+		public HashSet<String> getFieldReferenceSet() {
+			return fieldReferenceSet;
+		}
 
-        // --- AST Listener --- //
+		public HashSet<String> getStringSet() {
+			return stringSet;
+		}
 
-        @Override
-        public boolean visit(PackageDeclaration node) {
-            if (super.visit(node) && !packageName.isEmpty()) {
-                sbTypeDeclaration.append(packageName).append('/');
-            }
-            return true;
-        }
+		public HashMap<String, HashSet<String>> getSuperTypeNamesMap() {
+			return superTypeNamesMap;
+		}
 
-        @Override
-        protected boolean enterTypeDeclaration(AbstractTypeDeclaration node, int flag) {
-            // Add type declaration
-            String typeName = node.getName().getIdentifier();
-            int length = sbTypeDeclaration.length();
+		// --- AST Listener --- //
 
-            if (length == 0 || sbTypeDeclaration.charAt(length - 1) == '/') {
-                sbTypeDeclaration.append(typeName);
-            } else {
-                sbTypeDeclaration.append('$').append(typeName);
-            }
+		@Override
+		public boolean visit(PackageDeclaration node) {
+			if (super.visit(node)) {
+				if (!packageName.isEmpty()) {
+					sbTypeDeclaration.append(packageName).append('/');
+				}
+			}
+			return true;
+		}
 
-            String internalTypeName = sbTypeDeclaration.toString();
-            typeDeclarationSet.add(internalTypeName);
-            nameToInternalTypeName.put(typeName, internalTypeName);
+		@Override
+		protected boolean enterTypeDeclaration(AbstractTypeDeclaration node, int flag) {
+			// Add type declaration
+			String typeName = node.getName().getIdentifier();
+			int length = sbTypeDeclaration.length();
 
-            Set<String> superInternalTypeNameSet = new HashSet<>();
+			if ((length == 0) || (sbTypeDeclaration.charAt(length - 1) == '/')) {
+				sbTypeDeclaration.append(typeName);
+			} else {
+				sbTypeDeclaration.append('$').append(typeName);
+			}
 
-            // Add super type reference
-            Type superTypeIdentifier = getSuperType(node);
-            if (superTypeIdentifier != null) {
-                String superQualifiedTypeName = resolveInternalTypeName(superTypeIdentifier);
-                if (superQualifiedTypeName.charAt(0) != '*') {
-                    superInternalTypeNameSet.add(superQualifiedTypeName);
-                }
-            }
-            if (node instanceof TypeDeclaration) {
-                TypeDeclaration typeDeclaration = (TypeDeclaration) node;
-                List<Type> superInterfaces = typeDeclaration.superInterfaceTypes();
-                String superQualifiedInterfaceName;
-                for (Type superInteface : superInterfaces) {
-                    superQualifiedInterfaceName = resolveInternalTypeName(superInteface);
-                    if (superQualifiedInterfaceName.charAt(0) != '*') {
-                        superInternalTypeNameSet.add(superQualifiedInterfaceName);
-                    }
-                }
-            }
-            if (!superInternalTypeNameSet.isEmpty()) {
-                superTypeNamesMap.put(internalTypeName, superInternalTypeNameSet);
-            }
-            return true;
-        }
+			String internalTypeName = sbTypeDeclaration.toString();
+			typeDeclarationSet.add(internalTypeName);
+			nameToInternalTypeName.put(typeName, internalTypeName);
 
-        @Override
-        public void exitTypeDeclaration() {
-            int index = sbTypeDeclaration.lastIndexOf("$");
+			HashSet<String> superInternalTypeNameSet = new HashSet<>();
 
-            if (index == -1) {
-                index = sbTypeDeclaration.lastIndexOf("/") + 1;
-            }
+			// Add super type reference
+			Type superTypeIdentifier = getSuperType(node);
+			if (superTypeIdentifier != null) {
+				String superQualifiedTypeName = resolveInternalTypeName(superTypeIdentifier);
+				if (superQualifiedTypeName.charAt(0) != '*') {
+					superInternalTypeNameSet.add(superQualifiedTypeName);
+				}
+			}
+			if (node instanceof TypeDeclaration) {
+				TypeDeclaration typeDeclaration = (TypeDeclaration) node;
+				List<Type> superInterfaces = typeDeclaration.superInterfaceTypes();
+				for (Type superInteface : superInterfaces) {
+					String superQualifiedInterfaceName = resolveInternalTypeName(superInteface);
+					if (superQualifiedInterfaceName.charAt(0) != '*') {
+						superInternalTypeNameSet.add(superQualifiedInterfaceName);
+					}
+				}
+			}
+			if (!superInternalTypeNameSet.isEmpty()) {
+				superTypeNamesMap.put(internalTypeName, superInternalTypeNameSet);
+			}
+			return true;
+		}
 
-            if (index == -1) {
-                sbTypeDeclaration.setLength(0);
-            } else {
-                sbTypeDeclaration.setLength(index);
-            }
-        }
+		@Override
+		public void exitTypeDeclaration() {
+			int index = sbTypeDeclaration.lastIndexOf("$");
 
-        @Override
-        public boolean visit(SimpleType node) {
-            // Add type reference
-            String internalTypeName = resolveInternalTypeName(node);
+			if (index == -1) {
+				index = sbTypeDeclaration.lastIndexOf("/") + 1;
+			}
 
-            if (internalTypeName.charAt(0) != '*') {
-                typeReferenceSet.add(internalTypeName);
-            }
-            return true;
-        }
+			if (index == -1) {
+				sbTypeDeclaration.setLength(0);
+			} else {
+				sbTypeDeclaration.setLength(index);
+			}
+		}
 
-        @Override
-        public boolean visit(FieldDeclaration node) {
-            List<VariableDeclarationFragment> fragments = node.fragments();
-            for (VariableDeclarationFragment fragment : fragments) {
-                fieldDeclarationSet.add(fragment.getName().getIdentifier());
-            }
-            return true;
-        }
+		@Override
+		public boolean visit(SimpleType node) {
+			// Add type reference
+			String internalTypeName = resolveInternalTypeName(node);
 
-        @Override
-        public boolean visit(MethodDeclaration node) {
-            if (node.isConstructor()) {
-                constructorDeclarationSet.add(node.getName().getIdentifier());
-            } else {
-                methodDeclarationSet.add(node.getName().getIdentifier());
-            }
-            return true;
-        }
+			if (internalTypeName.charAt(0) != '*') {
+				typeReferenceSet.add(internalTypeName);
+			}
+			return true;
+		}
 
-        @Override
-        public boolean visit(ClassInstanceCreation node) {
-            Type type = node.getType();
-            String typeString = typeToString(type);
-            constructorReferenceSet.add(typeString);
-            return true;
-        }
+		@Override
+		public boolean visit(FieldDeclaration node) {
+			List<VariableDeclarationFragment> fragments = node.fragments();
+			for (VariableDeclarationFragment fragment : fragments) {
+				fieldDeclarationSet.add(fragment.getName().getIdentifier());
+			}
+			return true;
+		}
 
-        @Override
-        public boolean visit(FieldAccess node) {
-            fieldReferenceSet.add(node.getName().getIdentifier());
-            return true;
-        }
+		@Override
+		public boolean visit(MethodDeclaration node) {
+			if (node.isConstructor()) {
+				constructorDeclarationSet.add(node.getName().getIdentifier());
+			} else {
+				methodDeclarationSet.add(node.getName().getIdentifier());
+			}
+			return true;
+		}
 
-        @Override
-        public boolean visit(MethodInvocation node) {
-            methodReferenceSet.add(node.getName().getIdentifier());
-            return true;
-        }
+		@Override
+		public boolean visit(ClassInstanceCreation node) {
+			Type type = node.getType();
+			String typeString = typeToString(type);
+			constructorReferenceSet.add(typeString);
+			return true;
+		}
 
-        @Override
-        public boolean visit(StringLiteral node) {
-            stringSet.add(node.getLiteralValue());
-            return true;
-        }
-    }
+		@Override
+		public boolean visit(FieldAccess node) {
+			fieldReferenceSet.add(node.getName().getIdentifier());
+			return true;
+		}
+
+		@Override
+		public boolean visit(MethodInvocation node) {
+			methodReferenceSet.add(node.getName().getIdentifier());
+			return true;
+		}
+
+		@Override
+		public boolean visit(StringLiteral node) {
+			stringSet.add(node.getLiteralValue());
+			return true;
+		}
+
+	}
 }

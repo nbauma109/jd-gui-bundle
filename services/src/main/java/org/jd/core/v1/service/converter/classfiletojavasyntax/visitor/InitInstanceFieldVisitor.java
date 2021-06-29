@@ -4,17 +4,21 @@
  * This is a Copyleft license that gives the user the right to use,
  * copy and modify the code freely for non-commercial purposes.
  */
+
 package org.jd.core.v1.service.converter.classfiletojavasyntax.visitor;
 
 import org.jd.core.v1.model.javasyntax.AbstractJavaSyntaxVisitor;
 import org.jd.core.v1.model.javasyntax.declaration.*;
 import org.jd.core.v1.model.javasyntax.expression.*;
+import org.jd.core.v1.model.javasyntax.statement.ExpressionStatement;
 import org.jd.core.v1.model.javasyntax.statement.Statement;
 import org.jd.core.v1.model.javasyntax.statement.Statements;
 import org.jd.core.v1.service.converter.classfiletojavasyntax.model.javasyntax.declaration.ClassFileBodyDeclaration;
 import org.jd.core.v1.service.converter.classfiletojavasyntax.model.javasyntax.declaration.ClassFileConstructorDeclaration;
 import org.jd.core.v1.service.converter.classfiletojavasyntax.model.javasyntax.declaration.ClassFileFieldDeclaration;
 import org.jd.core.v1.service.converter.classfiletojavasyntax.model.javasyntax.declaration.ClassFileMethodDeclaration;
+import org.jd.core.v1.service.converter.classfiletojavasyntax.model.javasyntax.expression.ClassFileConstructorInvocationExpression;
+import org.jd.core.v1.service.converter.classfiletojavasyntax.model.javasyntax.expression.ClassFileSuperConstructorInvocationExpression;
 import org.jd.core.v1.util.DefaultList;
 
 import java.util.*;
@@ -24,7 +28,7 @@ import static org.jd.core.v1.model.javasyntax.declaration.Declaration.FLAG_SYNTH
 
 public class InitInstanceFieldVisitor extends AbstractJavaSyntaxVisitor {
     protected SearchFirstLineNumberVisitor searchFirstLineNumberVisitor = new SearchFirstLineNumberVisitor();
-    protected Map<String, FieldDeclarator> fieldDeclarators = new HashMap<>();
+    protected HashMap<String, FieldDeclarator> fieldDeclarators = new HashMap<>();
     protected DefaultList<Data> datas = new DefaultList<>();
     protected DefaultList<Expression> putFields = new DefaultList<>();
     protected int lineNumber = UNKNOWN_LINE_NUMBER;
@@ -68,16 +72,17 @@ public class InitInstanceFieldVisitor extends AbstractJavaSyntaxVisitor {
 
     @Override
     public void visit(FieldDeclaration declaration) {
-        if ((declaration.getFlags() & Declaration.FLAG_STATIC) == 0) {
+        if ((declaration.getFlags() & FieldDeclaration.FLAG_STATIC) == 0) {
             declaration.getFieldDeclarators().accept(this);
         }
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void visit(ConstructorDeclaration declaration) {
         ClassFileConstructorDeclaration cfcd = (ClassFileConstructorDeclaration)declaration;
 
-        if (cfcd.getStatements() != null && cfcd.getStatements().isStatements()) {
+        if ((cfcd.getStatements() != null) && cfcd.getStatements().isStatements()) {
             Statements statements = (Statements) cfcd.getStatements();
             ListIterator<Statement> iterator = statements.listIterator();
             SuperConstructorInvocationExpression superConstructorCall = searchSuperConstructorCall(iterator);
@@ -95,15 +100,17 @@ public class InitInstanceFieldVisitor extends AbstractJavaSyntaxVisitor {
                     } else {
                         firstLineNumber = superConstructorCall.getLineNumber();
 
-                        if ("()V".equals(superConstructorCall.getDescriptor()) && firstLineNumber != UNKNOWN_LINE_NUMBER && iterator.hasNext() && (lineNumber == UNKNOWN_LINE_NUMBER || lineNumber >= firstLineNumber)) {
-                            searchFirstLineNumberVisitor.init();
-                            iterator.next().accept(searchFirstLineNumberVisitor);
-                            iterator.previous();
+                        if (superConstructorCall.getDescriptor().equals("()V") && (firstLineNumber != UNKNOWN_LINE_NUMBER) && iterator.hasNext()) {
+                            if ((lineNumber == UNKNOWN_LINE_NUMBER) || (lineNumber >= firstLineNumber)) {
+                                searchFirstLineNumberVisitor.init();
+                                iterator.next().accept(searchFirstLineNumberVisitor);
+                                iterator.previous();
 
-                            int ln = searchFirstLineNumberVisitor.getLineNumber();
+                                int ln = searchFirstLineNumberVisitor.getLineNumber();
 
-                            if (ln != UNKNOWN_LINE_NUMBER && ln >= firstLineNumber) {
-                                firstLineNumber = UNKNOWN_LINE_NUMBER;
+                                if ((ln != UNKNOWN_LINE_NUMBER) && (ln >= firstLineNumber)) {
+                                    firstLineNumber = UNKNOWN_LINE_NUMBER;
+                                }
                             }
                         }
                     }
@@ -140,9 +147,8 @@ public class InitInstanceFieldVisitor extends AbstractJavaSyntaxVisitor {
     }
 
     protected SuperConstructorInvocationExpression searchSuperConstructorCall(ListIterator<Statement> iterator) {
-        Expression expression;
         while (iterator.hasNext()) {
-            expression = iterator.next().getExpression();
+            Expression expression = iterator.next().getExpression();
 
             if (expression.isSuperConstructorInvocationExpression()) {
                 return (SuperConstructorInvocationExpression)expression;
@@ -157,14 +163,11 @@ public class InitInstanceFieldVisitor extends AbstractJavaSyntaxVisitor {
     }
 
     protected void initPutFields(String internalTypeName, int firstLineNumber, ListIterator<Statement> iterator) {
-        Set<String> fieldNames = new HashSet<>();
+        HashSet<String> fieldNames = new HashSet<>();
         Expression expression = null;
 
-        Statement statement;
-        FieldReferenceExpression fre;
-        String fieldName;
         while (iterator.hasNext()) {
-            statement = iterator.next();
+            Statement statement = iterator.next();
 
             if (!statement.isExpressionStatement()) {
                 break;
@@ -172,17 +175,21 @@ public class InitInstanceFieldVisitor extends AbstractJavaSyntaxVisitor {
 
             expression = statement.getExpression();
 
-            if (!expression.isBinaryOperatorExpression() || !"=".equals(expression.getOperator()) || !expression.getLeftExpression().isFieldReferenceExpression()) {
+            if (!expression.isBinaryOperatorExpression()) {
                 break;
             }
 
-            fre = (FieldReferenceExpression)expression.getLeftExpression();
+            if (!expression.getOperator().equals("=") || !expression.getLeftExpression().isFieldReferenceExpression()) {
+                break;
+            }
+
+            FieldReferenceExpression fre = (FieldReferenceExpression)expression.getLeftExpression();
 
             if (!fre.getInternalTypeName().equals(internalTypeName) || !fre.getExpression().isThisExpression()) {
                 break;
             }
 
-            fieldName = fre.getName();
+            String fieldName = fre.getName();
 
             if (fieldNames.contains(fieldName)) {
                 break;
@@ -211,12 +218,11 @@ public class InitInstanceFieldVisitor extends AbstractJavaSyntaxVisitor {
         if (firstLineNumber < lastLineNumber) {
             Iterator<Expression> ite = putFields.iterator();
 
-            int lineNumber;
             while (ite.hasNext()) {
-                lineNumber = ite.next().getLineNumber();
+                int lineNumber = ite.next().getLineNumber();
 
-                if (firstLineNumber <= lineNumber && lineNumber <= lastLineNumber) {
-                    if (lineNumber == lastLineNumber) {
+                if ((firstLineNumber <= lineNumber) && (lastLineNumber <= lastLineNumber)) {
+                    if (lastLineNumber == lastLineNumber) {
                         lastLineNumber++;
                     }
                     ite.remove();
@@ -229,25 +235,30 @@ public class InitInstanceFieldVisitor extends AbstractJavaSyntaxVisitor {
         Iterator<Expression> putFieldIterator = putFields.iterator();
         int index = 0;
 
-        Expression expression;
-        FieldReferenceExpression fre;
-        Expression putField;
         while (iterator.hasNext() && putFieldIterator.hasNext()) {
-            expression = iterator.next().getExpression();
+            Expression expression = iterator.next().getExpression();
 
-            if (!expression.isBinaryOperatorExpression() || !"=".equals(expression.getOperator()) || !expression.getLeftExpression().isFieldReferenceExpression()) {
+            if (!expression.isBinaryOperatorExpression()) {
                 break;
             }
 
-            fre = (FieldReferenceExpression) expression.getLeftExpression();
+            if (!expression.getOperator().equals("=") || !expression.getLeftExpression().isFieldReferenceExpression()) {
+                break;
+            }
+
+            FieldReferenceExpression fre = (FieldReferenceExpression) expression.getLeftExpression();
 
             if (!fre.getInternalTypeName().equals(internalTypeName)) {
                 break;
             }
 
-            putField = putFieldIterator.next();
+            Expression putField = putFieldIterator.next();
 
-            if (expression.getLineNumber() != putField.getLineNumber() || !fre.getName().equals(putField.getLeftExpression().getName())) {
+            if (expression.getLineNumber() != putField.getLineNumber()) {
+                break;
+            }
+
+            if (!fre.getName().equals(putField.getLeftExpression().getName())) {
                 break;
             }
 
@@ -264,10 +275,9 @@ public class InitInstanceFieldVisitor extends AbstractJavaSyntaxVisitor {
         int count = putFields.size();
 
         if (count > 0) {
-            FieldDeclarator declaration;
             // Init values
             for (Expression putField : putFields) {
-                declaration = fieldDeclarators.get(putField.getLeftExpression().getName());
+                FieldDeclarator declaration = fieldDeclarators.get(putField.getLeftExpression().getName());
 
                 if (declaration != null) {
                     Expression expression = putField.getRightExpression();

@@ -8,11 +8,13 @@
 package org.jd.core.v1.service.converter.classfiletojavasyntax;
 
 import org.jd.core.v1.api.loader.Loader;
-import org.jd.core.v1.model.javasyntax.CompilationUnit;
-import org.jd.core.v1.model.message.DecompileContext;
+import org.jd.core.v1.model.message.Message;
+import org.jd.core.v1.model.processor.Processor;
 import org.jd.core.v1.service.converter.classfiletojavasyntax.processor.ConvertClassFileProcessor;
 import org.jd.core.v1.service.converter.classfiletojavasyntax.processor.UpdateJavaSyntaxTreeProcessor;
 import org.jd.core.v1.service.converter.classfiletojavasyntax.util.TypeMaker;
+
+import java.util.Map;
 
 /**
  * Convert ClassFile model to Java syntax model.<br><br>
@@ -22,23 +24,36 @@ import org.jd.core.v1.service.converter.classfiletojavasyntax.util.TypeMaker;
  *
  * @see ConvertClassFileProcessor
  */
-public class ClassFileToJavaSyntaxProcessor {
+public class ClassFileToJavaSyntaxProcessor implements Processor {
     protected static final ConvertClassFileProcessor CONVERT_CLASS_FILE_PROCESSOR = new ConvertClassFileProcessor();
     protected static final UpdateJavaSyntaxTreeProcessor UPDATE_JAVA_SYNTAX_TREE_PROCESSOR = new UpdateJavaSyntaxTreeProcessor();
 
-    public CompilationUnit process(DecompileContext decompileContext) {
-        Loader loader = decompileContext.getLoader();
+    public void process(Message message) throws Exception {
+        Loader loader = message.getHeader("loader");
+        Map<String, Object> configuration = message.getHeader("configuration");
 
-        TypeMaker typeMaker = decompileContext.getTypeMaker();
-        if (typeMaker == null) {
-            typeMaker = new TypeMaker(loader);
-            decompileContext.setTypeMaker(typeMaker);
+        if (configuration == null) {
+            message.setHeader("typeMaker", new TypeMaker(loader));
+        } else {
+            TypeMaker typeMaker = null;
+
+            try {
+                typeMaker = (TypeMaker)configuration.get("typeMaker");
+
+                if (typeMaker == null) {
+                    // Store the heavy weight object 'typeMaker' in 'configuration' to reuse it
+                    configuration.put("typeMaker", typeMaker=new TypeMaker(loader));
+                }
+            } catch (Exception e) {
+                if (typeMaker == null) {
+                    typeMaker = new TypeMaker(loader);
+                }
+            }
+
+            message.setHeader("typeMaker", typeMaker);
         }
 
-        CompilationUnit compilationUnit = CONVERT_CLASS_FILE_PROCESSOR.process(decompileContext.getClassFile(), typeMaker, decompileContext);
-        decompileContext.setCompilationUnit(compilationUnit);
-
-        UPDATE_JAVA_SYNTAX_TREE_PROCESSOR.process(compilationUnit, typeMaker);
-        return compilationUnit;
+        CONVERT_CLASS_FILE_PROCESSOR.process(message);
+        UPDATE_JAVA_SYNTAX_TREE_PROCESSOR.process(message);
     }
 }

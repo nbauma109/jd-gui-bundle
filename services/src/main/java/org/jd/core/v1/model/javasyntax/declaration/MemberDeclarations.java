@@ -4,6 +4,7 @@
  * This is a Copyleft license that gives the user the right to use,
  * copy and modify the code freely for non-commercial purposes.
  */
+
 package org.jd.core.v1.model.javasyntax.declaration;
 
 import org.jd.core.v1.util.DefaultList;
@@ -11,7 +12,7 @@ import org.jd.core.v1.util.DefaultList;
 import java.util.Collection;
 
 public class MemberDeclarations extends DefaultList<MemberDeclaration> implements BaseMemberDeclaration {
-    private static final long serialVersionUID = 1L;
+    public MemberDeclarations() {}
 
     public MemberDeclarations(int capacity) {
         super(capacity);
@@ -19,16 +20,13 @@ public class MemberDeclarations extends DefaultList<MemberDeclaration> implement
 
     public MemberDeclarations(Collection<MemberDeclaration> collection) {
         super(collection);
-        if (collection.size() <= 1) {
-            throw new IllegalArgumentException("Use 'MemberDeclaration' implementation instead");
-        }
+        assert (collection != null) && (collection.size() > 1) : "Uses 'MemberDeclaration' implementation instead";
     }
 
+    @SuppressWarnings("unchecked")
     public MemberDeclarations(MemberDeclaration declaration, MemberDeclaration... declarations) {
         super(declaration, declarations);
-        if (declarations.length <= 0) {
-            throw new IllegalArgumentException("Use 'MemberDeclaration' implementation instead");
-        }
+        assert (declarations != null) && (declarations.length > 0) : "Uses 'MemberDeclaration' implementation instead";
     }
 
     @Override

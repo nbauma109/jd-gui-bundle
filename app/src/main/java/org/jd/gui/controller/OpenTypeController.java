@@ -7,18 +7,14 @@
 
 package org.jd.gui.controller;
 
-import org.jd.core.v1.service.converter.classfiletojavasyntax.util.ExceptionUtil;
-import org.jd.gui.api.API;
-import org.jd.gui.api.model.Container;
-import org.jd.gui.api.model.Indexes;
-import org.jd.gui.util.net.UriUtil;
-import org.jd.gui.view.OpenTypeView;
-import org.jd.util.LRUCache;
-import org.jdv1.gui.api.feature.IndexesChangeListener;
-
 import java.awt.Point;
 import java.net.URI;
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.function.Consumer;
@@ -27,7 +23,16 @@ import java.util.regex.Pattern;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
+import org.jd.core.v1.service.converter.classfiletojavasyntax.util.ExceptionUtil;
+import org.jd.gui.api.API;
+import org.jd.gui.api.model.Container;
+import org.jd.gui.api.model.Indexes;
+import org.jd.gui.util.net.UriUtil;
+import org.jd.gui.view.OpenTypeView;
+import org.jdv1.gui.api.feature.IndexesChangeListener;
+
 public class OpenTypeController implements IndexesChangeListener {
+    protected static final int CACHE_MAX_ENTRIES = 5*20;
 
     protected API api;
     protected ScheduledExecutorService executor;
@@ -39,7 +44,6 @@ public class OpenTypeController implements IndexesChangeListener {
     protected SelectLocationController selectLocationController;
 
     protected long indexesHashCode = 0L;
-    @SuppressWarnings("rawtypes")
     protected Map<String, Map<String, Collection>> cache;
 
     public OpenTypeController(API api, ScheduledExecutorService executor, JFrame mainFrame) {
@@ -50,7 +54,17 @@ public class OpenTypeController implements IndexesChangeListener {
         openTypeView = new OpenTypeView(api, mainFrame, this::updateList, this::onTypeSelected);
         selectLocationController = new SelectLocationController(api, mainFrame);
         // Create result cache
-        cache = new LRUCache<>();
+        cache = new LinkedHashMap<String, Map<String, Collection>>(CACHE_MAX_ENTRIES*3/2, 0.7f, true) {
+            /**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
+			@Override
+            protected boolean removeEldestEntry(Map.Entry<String, Map<String, Collection>> eldest) {
+                return size() > CACHE_MAX_ENTRIES;
+            }
+        };
     }
 
     public void show(Collection<Future<Indexes>> collectionOfFutureIndexes, Consumer<URI> openCallback) {
@@ -68,7 +82,7 @@ public class OpenTypeController implements IndexesChangeListener {
         openTypeView.show();
     }
 
-    @SuppressWarnings({ "rawtypes" })
+    @SuppressWarnings("unchecked")
     protected void updateList(String pattern) {
         int patternLength = pattern.length();
 
@@ -93,7 +107,11 @@ public class OpenTypeController implements IndexesChangeListener {
                             if (matchingEntries != null) {
                                 // Merge 'result' and 'matchingEntries'
                                 for (Map.Entry<String, Collection> mapEntry : matchingEntries.entrySet()) {
-                                    result.computeIfAbsent(mapEntry.getKey(), k -> new HashSet<>()).addAll(mapEntry.getValue());
+                                    Collection<Container.Entry> collection = result.get(mapEntry.getKey());
+                                    if (collection == null) {
+                                        result.put(mapEntry.getKey(), collection = new HashSet<>());
+                                    }
+                                    collection.addAll(mapEntry.getValue());
                                 }
                             } else {
                                 // Waiting the end of indexation...
@@ -121,16 +139,16 @@ public class OpenTypeController implements IndexesChangeListener {
 
                                     // Merge 'result' and 'matchingEntries'
                                     for (Map.Entry<String, Collection> mapEntry : matchingEntries.entrySet()) {
-                                        result.computeIfAbsent(mapEntry.getKey(), k -> new HashSet<>()).addAll(mapEntry.getValue());
+                                        Collection<Container.Entry> collection = result.get(mapEntry.getKey());
+                                        if (collection == null) {
+                                            result.put(mapEntry.getKey(), collection = new HashSet<>());
+                                        }
+                                        collection.addAll(mapEntry.getValue());
                                     }
                                 }
                             }
                         }
                     }
-                } catch (InterruptedException e) {
-                    assert ExceptionUtil.printStackTrace(e);
-                    // Restore interrupted state...
-                    Thread.currentThread().interrupt();
                 } catch (Exception e) {
                     assert ExceptionUtil.printStackTrace(e);
                 }
@@ -144,7 +162,7 @@ public class OpenTypeController implements IndexesChangeListener {
         }
     }
 
-    @SuppressWarnings({ "rawtypes" })
+    @SuppressWarnings("unchecked")
     protected static void match(char c, Map<String, Collection> index, Map<String, Collection> result) {
         // Filter
         if (Character.isLowerCase(c)) {
@@ -220,7 +238,7 @@ public class OpenTypeController implements IndexesChangeListener {
         return Pattern.compile(sbPattern.toString());
     }
 
-    @SuppressWarnings({ "rawtypes" })
+    @SuppressWarnings("unchecked")
     protected static void match(Pattern regExpPattern, Map<String, Collection> index, Map<String, Collection> result) {
         for (Map.Entry<String, Collection> mapEntry : index.entrySet()) {
             String typeName = mapEntry.getKey();
@@ -236,9 +254,15 @@ public class OpenTypeController implements IndexesChangeListener {
         }
     }
 
-    @SuppressWarnings({ "rawtypes" })
+    @SuppressWarnings("unchecked")
     protected static void add(Map<String, Collection> map, String key, Collection value) {
-        map.computeIfAbsent(key, k -> new HashSet<>()).addAll(value);
+        Collection<Container.Entry> collection = map.get(key);
+
+        if (collection == null) {
+            map.put(key, collection = new HashSet<>());
+        }
+
+        collection.addAll(value);
     }
 
     protected void onTypeSelected(Point leftBottom, Collection<Container.Entry> entries, String typeName) {

@@ -4,6 +4,7 @@
  * This is a Copyleft license that gives the user the right to use,
  * copy and modify the code freely for non-commercial purposes.
  */
+
 package org.jd.core.v1.service.converter.classfiletojavasyntax.model.localvariable;
 
 import org.jd.core.v1.model.javasyntax.type.BaseType;
@@ -16,7 +17,6 @@ import java.util.Map;
 import static org.jd.core.v1.model.javasyntax.type.PrimitiveType.*;
 
 public class PrimitiveLocalVariable extends AbstractLocalVariable {
-    private static final String NON_ZERO_DIMENSION = "Non-zero dimension";
     protected int flags;
 
     public PrimitiveLocalVariable(int index, int offset, PrimitiveType type, String name) {
@@ -32,7 +32,9 @@ public class PrimitiveLocalVariable extends AbstractLocalVariable {
             this.flags = valueFlags;
         } else if ((valueFlags & FLAG_SHORT) != 0) {
             this.flags = valueFlags | FLAG_INT;
-        } else if ((valueFlags & FLAG_CHAR) != 0 || (valueFlags & FLAG_BYTE) != 0) {
+        } else if ((valueFlags & FLAG_CHAR) != 0) {
+            this.flags = valueFlags | FLAG_INT | FLAG_SHORT;
+        } else if ((valueFlags & FLAG_BYTE) != 0) {
             this.flags = valueFlags | FLAG_INT | FLAG_SHORT;
         } else {
             this.flags = valueFlags;
@@ -62,27 +64,20 @@ public class PrimitiveLocalVariable extends AbstractLocalVariable {
                 return TYPE_VOID;
         }
 
-        if (flags == (FLAG_CHAR|FLAG_INT)) {
+        if (flags == (FLAG_CHAR|FLAG_INT))
             return MAYBE_CHAR_TYPE;
-        }
-        if (flags == (FLAG_CHAR|FLAG_SHORT|FLAG_INT)) {
+        if (flags == (FLAG_CHAR|FLAG_SHORT|FLAG_INT))
             return MAYBE_SHORT_TYPE;
-        }
-        if (flags == (FLAG_BYTE|FLAG_CHAR|FLAG_SHORT|FLAG_INT)) {
+        if (flags == (FLAG_BYTE|FLAG_CHAR|FLAG_SHORT|FLAG_INT))
             return MAYBE_BYTE_TYPE;
-        }
-        if (flags == (FLAG_BOOLEAN|FLAG_BYTE|FLAG_CHAR|FLAG_SHORT|FLAG_INT)) {
+        if (flags == (FLAG_BOOLEAN|FLAG_BYTE|FLAG_CHAR|FLAG_SHORT|FLAG_INT))
             return MAYBE_BOOLEAN_TYPE;
-        }
-        if (flags == (FLAG_BYTE|FLAG_SHORT|FLAG_INT)) {
+        if (flags == (FLAG_BYTE|FLAG_SHORT|FLAG_INT))
             return MAYBE_NEGATIVE_BYTE_TYPE;
-        }
-        if (flags == (FLAG_SHORT|FLAG_INT)) {
+        if (flags == (FLAG_SHORT|FLAG_INT))
             return MAYBE_NEGATIVE_SHORT_TYPE;
-        }
-        if (flags == (FLAG_BOOLEAN|FLAG_BYTE|FLAG_SHORT|FLAG_INT)) {
+        if (flags == (FLAG_BOOLEAN|FLAG_BYTE|FLAG_SHORT|FLAG_INT))
             return MAYBE_NEGATIVE_BOOLEAN_TYPE;
-        }
 
         return TYPE_INT;
     }
@@ -107,33 +102,15 @@ public class PrimitiveLocalVariable extends AbstractLocalVariable {
 
         sb.append("PrimitiveLocalVariable{");
 
-        if ((flags & FLAG_BOOLEAN) != 0) {
-            sb.append("boolean ");
-        }
-        if ((flags & FLAG_CHAR) != 0) {
-            sb.append("char ");
-        }
-        if ((flags & FLAG_FLOAT) != 0) {
-            sb.append("float ");
-        }
-        if ((flags & FLAG_DOUBLE) != 0) {
-            sb.append("double ");
-        }
-        if ((flags & FLAG_BYTE) != 0) {
-            sb.append("byte ");
-        }
-        if ((flags & FLAG_SHORT) != 0) {
-            sb.append("short ");
-        }
-        if ((flags & FLAG_INT) != 0) {
-            sb.append("int ");
-        }
-        if ((flags & FLAG_LONG) != 0) {
-            sb.append("long ");
-        }
-        if ((flags & FLAG_VOID) != 0) {
-            sb.append("void ");
-        }
+        if ((flags & FLAG_BOOLEAN) != 0)    sb.append("boolean ");
+        if ((flags & FLAG_CHAR) != 0)       sb.append("char ");
+        if ((flags & FLAG_FLOAT) != 0)      sb.append("float ");
+        if ((flags & FLAG_DOUBLE) != 0)     sb.append("double ");
+        if ((flags & FLAG_BYTE) != 0)       sb.append("byte ");
+        if ((flags & FLAG_SHORT) != 0)      sb.append("short ");
+        if ((flags & FLAG_INT) != 0)        sb.append("int ");
+        if ((flags & FLAG_LONG) != 0)       sb.append("long ");
+        if ((flags & FLAG_VOID) != 0)       sb.append("void ");
 
         sb.append(name).append(", index=").append(index);
 
@@ -146,15 +123,17 @@ public class PrimitiveLocalVariable extends AbstractLocalVariable {
 
     @Override
     public boolean isAssignableFrom(Map<String, BaseType> typeBounds, Type type) {
-        return type.getDimension() == 0 && type.isPrimitiveType() && (flags & ((PrimitiveType)type).getRightFlags()) != 0;
+        if ((type.getDimension() == 0) && type.isPrimitiveType()) {
+            return (flags & ((PrimitiveType)type).getRightFlags()) != 0;
+        }
+
+        return false;
     }
 
     @Override
     public void typeOnRight(Map<String, BaseType> typeBounds, Type type) {
         if (type.isPrimitiveType()) {
-            if (type.getDimension() != 0) {
-                throw new IllegalArgumentException(NON_ZERO_DIMENSION);
-            }
+            assert (type.getDimension() == 0);
 
             int f = ((PrimitiveType) type).getRightFlags();
 
@@ -173,9 +152,7 @@ public class PrimitiveLocalVariable extends AbstractLocalVariable {
     @Override
     public void typeOnLeft(Map<String, BaseType> typeBounds, Type type) {
         if (type.isPrimitiveType()) {
-            if (type.getDimension() != 0) {
-                throw new IllegalArgumentException(NON_ZERO_DIMENSION);
-            }
+            assert (type.getDimension() == 0);
 
             int f = ((PrimitiveType) type).getLeftFlags();
 
@@ -209,9 +186,7 @@ public class PrimitiveLocalVariable extends AbstractLocalVariable {
 
     @Override
     public void variableOnRight(Map<String, BaseType> typeBounds, AbstractLocalVariable variable) {
-        if (variable.getDimension() != 0) {
-            throw new IllegalArgumentException(NON_ZERO_DIMENSION);
-        }
+        assert variable.getDimension() == 0;
 
         addVariableOnRight(variable);
 
@@ -224,9 +199,7 @@ public class PrimitiveLocalVariable extends AbstractLocalVariable {
         }
 
         flags &= variableFlags;
-        if (flags == 0) {
-            throw new IllegalArgumentException("PrimitiveLocalVariable.variableOnRight(var) : flags = 0 after type reduction");
-        }
+        assert flags != 0 : "PrimitiveLocalVariable.variableOnRight(var) : flags = 0 after type reduction";
 
         if (old != flags) {
             fireChangeEvent(typeBounds);
@@ -235,9 +208,7 @@ public class PrimitiveLocalVariable extends AbstractLocalVariable {
 
     @Override
     public void variableOnLeft(Map<String, BaseType> typeBounds, AbstractLocalVariable variable) {
-        if (variable.getDimension() != 0) {
-            throw new IllegalArgumentException(NON_ZERO_DIMENSION);
-        }
+        assert variable.getDimension() == 0;
 
         addVariableOnLeft(variable);
 
@@ -250,9 +221,7 @@ public class PrimitiveLocalVariable extends AbstractLocalVariable {
         }
 
         flags &= variableFlags;
-        if (flags == 0) {
-            throw new IllegalArgumentException("PrimitiveLocalVariable.variableOnLeft(var) : flags = 0 after type reduction");
-        }
+        assert flags != 0 : "PrimitiveLocalVariable.variableOnLeft(var) : flags = 0 after type reduction";
 
         if (old != flags) {
             fireChangeEvent(typeBounds);

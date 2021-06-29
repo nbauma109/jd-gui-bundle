@@ -7,7 +7,16 @@
 
 package org.jdv1.gui.service.treenode;
 
-import org.jd.core.v1.service.converter.classfiletojavasyntax.util.ExceptionUtil;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
+
+import javax.swing.Icon;
+import javax.swing.JComponent;
+import javax.swing.tree.DefaultMutableTreeNode;
+
 import org.jd.gui.api.API;
 import org.jd.gui.api.feature.ContainerEntryGettable;
 import org.jd.gui.api.feature.PageCreator;
@@ -16,29 +25,21 @@ import org.jd.gui.api.feature.UriGettable;
 import org.jd.gui.api.model.Container;
 import org.jd.gui.api.model.Type;
 import org.jd.gui.spi.TypeFactory;
+import org.jd.core.v1.service.converter.classfiletojavasyntax.util.ExceptionUtil;
 import org.jd.gui.view.data.TreeNodeBean;
-
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.List;
-
-import javax.swing.Icon;
-import javax.swing.JComponent;
-import javax.swing.tree.DefaultMutableTreeNode;
 
 public abstract class AbstractTypeFileTreeNodeFactoryProvider extends AbstractTreeNodeFactoryProvider {
     protected static final TypeComparator TYPE_COMPARATOR = new TypeComparator();
     protected static final FieldOrMethodBeanComparator FIELD_OR_METHOD_BEAN_COMPARATOR = new FieldOrMethodBeanComparator();
 
     public static class BaseTreeNode extends DefaultMutableTreeNode implements ContainerEntryGettable, UriGettable, PageCreator {
-
-        private static final long serialVersionUID = 1L;
-        protected transient Container.Entry entry;
-        protected transient PageAndTipFactory factory;
-        protected transient URI uri;
+        /**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+		protected Container.Entry entry;
+        protected PageAndTipFactory factory;
+        protected URI uri;
 
         public BaseTreeNode(Container.Entry entry, String fragment, Object userObject, PageAndTipFactory factory) {
             super(userObject);
@@ -58,12 +59,10 @@ public abstract class AbstractTypeFileTreeNodeFactoryProvider extends AbstractTr
         }
 
         // --- ContainerEntryGettable --- //
-        @Override
-        public Container.Entry getEntry() { return entry; }
+        @Override public Container.Entry getEntry() { return entry; }
 
         // --- UriGettable --- //
-        @Override
-        public URI getUri() { return uri; }
+        @Override public URI getUri() { return uri; }
 
         // --- PageCreator --- //
         @Override
@@ -75,9 +74,11 @@ public abstract class AbstractTypeFileTreeNodeFactoryProvider extends AbstractTr
     }
 
     protected static class FileTreeNode extends BaseTreeNode implements TreeNodeExpandable {
-
-        private static final long serialVersionUID = 1L;
-        protected boolean initialized;
+        /**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+		protected boolean initialized;
 
         public FileTreeNode(Container.Entry entry, Object userObject, PageAndTipFactory pageAndTipFactory) {
             this(entry, null, userObject, pageAndTipFactory);
@@ -105,17 +106,19 @@ public abstract class AbstractTypeFileTreeNodeFactoryProvider extends AbstractTr
                         add(new TypeTreeNode(entry, type, new TreeNodeBean(type.getDisplayTypeName(), type.getIcon()), factory));
                     }
                 }
-
+                
                 initialized = true;
             }
         }
     }
 
     protected static class TypeTreeNode extends BaseTreeNode implements TreeNodeExpandable {
-
-        private static final long serialVersionUID = 1L;
-        protected boolean initialized;
-        protected transient Type type;
+        /**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+		protected boolean initialized;
+        protected Type type;
 
         public TypeTreeNode(Container.Entry entry, Type type, Object userObject, PageAndTipFactory factory) {
             super(entry, type.getName(), userObject, factory);
@@ -137,7 +140,7 @@ public abstract class AbstractTypeFileTreeNodeFactoryProvider extends AbstractTr
                 Collection<Type> innerTypes = type.getInnerTypes();
 
                 if (innerTypes != null) {
-                    List<Type> innerTypeList = new ArrayList<>(innerTypes);
+                    ArrayList<Type> innerTypeList = new ArrayList<>(innerTypes);
                     innerTypeList.sort(TYPE_COMPARATOR);
 
                     for (Type innerType : innerTypeList) {
@@ -149,7 +152,7 @@ public abstract class AbstractTypeFileTreeNodeFactoryProvider extends AbstractTr
                 Collection<Type.Field> fields = type.getFields();
 
                 if (fields != null) {
-                    List<FieldOrMethodBean> beans = new ArrayList<>(fields.size());
+                    ArrayList<FieldOrMethodBean> beans = new ArrayList<>(fields.size());
 
                     for (Type.Field field : fields) {
                         String fragment = typeName + '-' + field.getName() + '-' + field.getDescriptor();
@@ -167,7 +170,7 @@ public abstract class AbstractTypeFileTreeNodeFactoryProvider extends AbstractTr
                 Collection<Type.Method> methods = type.getMethods();
 
                 if (methods != null) {
-                    List<FieldOrMethodBean> beans = new ArrayList<>();
+                    ArrayList<FieldOrMethodBean> beans = new ArrayList<>();
 
                     for (Type.Method method : methods) {
                         if (!method.getName().equals("<clinit>")) {
@@ -189,10 +192,12 @@ public abstract class AbstractTypeFileTreeNodeFactoryProvider extends AbstractTr
     }
 
     protected static class FieldOrMethodTreeNode extends BaseTreeNode {
+        /**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
 
-        private static final long serialVersionUID = 1L;
-
-        public FieldOrMethodTreeNode(Container.Entry entry, String fragment, Object userObject, PageAndTipFactory factory) {
+		public FieldOrMethodTreeNode(Container.Entry entry, String fragment, Object userObject, PageAndTipFactory factory) {
             super(entry, fragment, userObject, factory);
         }
     }

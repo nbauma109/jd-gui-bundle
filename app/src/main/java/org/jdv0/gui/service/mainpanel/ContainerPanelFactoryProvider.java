@@ -4,9 +4,27 @@
  * This is a Copyleft license that gives the user the right to use,
  * copy and modify the code freely for non-commercial purposes.
  */
+
 package org.jdv0.gui.service.mainpanel;
 
-import org.jd.core.v1.service.converter.classfiletojavasyntax.util.ExceptionUtil;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
+import javax.swing.JComponent;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
+
 import org.jd.gui.api.API;
 import org.jd.gui.api.feature.ContentIndexable;
 import org.jd.gui.api.feature.SourcesSavable;
@@ -17,37 +35,26 @@ import org.jd.gui.spi.Indexer;
 import org.jd.gui.spi.PanelFactory;
 import org.jd.gui.spi.SourceSaver;
 import org.jd.gui.spi.TreeNodeFactory;
+import org.jd.core.v1.service.converter.classfiletojavasyntax.util.ExceptionUtil;
 import org.jd.gui.view.component.panel.TreeTabbedPanel;
-
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.nio.file.FileSystem;
-import java.nio.file.FileSystems;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.*;
-
-import javax.swing.JComponent;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeModel;
 
 public class ContainerPanelFactoryProvider implements PanelFactory {
     protected static final String[] TYPES = { "default" };
 
-    @Override
-    public String[] getTypes() { return TYPES; }
+	@Override public String[] getTypes() { return TYPES; }
 
     @Override
     @SuppressWarnings("unchecked")
     public <T extends JComponent & UriGettable> T make(API api, Container container) {
         return (T)new ContainerPanel(api, container);
-    }
+	}
 
-    @SuppressWarnings("rawtypes")
     protected class ContainerPanel extends TreeTabbedPanel implements ContentIndexable, SourcesSavable {
-        private static final long serialVersionUID = 1L;
-        protected transient Container.Entry entry;
+        /**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+		protected Container.Entry entry;
 
         public ContainerPanel(API api, Container container) {
             super(api, container.getRoot().getParent().getUri());
@@ -56,9 +63,8 @@ public class ContainerPanelFactoryProvider implements PanelFactory {
 
             DefaultMutableTreeNode root = new DefaultMutableTreeNode();
 
-            TreeNodeFactory factory;
-            for (Container.Entry entry : container.getRoot().getChildren().values()) {
-                factory = api.getTreeNodeFactory(entry);
+            for (Container.Entry entry : container.getRoot().getChildren()) {
+                TreeNodeFactory factory = api.getTreeNodeFactory(entry);
                 if (factory != null) {
                     root.add(factory.make(api, entry));
                 }
@@ -67,14 +73,16 @@ public class ContainerPanelFactoryProvider implements PanelFactory {
             tree.setModel(new DefaultTreeModel(root));
         }
 
-        /** --- ContentIndexable --- */
+        // --- ContentIndexable --- //
         @Override
         public Indexes index(API api) {
-            Map<String, Map<String, Collection>> map = new HashMap<>();
+            HashMap<String, Map<String, Collection>> map = new HashMap<>();
             MapMapCollectionWithDefault mapWithDefault = new MapMapCollectionWithDefault(map);
 
             // Index populating value automatically
-            Indexes indexesWithDefault = mapWithDefault::get;
+            Indexes indexesWithDefault = new Indexes() {
+                @Override public Map<String, Collection> getIndex(String name) { return mapWithDefault.get(name); }
+            };
 
             // Index entry
             Indexer indexer = api.getIndexer(entry);
@@ -84,10 +92,12 @@ public class ContainerPanelFactoryProvider implements PanelFactory {
             }
 
             // To prevent memory leaks, return an index without the 'populate' behaviour
-            return map::get;
+            return new Indexes() {
+                @Override public Map<String, Collection> getIndex(String name) { return map.get(name); }
+            };
         }
 
-        /** --- SourcesSavable --- */
+        // --- SourcesSavable --- //
         @Override
         public String getSourceFileName() {
             SourceSaver saver = api.getSourceSaver(entry);
@@ -96,8 +106,9 @@ public class ContainerPanelFactoryProvider implements PanelFactory {
                 String path = saver.getSourcePath(entry);
                 int index = path.lastIndexOf('/');
                 return path.substring(index+1);
+            } else {
+                return null;
             }
-            return null;
         }
 
         @Override
@@ -111,7 +122,7 @@ public class ContainerPanelFactoryProvider implements PanelFactory {
             try {
                 Path parentPath = path.getParent();
 
-                if (parentPath != null && !Files.exists(parentPath)) {
+                if ((parentPath != null) && !Files.exists(parentPath)) {
                     Files.createDirectories(parentPath);
                 }
 
@@ -125,8 +136,8 @@ public class ContainerPanelFactoryProvider implements PanelFactory {
                     if (saver != null) {
                         saver.saveContent(
                             api,
-                            controller::isCancelled,
-                            listener::pathSaved,
+                            () -> controller.isCancelled(),
+                            (p) -> listener. pathSaved(p),
                             archiveRootPath, archiveRootPath, entry);
                     }
                 }
@@ -141,68 +152,48 @@ public class ContainerPanelFactoryProvider implements PanelFactory {
 
         public MapWrapper(Map<K, V> map) { this.map = map; }
 
-        @Override
-        public int size() { return map.size(); }
-        @Override
-        public boolean isEmpty() { return map.isEmpty(); }
-        @Override
-        public boolean containsKey(Object o) { return map.containsKey(o); }
-        @Override
-        public boolean containsValue(Object o) { return map.containsValue(o); }
-        @Override
-        public V get(Object o) { return map.get(o); }
-        @Override
-        public V put(K k, V v) { return map.put(k, v); }
-        @Override
-        public V remove(Object o) { return map.remove(o); }
-        @Override
-        public void putAll(Map<? extends K, ? extends V> map) { this.map.putAll(map); }
-        @Override
-        public void clear() { map.clear(); }
-        @Override
-        public Set<K> keySet() { return map.keySet(); }
-        @Override
-        public Collection<V> values() { return map.values(); }
-        @Override
-        public Set<Entry<K, V>> entrySet() { return map.entrySet(); }
-        @Override
-        public boolean equals(Object o) { return map.equals(o); }
-        @Override
-        public int hashCode() { return map.hashCode(); }
+        @Override public int size() { return map.size(); }
+        @Override public boolean isEmpty() { return map.isEmpty(); }
+        @Override public boolean containsKey(Object o) { return map.containsKey(o); }
+        @Override public boolean containsValue(Object o) { return map.containsValue(o); }
+        @Override public V get(Object o) { return map.get(o); }
+        @Override public V put(K k, V v) { return map.put(k, v); }
+        @Override public V remove(Object o) { return map.remove(o); }
+        @Override public void putAll(Map<? extends K, ? extends V> map) { this.map.putAll(map); }
+        @Override public void clear() { map.clear(); }
+        @Override public Set<K> keySet() { return map.keySet(); }
+        @Override public Collection<V> values() { return map.values(); }
+        @Override public Set<Entry<K, V>> entrySet() { return map.entrySet(); }
+        @Override public boolean equals(Object o) { return map.equals(o); }
+        @Override public int hashCode() { return map.hashCode(); }
     }
 
-    @SuppressWarnings("rawtypes")
     protected static class MapCollectionWithDefault extends MapWrapper<String, Collection> {
         public MapCollectionWithDefault(Map<String, Collection> map) { super(map); }
 
-        @Override
-        public Collection get(Object o) {
+        @Override public Collection get(Object o) {
             Collection value = map.get(o);
             if (value == null) {
                 String key = o.toString();
-                value=new ArrayList();
-                map.put(key, value);
+                map.put(key, value=new ArrayList());
             }
             return value;
         }
     }
 
-    @SuppressWarnings("rawtypes")
     protected static class MapMapCollectionWithDefault extends MapWrapper<String, Map<String, Collection>> {
-        protected Map<String, Map<String, Collection>> wrappers = new HashMap<>();
+	    protected HashMap<String, Map<String, Collection>> wrappers = new HashMap<>();
 
         public MapMapCollectionWithDefault(Map<String, Map<String, Collection>> map) { super(map); }
 
-        @Override
-        public Map<String, Collection> get(Object o) {
+        @Override public Map<String, Collection> get(Object o) {
             Map<String, Collection> value = wrappers.get(o);
 
             if (value == null) {
                 String key = o.toString();
-                Map<String, Collection> m = new HashMap<>();
+                HashMap<String, Collection> m = new HashMap<>();
                 map.put(key, m);
-                value=new MapCollectionWithDefault(m);
-                wrappers.put(key, value);
+                wrappers.put(key, value=new MapCollectionWithDefault(m));
             }
 
             return value;

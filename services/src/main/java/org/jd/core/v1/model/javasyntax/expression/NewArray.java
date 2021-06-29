@@ -43,9 +43,4 @@ public class NewArray extends AbstractLineNumberTypeExpression {
     public String toString() {
         return "NewArray{" + type + "}";
     }
-
-	@Override
-	public Expression copyTo(int lineNumber) {
-		return new NewArray(lineNumber, type, dimensionExpressionList);
-	}
 }

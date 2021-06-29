@@ -15,7 +15,6 @@ public class RootFrame extends Frame {
         super(null, null);
     }
 
-    @Override
     public AbstractLocalVariable getLocalVariable(int index) {
         if (index < localVariableArray.length) {
             return localVariableArray[index];

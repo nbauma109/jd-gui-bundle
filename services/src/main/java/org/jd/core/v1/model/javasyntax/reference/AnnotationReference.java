@@ -11,14 +11,14 @@ import org.jd.core.v1.model.javasyntax.type.ObjectType;
 
 public class AnnotationReference implements BaseAnnotationReference {
     protected ObjectType type;
-    protected BaseElementValue elementValue;
+    protected ElementValue elementValue;
     protected BaseElementValuePair elementValuePairs;
 
     public AnnotationReference(ObjectType type) {
         this.type = type;
     }
 
-    public AnnotationReference(ObjectType type, BaseElementValue elementValue) {
+    public AnnotationReference(ObjectType type, ElementValue elementValue) {
         this.type = type;
         this.elementValue = elementValue;
     }
@@ -28,7 +28,7 @@ public class AnnotationReference implements BaseAnnotationReference {
         this.elementValuePairs = elementValuePairs;
     }
 
-    protected AnnotationReference(ObjectType type, BaseElementValue elementValue, BaseElementValuePair elementValuePairs) {
+    protected AnnotationReference(ObjectType type, ElementValue elementValue, BaseElementValuePair elementValuePairs) {
         this.type = type;
         this.elementValue = elementValue;
         this.elementValuePairs = elementValuePairs;
@@ -38,7 +38,7 @@ public class AnnotationReference implements BaseAnnotationReference {
         return type;
     }
 
-    public BaseElementValue getElementValue() {
+    public ElementValue getElementValue() {
         return elementValue;
     }
 

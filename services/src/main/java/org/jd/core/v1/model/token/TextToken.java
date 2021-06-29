@@ -50,7 +50,6 @@ public class TextToken implements Token {
         return text;
     }
 
-    @Override
     public String toString() {
         return "TextToken{'" + text + "'}";
     }

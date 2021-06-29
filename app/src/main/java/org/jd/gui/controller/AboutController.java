@@ -9,7 +9,7 @@ package org.jd.gui.controller;
 
 import org.jd.gui.view.AboutView;
 
-import javax.swing.JFrame;
+import javax.swing.*;
 
 public class AboutController {
     protected AboutView aboutView;

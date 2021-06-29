@@ -4,7 +4,52 @@
  * This is a Copyleft license that gives the user the right to use,
  * copy and modify the code freely for non-commercial purposes.
  */
+
 package org.jd.gui.view;
+
+import java.awt.BorderLayout;
+import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
+import java.awt.event.ItemListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.function.BiConsumer;
+
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComponent;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JRootPane;
+import javax.swing.JScrollPane;
+import javax.swing.JTextField;
+import javax.swing.KeyStroke;
+import javax.swing.ScrollPaneConstants;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.event.TreeExpansionEvent;
+import javax.swing.event.TreeExpansionListener;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreePath;
 
 import org.jd.gui.api.API;
 import org.jd.gui.api.feature.ContainerEntryGettable;
@@ -17,24 +62,6 @@ import org.jd.gui.util.swing.SwingUtil;
 import org.jd.gui.view.component.Tree;
 import org.jd.gui.view.renderer.TreeNodeRenderer;
 import org.jdv1.gui.model.container.DelegatingFilterContainer;
-
-import java.awt.BorderLayout;
-import java.awt.Cursor;
-import java.awt.Dimension;
-import java.awt.GridLayout;
-import java.awt.event.*;
-import java.net.URI;
-import java.util.*;
-import java.util.function.ObjIntConsumer;
-
-import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-import javax.swing.event.TreeExpansionEvent;
-import javax.swing.event.TreeExpansionListener;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreePath;
 
 public class SearchInConstantPoolsView<T extends DefaultMutableTreeNode & ContainerEntryGettable & UriGettable> {
     protected static final ContainerComparator CONTAINER_COMPARATOR = new ContainerComparator();
@@ -68,7 +95,7 @@ public class SearchInConstantPoolsView<T extends DefaultMutableTreeNode & Contai
     @SuppressWarnings("unchecked")
     public SearchInConstantPoolsView(
             API api, JFrame mainFrame,
-            ObjIntConsumer<String> changedPatternCallback,
+            BiConsumer<String, Integer> changedPatternCallback,
             TriConsumer<URI, String, Integer> selectedTypeCallback) {
         this.api = api;
         // Build GUI
@@ -91,18 +118,22 @@ public class SearchInConstantPoolsView<T extends DefaultMutableTreeNode & Contai
             vbox.add(Box.createVerticalStrut(10));
 
             // Text field
-            searchInConstantPoolsEnterTextField = new JTextField(30);
-            vbox.add(searchInConstantPoolsEnterTextField);
+            vbox.add(searchInConstantPoolsEnterTextField = new JTextField(30));
             searchInConstantPoolsEnterTextField.addKeyListener(new KeyAdapter() {
-                @Override
-                public void keyTyped(KeyEvent e)  {
-                    if (e.getKeyChar() == '=' || e.getKeyChar() == '(' || e.getKeyChar() == ')' || e.getKeyChar() == '{'
-                            || e.getKeyChar() == '}' || e.getKeyChar() == '[' || e.getKeyChar() == ']' || (Character.isDigit(e.getKeyChar()) && searchInConstantPoolsEnterTextField.getText().isEmpty())) {
-                        e.consume();
+                @Override public void keyTyped(KeyEvent e)  {
+                    switch (e.getKeyChar()) {
+                        case '=': case '(': case ')': case '{': case '}': case '[': case ']':
+                            e.consume();
+                            break;
+                        default:
+                            if (Character.isDigit(e.getKeyChar()) && (searchInConstantPoolsEnterTextField.getText().length() == 0)) {
+                                // First character can not be a digit
+                                e.consume();
+                            }
+                            break;
                     }
                 }
-                @Override
-                public void keyPressed(KeyEvent e) {
+                @Override public void keyPressed(KeyEvent e) {
                     if (e.getKeyCode() == KeyEvent.VK_DOWN) {
                         DefaultMutableTreeNode root = (DefaultMutableTreeNode)searchInConstantPoolsTree.getModel().getRoot();
                         if (root.getChildCount() > 0) {
@@ -116,12 +147,9 @@ public class SearchInConstantPoolsView<T extends DefaultMutableTreeNode & Contai
                 }
             });
             searchInConstantPoolsEnterTextField.getDocument().addDocumentListener(new DocumentListener() {
-                @Override
-                public void insertUpdate(DocumentEvent e) { call(); }
-                @Override
-                public void removeUpdate(DocumentEvent e) { call(); }
-                @Override
-                public void changedUpdate(DocumentEvent e) { call(); }
+                @Override public void insertUpdate(DocumentEvent e) { call(); }
+                @Override public void removeUpdate(DocumentEvent e) { call(); }
+                @Override public void changedUpdate(DocumentEvent e) { call(); }
                 protected void call() { changedPatternCallback.accept(searchInConstantPoolsEnterTextField.getText(), getFlags()); }
             });
 
@@ -138,38 +166,32 @@ public class SearchInConstantPoolsView<T extends DefaultMutableTreeNode & Contai
             Box subhbox = Box.createHorizontalBox();
             subpanel.add(subhbox, BorderLayout.WEST);
 
-            ItemListener checkBoxListener = e -> {
+            ItemListener checkBoxListener = (e) -> {
                 changedPatternCallback.accept(searchInConstantPoolsEnterTextField.getText(), getFlags());
                 searchInConstantPoolsEnterTextField.requestFocus();
             };
 
             JPanel subsubpanel = new JPanel();
             subsubpanel.setLayout(new GridLayout(2, 1));
-            searchInConstantPoolsCheckBoxType = new JCheckBox("Type", true);
-            subsubpanel.add(searchInConstantPoolsCheckBoxType);
+            subsubpanel.add(searchInConstantPoolsCheckBoxType = new JCheckBox("Type", true));
             searchInConstantPoolsCheckBoxType.addItemListener(checkBoxListener);
-            searchInConstantPoolsCheckBoxField = new JCheckBox("Field");
-            subsubpanel.add(searchInConstantPoolsCheckBoxField);
+            subsubpanel.add(searchInConstantPoolsCheckBoxField = new JCheckBox("Field"));
             searchInConstantPoolsCheckBoxField.addItemListener(checkBoxListener);
             subhbox.add(subsubpanel);
 
             subsubpanel = new JPanel();
             subsubpanel.setLayout(new GridLayout(2, 1));
-            searchInConstantPoolsCheckBoxConstructor = new JCheckBox("Constructor");
-            subsubpanel.add(searchInConstantPoolsCheckBoxConstructor);
+            subsubpanel.add(searchInConstantPoolsCheckBoxConstructor = new JCheckBox("Constructor"));
             searchInConstantPoolsCheckBoxConstructor.addItemListener(checkBoxListener);
-            searchInConstantPoolsCheckBoxMethod = new JCheckBox("Method");
-            subsubpanel.add(searchInConstantPoolsCheckBoxMethod);
+            subsubpanel.add(searchInConstantPoolsCheckBoxMethod = new JCheckBox("Method"));
             searchInConstantPoolsCheckBoxMethod.addItemListener(checkBoxListener);
             subhbox.add(subsubpanel);
 
             subsubpanel = new JPanel();
             subsubpanel.setLayout(new GridLayout(2, 1));
-            searchInConstantPoolsCheckBoxString = new JCheckBox("String Constant");
-            subsubpanel.add(searchInConstantPoolsCheckBoxString);
+            subsubpanel.add(searchInConstantPoolsCheckBoxString = new JCheckBox("String Constant"));
             searchInConstantPoolsCheckBoxString.addItemListener(checkBoxListener);
-            searchInConstantPoolsCheckBoxModule = new JCheckBox("Java Module");
-            subsubpanel.add(searchInConstantPoolsCheckBoxModule);
+            subsubpanel.add(searchInConstantPoolsCheckBoxModule = new JCheckBox("Java Module"));
             searchInConstantPoolsCheckBoxModule.addItemListener(checkBoxListener);
             subhbox.add(subsubpanel);
 
@@ -183,42 +205,38 @@ public class SearchInConstantPoolsView<T extends DefaultMutableTreeNode & Contai
 
             subsubpanel = new JPanel();
             subsubpanel.setLayout(new GridLayout(2, 1));
-            searchInConstantPoolsCheckBoxDeclarations = new JCheckBox("Declarations", true);
-            subsubpanel.add(searchInConstantPoolsCheckBoxDeclarations);
+            subsubpanel.add(searchInConstantPoolsCheckBoxDeclarations = new JCheckBox("Declarations", true));
             searchInConstantPoolsCheckBoxDeclarations.addItemListener(checkBoxListener);
-            searchInConstantPoolsCheckBoxReferences = new JCheckBox("References", true);
-            subsubpanel.add(searchInConstantPoolsCheckBoxReferences);
+            subsubpanel.add(searchInConstantPoolsCheckBoxReferences = new JCheckBox("References", true));
             searchInConstantPoolsCheckBoxReferences.addItemListener(checkBoxListener);
             subhbox.add(subsubpanel);
 
             vbox.add(Box.createVerticalStrut(10));
 
             hbox = Box.createHorizontalBox();
-            searchInConstantPoolsLabel = new JLabel("Matching types:");
-            hbox.add(searchInConstantPoolsLabel);
+            hbox.add(searchInConstantPoolsLabel = new JLabel("Matching types:"));
             hbox.add(Box.createHorizontalGlue());
             vbox.add(hbox);
 
             vbox.add(Box.createVerticalStrut(10));
             panel.add(vbox, BorderLayout.NORTH);
 
-            searchInConstantPoolsTree = new Tree();
-            JScrollPane scrollPane = new JScrollPane(searchInConstantPoolsTree);
+            JScrollPane scrollPane = new JScrollPane(searchInConstantPoolsTree = new Tree());
             searchInConstantPoolsTree.setShowsRootHandles(true);
             searchInConstantPoolsTree.setModel(new DefaultTreeModel(new DefaultMutableTreeNode()));
             searchInConstantPoolsTree.setCellRenderer(new TreeNodeRenderer());
             searchInConstantPoolsTree.addKeyListener(new KeyAdapter() {
-                @Override
-                public void keyPressed(KeyEvent e) {
-                    if (e.getKeyCode() == KeyEvent.VK_UP && searchInConstantPoolsTree.getLeadSelectionRow() == 0) {
-                        searchInConstantPoolsEnterTextField.requestFocus();
-                        e.consume();
+                @Override public void keyPressed(KeyEvent e) {
+                    if (e.getKeyCode() == KeyEvent.VK_UP) {
+                        if (searchInConstantPoolsTree.getLeadSelectionRow() == 0) {
+                            searchInConstantPoolsEnterTextField.requestFocus();
+                            e.consume();
+                        }
                     }
                 }
             });
             searchInConstantPoolsTree.addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
+                @Override public void mouseClicked(MouseEvent e) {
                     if (e.getClickCount() == 2) {
                         T node = (T)searchInConstantPoolsTree.getLastSelectedPathComponent();
                         if (node != null) {
@@ -228,22 +246,20 @@ public class SearchInConstantPoolsView<T extends DefaultMutableTreeNode & Contai
                 }
             });
             searchInConstantPoolsTree.addTreeExpansionListener(new TreeExpansionListener() {
-                @Override
-                public void treeExpanded(TreeExpansionEvent e) {
+                @Override public void treeExpanded(TreeExpansionEvent e) {
                     DefaultTreeModel model = (DefaultTreeModel)searchInConstantPoolsTree.getModel();
                     T node = (T)e.getPath().getLastPathComponent();
                     // Expand node and find the first leaf
-                    do {
+                    while (true) {
                         populate(model, node);
                         if (node.getChildCount() == 0) {
                             break;
                         }
                         node = (T)node.getChildAt(0);
-                    } while (true);
+                    }
                     searchInConstantPoolsTree.setSelectionPath(new TreePath(node.getPath()));
                 }
-                @Override
-                public void treeCollapsed(TreeExpansionEvent e) {}
+                @Override public void treeCollapsed(TreeExpansionEvent e) {}
             });
             scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
             scrollPane.setPreferredSize(new Dimension(400, 150));
@@ -259,11 +275,7 @@ public class SearchInConstantPoolsView<T extends DefaultMutableTreeNode & Contai
             hbox.add(searchInConstantPoolsOpenButton);
             searchInConstantPoolsOpenButton.setEnabled(false);
             Action searchInConstantPoolsOpenActionListener = new AbstractAction() {
-
-                private static final long serialVersionUID = 1L;
-
-                @Override
-                public void actionPerformed(ActionEvent actionEvent) {
+                @Override public void actionPerformed(ActionEvent actionEvent) {
                     T selectedTreeNode = (T)searchInConstantPoolsTree.getLastSelectedPathComponent();
                     if (selectedTreeNode != null) {
                         selectedTypeCallback.accept(selectedTreeNode.getUri(), searchInConstantPoolsEnterTextField.getText(), getFlags());
@@ -275,11 +287,7 @@ public class SearchInConstantPoolsView<T extends DefaultMutableTreeNode & Contai
             JButton searchInConstantPoolsCancelButton = new JButton("Cancel");
             hbox.add(searchInConstantPoolsCancelButton);
             Action searchInConstantPoolsCancelActionListener = new AbstractAction() {
-
-                private static final long serialVersionUID = 1L;
-
-                @Override
-                public void actionPerformed(ActionEvent actionEvent) { searchInConstantPoolsDialog.setVisible(false); }
+                @Override public void actionPerformed(ActionEvent actionEvent) { searchInConstantPoolsDialog.setVisible(false); }
             };
             searchInConstantPoolsCancelButton.addActionListener(searchInConstantPoolsCancelActionListener);
 
@@ -296,16 +304,14 @@ public class SearchInConstantPoolsView<T extends DefaultMutableTreeNode & Contai
             searchInConstantPoolsDialog.setMinimumSize(searchInConstantPoolsDialog.getSize());
 
             searchInConstantPoolsEnterTextField.addFocusListener(new FocusAdapter() {
-                @Override
-                public void focusGained(FocusEvent e) {
+                @Override public void focusGained(FocusEvent e) {
                     searchInConstantPoolsTree.clearSelection();
                     searchInConstantPoolsOpenButton.setEnabled(false);
                 }
             });
 
             searchInConstantPoolsTree.addFocusListener(new FocusAdapter() {
-                @Override
-                public void focusGained(FocusEvent e) {
+                @Override public void focusGained(FocusEvent e) {
                     searchInConstantPoolsOpenButton.setEnabled(searchInConstantPoolsTree.getSelectionCount() > 0);
                 }
             });
@@ -322,10 +328,9 @@ public class SearchInConstantPoolsView<T extends DefaultMutableTreeNode & Contai
         populate(node);
         // Populate children
         int i = node.getChildCount();
-        T child;
         while (i-- > 0) {
-            child = (T)node.getChildAt(i);
-            if (child instanceof TreeNodeExpandable && !expanded.contains(child.getUri())) {
+            T child = (T)node.getChildAt(i);
+            if ((child instanceof TreeNodeExpandable) && !expanded.contains(child.getUri())) {
                 populate(child);
             }
         }
@@ -335,7 +340,7 @@ public class SearchInConstantPoolsView<T extends DefaultMutableTreeNode & Contai
 
     @SuppressWarnings("unchecked")
     protected void populate(T node) {
-        if (node instanceof TreeNodeExpandable && !expanded.contains(node.getUri())) {
+        if ((node instanceof TreeNodeExpandable) && !expanded.contains(node.getUri())) {
             // Populate
             ((TreeNodeExpandable)node).populateTreeNode(api);
             expanded.add(node.getUri());
@@ -365,30 +370,22 @@ public class SearchInConstantPoolsView<T extends DefaultMutableTreeNode & Contai
     public int getFlags() {
         int flags = 0;
 
-        if (searchInConstantPoolsCheckBoxType.isSelected()) {
+        if (searchInConstantPoolsCheckBoxType.isSelected())
             flags += SEARCH_TYPE;
-        }
-        if (searchInConstantPoolsCheckBoxConstructor.isSelected()) {
+        if (searchInConstantPoolsCheckBoxConstructor.isSelected())
             flags += SEARCH_CONSTRUCTOR;
-        }
-        if (searchInConstantPoolsCheckBoxMethod.isSelected()) {
+        if (searchInConstantPoolsCheckBoxMethod.isSelected())
             flags += SEARCH_METHOD;
-        }
-        if (searchInConstantPoolsCheckBoxField.isSelected()) {
+        if (searchInConstantPoolsCheckBoxField.isSelected())
             flags += SEARCH_FIELD;
-        }
-        if (searchInConstantPoolsCheckBoxString.isSelected()) {
+        if (searchInConstantPoolsCheckBoxString.isSelected())
             flags += SEARCH_STRING;
-        }
-        if (searchInConstantPoolsCheckBoxModule.isSelected()) {
+        if (searchInConstantPoolsCheckBoxModule.isSelected())
             flags += SEARCH_MODULE;
-        }
-        if (searchInConstantPoolsCheckBoxDeclarations.isSelected()) {
+        if (searchInConstantPoolsCheckBoxDeclarations.isSelected())
             flags += SEARCH_DECLARATION;
-        }
-        if (searchInConstantPoolsCheckBoxReferences.isSelected()) {
+        if (searchInConstantPoolsCheckBoxReferences.isSelected())
             flags += SEARCH_REFERENCE;
-        }
 
         return flags;
     }
@@ -414,18 +411,16 @@ public class SearchInConstantPoolsView<T extends DefaultMutableTreeNode & Contai
             expanded.clear();
 
             if (containers != null) {
-                List<DelegatingFilterContainer> list = new ArrayList<>(containers);
+                ArrayList<DelegatingFilterContainer> list = new ArrayList<>(containers);
 
                 list.sort(CONTAINER_COMPARATOR);
 
-                Container.Entry parentEntry;
-                TreeNodeFactory treeNodeFactory;
                 for (DelegatingFilterContainer container : list) {
                     // Init uri set
                     accepted.addAll(container.getUris());
                     // Populate tree
-                    parentEntry = container.getRoot().getParent();
-                    treeNodeFactory = api.getTreeNodeFactory(parentEntry);
+                    Container.Entry parentEntry = container.getRoot().getParent();
+                    TreeNodeFactory treeNodeFactory = api.getTreeNodeFactory(parentEntry);
 
                     if (treeNodeFactory != null) {
                         root.add(treeNodeFactory.make(api, parentEntry));
@@ -434,13 +429,13 @@ public class SearchInConstantPoolsView<T extends DefaultMutableTreeNode & Contai
 
                 // Expand node and find the first leaf
                 T node = root;
-                do {
+                while (true) {
                     populate(model, node);
                     if (node.getChildCount() == 0) {
                         break;
                     }
                     node = (T)node.getChildAt(0);
-                } while (true);
+                }
                 searchInConstantPoolsTree.setSelectionPath(new TreePath(node.getPath()));
             } else {
                 model.reload();

@@ -13,7 +13,6 @@ import org.jd.gui.spi.PreferencesPanel;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
 
 public class PreferencesPanelService {
     protected static final PreferencesPanelService PREFERENCES_PANEL_SERVICE = new PreferencesPanelService();
@@ -32,7 +31,7 @@ public class PreferencesPanelService {
             }
         }
 
-        Map<String, PreferencesPanel> map = new HashMap<>();
+        HashMap<String, PreferencesPanel> map = new HashMap<>();
 
         for (PreferencesPanel panel : list) {
             map.put(panel.getPreferencesGroupTitle() + '$' + panel.getPreferencesPanelTitle(), panel);

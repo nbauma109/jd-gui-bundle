@@ -13,11 +13,7 @@ public class ParenthesesExpression extends AbstractLineNumberExpression {
     protected Expression expression;
 
     public ParenthesesExpression(Expression expression) {
-        this(expression.getLineNumber(), expression);
-    }
-
-    public ParenthesesExpression(int lineNumber, Expression expression) {
-    	super(lineNumber);
+        super(expression.getLineNumber());
         this.expression = expression;
     }
 
@@ -39,9 +35,4 @@ public class ParenthesesExpression extends AbstractLineNumberExpression {
     public void accept(ExpressionVisitor visitor) {
         visitor.visit(this);
     }
-
-	@Override
-	public Expression copyTo(int lineNumber) {
-		return new ParenthesesExpression(lineNumber, expression);
-	}
 }

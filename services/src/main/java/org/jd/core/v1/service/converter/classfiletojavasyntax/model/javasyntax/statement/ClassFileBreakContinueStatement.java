@@ -58,7 +58,8 @@ public class ClassFileBreakContinueStatement implements Statement {
     public String toString() {
         if (statement == null) {
             return "ClassFileBreakContinueStatement{}";
+        } else {
+            return "ClassFileBreakContinueStatement{" + statement + "}";
         }
-        return "ClassFileBreakContinueStatement{" + statement + "}";
     }
 }

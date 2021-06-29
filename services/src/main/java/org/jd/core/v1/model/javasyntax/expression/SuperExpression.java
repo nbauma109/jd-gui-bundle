@@ -38,9 +38,4 @@ public class SuperExpression extends AbstractLineNumberExpression {
     public String toString() {
         return "SuperExpression{" + type + "}";
     }
-
-	@Override
-	public Expression copyTo(int lineNumber) {
-		return new SuperExpression(lineNumber, type);
-	}
 }

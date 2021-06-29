@@ -7,9 +7,6 @@
 
 package org.jd.gui.view;
 
-import org.jd.core.v1.service.converter.classfiletojavasyntax.util.ExceptionUtil;
-import org.jd.gui.util.swing.SwingUtil;
-
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
@@ -23,7 +20,23 @@ import java.util.Enumeration;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
-import javax.swing.*;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JRootPane;
+import javax.swing.KeyStroke;
+import javax.swing.UIManager;
+
+import org.jd.core.v1.service.converter.classfiletojavasyntax.util.ExceptionUtil;
+import org.jd.gui.util.swing.SwingUtil;
 
 public class AboutView {
     protected JDialog aboutDialog;
@@ -104,7 +117,7 @@ public class AboutView {
             hbox.add(new JLabel("Copyright \u00A9 2008-2019 Emmanuel Dupuy"));
             hbox.add(Box.createHorizontalGlue());
             subvbox.add(hbox);
-
+            
             vbox.add(Box.createVerticalStrut(10));
 
             hbox = Box.createHorizontalBox();
@@ -112,11 +125,12 @@ public class AboutView {
             hbox.add(Box.createHorizontalGlue());
             aboutOkButton = new JButton("    Ok    ");
             Action aboutOkActionListener = new AbstractAction() {
+                /**
+				 * 
+				 */
+				private static final long serialVersionUID = 1L;
 
-                private static final long serialVersionUID = 1L;
-
-                @Override
-                public void actionPerformed(ActionEvent actionEvent) { aboutDialog.setVisible(false); }
+				@Override public void actionPerformed(ActionEvent actionEvent) { aboutDialog.setVisible(false); }
             };
             aboutOkButton.addActionListener(aboutOkActionListener);
             hbox.add(aboutOkButton);

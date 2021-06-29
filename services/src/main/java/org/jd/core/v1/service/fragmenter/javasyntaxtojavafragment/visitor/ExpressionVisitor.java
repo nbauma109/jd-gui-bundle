@@ -23,7 +23,10 @@ import org.jd.core.v1.service.fragmenter.javasyntaxtojavafragment.util.JavaFragm
 import org.jd.core.v1.service.fragmenter.javasyntaxtojavafragment.util.StringUtil;
 import org.jd.core.v1.util.DefaultList;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 
 import static org.jd.core.v1.model.javasyntax.type.PrimitiveType.FLAG_BOOLEAN;
 import static org.jd.core.v1.model.javasyntax.type.PrimitiveType.FLAG_CHAR;
@@ -44,7 +47,7 @@ public class ExpressionVisitor extends TypeVisitor {
     protected Fragments fragments = new Fragments();
     protected boolean diamondOperatorSupported;
     protected boolean inExpressionFlag = false;
-    protected Set<String> currentMethodParamNames = new HashSet<>();
+    protected HashSet<String> currentMethodParamNames = new HashSet<>();
     protected String currentTypeName;
     protected HexaExpressionVisitor hexaExpressionVisitor = new HexaExpressionVisitor();
 
@@ -92,7 +95,6 @@ public class ExpressionVisitor extends TypeVisitor {
 
     @Override
     public void visit(BooleanExpression expression) {
-        tokens.addLineNumberToken(expression);
         if (expression.isTrue()) {
             tokens.add(TRUE);
         } else {
@@ -103,7 +105,7 @@ public class ExpressionVisitor extends TypeVisitor {
     @Override
     public void visit(CastExpression expression) {
         if (expression.isExplicit()) {
-            tokens.addLineNumberToken(expression);
+            tokens.addLineNumberToken(expression.getLineNumber());
             tokens.add(TextToken.LEFTROUNDBRACKET);
 
             BaseType type = expression.getType();
@@ -115,8 +117,7 @@ public class ExpressionVisitor extends TypeVisitor {
         visit(expression, expression.getExpression());
     }
 
-    @Override
-    public void visit(CommentExpression expression) {
+    @Override public void visit(CommentExpression expression) {
         tokens.add(StartMarkerToken.COMMENT);
         tokens.add(newTextToken(expression.getText()));
         tokens.add(EndMarkerToken.COMMENT);
@@ -160,10 +161,11 @@ public class ExpressionVisitor extends TypeVisitor {
 
         ObjectType type = expression.getObjectType();
 
-        tokens.add(new ReferenceToken(Printer.FIELD, type.getInternalName(), expression.getName(), type.getDescriptor(), currentInternalTypeName));
+        tokens.add(new ReferenceToken(ReferenceToken.FIELD, type.getInternalName(), expression.getName(), type.getDescriptor(), currentInternalTypeName));
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void visit(Expressions list) {
         if (list != null) {
             int size = list.size();
@@ -206,7 +208,7 @@ public class ExpressionVisitor extends TypeVisitor {
                 tokens.add(TextToken.DOT);
             }
 
-            tokens.add(new ReferenceToken(Printer.FIELD, expression.getInternalTypeName(), expression.getName(), expression.getDescriptor(), currentInternalTypeName));
+            tokens.add(new ReferenceToken(ReferenceToken.FIELD, expression.getInternalTypeName(), expression.getName(), expression.getDescriptor(), currentInternalTypeName));
         }
     }
 
@@ -396,7 +398,7 @@ public class ExpressionVisitor extends TypeVisitor {
             tokens.add(TextToken.RIGHTANGLEBRACKET);
         }
 
-        tokens.add(new ReferenceToken(Printer.METHOD, expression.getInternalTypeName(), expression.getName(), expression.getDescriptor(), currentInternalTypeName));
+        tokens.add(new ReferenceToken(ReferenceToken.METHOD, expression.getInternalTypeName(), expression.getName(), expression.getDescriptor(), currentInternalTypeName));
         tokens.add(StartBlockToken.START_PARAMETERS_BLOCK);
 
         if (parameters != null) {
@@ -414,10 +416,11 @@ public class ExpressionVisitor extends TypeVisitor {
         expression.getExpression().accept(this);
         tokens.addLineNumberToken(expression);
         tokens.add(TextToken.COLON_COLON);
-        tokens.add(new ReferenceToken(Printer.METHOD, expression.getInternalTypeName(), expression.getName(), expression.getDescriptor(), currentInternalTypeName));
+        tokens.add(new ReferenceToken(ReferenceToken.METHOD, expression.getInternalTypeName(), expression.getName(), expression.getDescriptor(), currentInternalTypeName));
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void visit(NewArray expression) {
         tokens.addLineNumberToken(expression);
         tokens.add(NEW);
@@ -675,9 +678,9 @@ public class ExpressionVisitor extends TypeVisitor {
     protected static class Context {
         public final String currentInternalTypeName;
         public final String currentTypeName;
-        public final Set<String> currentMethodParamNames;
+        public final HashSet<String> currentMethodParamNames;
 
-        public Context(String currentInternalTypeName, String currentTypeName, Set<String> currentMethodParamNames) {
+        public Context(String currentInternalTypeName, String currentTypeName, HashSet<String> currentMethodParamNames) {
             this.currentInternalTypeName = currentInternalTypeName;
             this.currentTypeName = currentTypeName;
             this.currentMethodParamNames = new HashSet<>(currentMethodParamNames);
@@ -685,9 +688,6 @@ public class ExpressionVisitor extends TypeVisitor {
     }
 
     protected static class Fragments extends DefaultList<Fragment> {
-
-        private static final long serialVersionUID = 1L;
-
         public void addTokensFragment(Tokens tokens) {
             if (! tokens.isEmpty()) {
                 if (tokens.getCurrentLineNumber() == UNKNOWN_LINE_NUMBER) {
@@ -722,73 +722,39 @@ public class ExpressionVisitor extends TypeVisitor {
             tokens.add(new NumericConstantToken("0x" + Long.toHexString(expression.getLongValue()).toUpperCase() + 'L'));
         }
 
-        @Override
-        public void visit(ArrayExpression expression) { ExpressionVisitor.this.visit(expression); }
-        @Override
-        public void visit(BinaryOperatorExpression expression) { ExpressionVisitor.this.visit(expression); }
-        @Override
-        public void visit(BooleanExpression expression) { ExpressionVisitor.this.visit(expression); }
-        @Override
-        public void visit(CastExpression expression) { ExpressionVisitor.this.visit(expression); }
-        @Override
-        public void visit(CommentExpression expression) { ExpressionVisitor.this.visit(expression); }
-        @Override
-        public void visit(ConstructorInvocationExpression expression) { ExpressionVisitor.this.visit(expression); }
-        @Override
-        public void visit(ConstructorReferenceExpression expression) { ExpressionVisitor.this.visit(expression); }
-        @Override
-        public void visit(DoubleConstantExpression expression) { ExpressionVisitor.this.visit(expression); }
-        @Override
-        public void visit(EnumConstantReferenceExpression expression) { ExpressionVisitor.this.visit(expression); }
-        @Override
-        public void visit(Expressions expression) { ExpressionVisitor.this.visit(expression); }
-        @Override
-        public void visit(FieldReferenceExpression expression) { ExpressionVisitor.this.visit(expression); }
-        @Override
-        public void visit(FloatConstantExpression expression) { ExpressionVisitor.this.visit(expression); }
-        @Override
-        public void visit(InstanceOfExpression expression) { ExpressionVisitor.this.visit(expression); }
-        @Override
-        public void visit(LambdaFormalParametersExpression expression) { ExpressionVisitor.this.visit(expression); }
-        @Override
-        public void visit(LambdaIdentifiersExpression expression) { ExpressionVisitor.this.visit(expression); }
-        @Override
-        public void visit(LengthExpression expression) { ExpressionVisitor.this.visit(expression); }
-        @Override
-        public void visit(LocalVariableReferenceExpression expression) { ExpressionVisitor.this.visit(expression); }
-        @Override
-        public void visit(MethodInvocationExpression expression) { ExpressionVisitor.this.visit(expression); }
-        @Override
-        public void visit(MethodReferenceExpression expression) { ExpressionVisitor.this.visit(expression); }
-        @Override
-        public void visit(NewArray expression) { ExpressionVisitor.this.visit(expression); }
-        @Override
-        public void visit(NewExpression expression) { ExpressionVisitor.this.visit(expression); }
-        @Override
-        public void visit(NewInitializedArray expression) { ExpressionVisitor.this.visit(expression); }
-        @Override
-        public void visit(NoExpression expression) {}
-        @Override
-        public void visit(NullExpression expression) { ExpressionVisitor.this.visit(expression); }
-        @Override
-        public void visit(ObjectTypeReferenceExpression expression) { ExpressionVisitor.this.visit(expression); }
-        @Override
-        public void visit(ParenthesesExpression expression) { ExpressionVisitor.this.visit(expression); }
-        @Override
-        public void visit(PostOperatorExpression expression) { ExpressionVisitor.this.visit(expression); }
-        @Override
-        public void visit(PreOperatorExpression expression) { ExpressionVisitor.this.visit(expression); }
-        @Override
-        public void visit(StringConstantExpression expression) { ExpressionVisitor.this.visit(expression); }
-        @Override
-        public void visit(SuperConstructorInvocationExpression expression) { ExpressionVisitor.this.visit(expression); }
-        @Override
-        public void visit(SuperExpression expression) { ExpressionVisitor.this.visit(expression); }
-        @Override
-        public void visit(TernaryOperatorExpression expression) { ExpressionVisitor.this.visit(expression); }
-        @Override
-        public void visit(ThisExpression expression) { ExpressionVisitor.this.visit(expression); }
-        @Override
-        public void visit(TypeReferenceDotClassExpression expression) { ExpressionVisitor.this.visit(expression); }
+        @Override public void visit(ArrayExpression expression) { ExpressionVisitor.this.visit(expression); }
+        @Override public void visit(BinaryOperatorExpression expression) { ExpressionVisitor.this.visit(expression); }
+        @Override public void visit(BooleanExpression expression) { ExpressionVisitor.this.visit(expression); }
+        @Override public void visit(CastExpression expression) { ExpressionVisitor.this.visit(expression); }
+        @Override public void visit(CommentExpression expression) { ExpressionVisitor.this.visit(expression); }
+        @Override public void visit(ConstructorInvocationExpression expression) { ExpressionVisitor.this.visit(expression); }
+        @Override public void visit(ConstructorReferenceExpression expression) { ExpressionVisitor.this.visit(expression); }
+        @Override public void visit(DoubleConstantExpression expression) { ExpressionVisitor.this.visit(expression); }
+        @Override public void visit(EnumConstantReferenceExpression expression) { ExpressionVisitor.this.visit(expression); }
+        @Override public void visit(Expressions expression) { ExpressionVisitor.this.visit(expression); }
+        @Override public void visit(FieldReferenceExpression expression) { ExpressionVisitor.this.visit(expression); }
+        @Override public void visit(FloatConstantExpression expression) { ExpressionVisitor.this.visit(expression); }
+        @Override public void visit(InstanceOfExpression expression) { ExpressionVisitor.this.visit(expression); }
+        @Override public void visit(LambdaFormalParametersExpression expression) { ExpressionVisitor.this.visit(expression); }
+        @Override public void visit(LambdaIdentifiersExpression expression) { ExpressionVisitor.this.visit(expression); }
+        @Override public void visit(LengthExpression expression) { ExpressionVisitor.this.visit(expression); }
+        @Override public void visit(LocalVariableReferenceExpression expression) { ExpressionVisitor.this.visit(expression); }
+        @Override public void visit(MethodInvocationExpression expression) { ExpressionVisitor.this.visit(expression); }
+        @Override public void visit(MethodReferenceExpression expression) { ExpressionVisitor.this.visit(expression); }
+        @Override public void visit(NewArray expression) { ExpressionVisitor.this.visit(expression); }
+        @Override public void visit(NewExpression expression) { ExpressionVisitor.this.visit(expression); }
+        @Override public void visit(NewInitializedArray expression) { ExpressionVisitor.this.visit(expression); }
+        @Override public void visit(NoExpression expression) {}
+        @Override public void visit(NullExpression expression) { ExpressionVisitor.this.visit(expression); }
+        @Override public void visit(ObjectTypeReferenceExpression expression) { ExpressionVisitor.this.visit(expression); }
+        @Override public void visit(ParenthesesExpression expression) { ExpressionVisitor.this.visit(expression); }
+        @Override public void visit(PostOperatorExpression expression) { ExpressionVisitor.this.visit(expression); }
+        @Override public void visit(PreOperatorExpression expression) { ExpressionVisitor.this.visit(expression); }
+        @Override public void visit(StringConstantExpression expression) { ExpressionVisitor.this.visit(expression); }
+        @Override public void visit(SuperConstructorInvocationExpression expression) { ExpressionVisitor.this.visit(expression); }
+        @Override public void visit(SuperExpression expression) { ExpressionVisitor.this.visit(expression); }
+        @Override public void visit(TernaryOperatorExpression expression) { ExpressionVisitor.this.visit(expression); }
+        @Override public void visit(ThisExpression expression) { ExpressionVisitor.this.visit(expression); }
+        @Override public void visit(TypeReferenceDotClassExpression expression) { ExpressionVisitor.this.visit(expression); }
     }
 }

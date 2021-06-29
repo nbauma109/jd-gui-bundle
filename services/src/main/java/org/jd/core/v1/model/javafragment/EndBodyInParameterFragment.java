@@ -7,7 +7,7 @@
 
 package org.jd.core.v1.model.javafragment;
 
-public class EndBodyInParameterFragment extends EndBodyFragment {
+public class EndBodyInParameterFragment extends EndBodyFragment implements JavaFragment {
     public EndBodyInParameterFragment(int minimalLineCount, int lineCount, int maximalLineCount, int weight, String label, StartBodyFragment startBodyFragment) {
         super(minimalLineCount, lineCount, maximalLineCount, weight, label, startBodyFragment);
     }
@@ -17,8 +17,9 @@ public class EndBodyInParameterFragment extends EndBodyFragment {
         if (lineCount < maximalLineCount) {
             lineCount++;
             return true;
+        } else {
+            return false;
         }
-        return false;
     }
 
     @Override
@@ -26,8 +27,9 @@ public class EndBodyInParameterFragment extends EndBodyFragment {
         if (lineCount > minimalLineCount) {
             lineCount--;
             return true;
+        } else {
+            return false;
         }
-        return false;
     }
 
     @Override

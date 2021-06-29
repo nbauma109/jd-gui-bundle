@@ -14,16 +14,15 @@ import org.jd.core.v1.service.converter.classfiletojavasyntax.model.javasyntax.e
 import org.jd.core.v1.service.converter.classfiletojavasyntax.model.localvariable.AbstractLocalVariable;
 
 import java.util.HashSet;
-import java.util.Set;
 
 public class SearchUndeclaredLocalVariableVisitor extends AbstractJavaSyntaxVisitor {
-    protected Set<AbstractLocalVariable> variables = new HashSet<>();
+    protected HashSet<AbstractLocalVariable> variables = new HashSet<>();
 
     public void init() {
         variables.clear();
     }
 
-    public Set<AbstractLocalVariable> getVariables() {
+    public HashSet<AbstractLocalVariable> getVariables() {
         return variables;
     }
 

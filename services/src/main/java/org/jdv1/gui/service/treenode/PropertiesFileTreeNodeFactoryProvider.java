@@ -1,11 +1,17 @@
 /*
  * Copyright (c) 2008-2019 Emmanuel Dupuy.
  * This project is distributed under the GPLv3 license.
- * This is a Copyleft license that gives the user the right to use,
+ * This is a Copyleft license that gives the user the right to use, 
  * copy and modify the code freely for non-commercial purposes.
  */
 
 package org.jdv1.gui.service.treenode;
+
+import java.io.File;
+
+import javax.swing.ImageIcon;
+import javax.swing.JComponent;
+import javax.swing.tree.DefaultMutableTreeNode;
 
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 import org.jd.gui.api.API;
@@ -14,17 +20,10 @@ import org.jd.gui.api.feature.UriGettable;
 import org.jd.gui.api.model.Container;
 import org.jd.gui.view.data.TreeNodeBean;
 
-import java.io.File;
-
-import javax.swing.ImageIcon;
-import javax.swing.JComponent;
-import javax.swing.tree.DefaultMutableTreeNode;
-
 public class PropertiesFileTreeNodeFactoryProvider extends TextFileTreeNodeFactoryProvider {
     protected static final ImageIcon ICON = new ImageIcon(PropertiesFileTreeNodeFactoryProvider.class.getClassLoader().getResource("org/jd/gui/images/ascii_obj.png"));
 
-    @Override
-    public String[] getSelectors() { return appendSelectors("*:file:*.properties"); }
+    @Override public String[] getSelectors() { return appendSelectors("*:file:*.properties"); }
 
     @Override
     @SuppressWarnings("unchecked")
@@ -36,21 +35,24 @@ public class PropertiesFileTreeNodeFactoryProvider extends TextFileTreeNodeFacto
     }
 
     protected static class TreeNode extends TextFileTreeNodeFactoryProvider.TreeNode {
+        /**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
 
-        private static final long serialVersionUID = 1L;
-
-        public TreeNode(Container.Entry entry, Object userObject) { super(entry, userObject); }
+		public TreeNode(Container.Entry entry, Object userObject) { super(entry, userObject); }
 
         // --- PageCreator --- //
         @Override
         @SuppressWarnings("unchecked")
         public <T extends JComponent & UriGettable> T createPage(API api) {
             return (T)new TextFileTreeNodeFactoryProvider.Page(entry) {
+                /**
+				 * 
+				 */
+				private static final long serialVersionUID = 1L;
 
-                private static final long serialVersionUID = 1L;
-
-                @Override
-                public String getSyntaxStyle() {
+				@Override public String getSyntaxStyle() {
                     return SyntaxConstants.SYNTAX_STYLE_PROPERTIES_FILE;
                 }
             };

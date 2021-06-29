@@ -9,21 +9,18 @@ package org.jd.gui.view;
 
 import org.jd.gui.model.configuration.Configuration;
 import org.jd.gui.spi.PreferencesPanel;
-import org.jd.gui.util.decompiler.GuiPreferences;
 import org.jd.gui.util.swing.SwingUtil;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.util.*;
-import java.util.List;
-
-import javax.swing.*;
 
 public class PreferencesView implements PreferencesPanel.PreferencesPanelChangeListener {
     protected Map<String, String> preferences;
     protected Collection<PreferencesPanel> panels;
-    protected Map<PreferencesPanel, Boolean> valids = new HashMap<>();
+    protected HashMap<PreferencesPanel, Boolean> valids = new HashMap<>();
 
     protected JDialog preferencesDialog;
     protected JButton preferencesOkButton = new JButton();
@@ -46,22 +43,21 @@ public class PreferencesView implements PreferencesPanel.PreferencesPanelChangeL
             Box preferencesPanels = Box.createVerticalBox();
             preferencesPanels.setBackground(panel.getBackground());
             preferencesPanels.setOpaque(true);
-            Color errorBackgroundColor = Color.decode(configuration.getPreferences().get(GuiPreferences.ERROR_BACKGROUND_COLOR));
+            Color errorBackgroundColor = Color.decode(configuration.getPreferences().get("JdGuiPreferences.errorBackgroundColor"));
 
             // Group "PreferencesPanel" by group name
-            Map<String, List<PreferencesPanel>> groups = new HashMap<>();
-            List<String> sortedGroupNames = new ArrayList<>();
+            HashMap<String, ArrayList<PreferencesPanel>> groups = new HashMap<>();
+            ArrayList<String> sortedGroupNames = new ArrayList<>();
 
             for (PreferencesPanel pp : panels) {
-                List<PreferencesPanel> pps = groups.get(pp.getPreferencesGroupTitle());
+                ArrayList<PreferencesPanel> pps = groups.get(pp.getPreferencesGroupTitle());
 
                 pp.init(errorBackgroundColor);
                 pp.addPreferencesChangeListener(this);
 
                 if (pps == null) {
                     String groupNames = pp.getPreferencesGroupTitle();
-                    pps=new ArrayList<>();
-                    groups.put(groupNames, pps);
+                    groups.put(groupNames, pps=new ArrayList<>());
                     sortedGroupNames.add(groupNames);
                 }
 
@@ -75,7 +71,7 @@ public class PreferencesView implements PreferencesPanel.PreferencesPanelChangeL
                 Box vbox = Box.createVerticalBox();
                 vbox.setBorder(BorderFactory.createTitledBorder(groupName));
 
-                List<PreferencesPanel> sortedPreferencesPanels = groups.get(groupName);
+                ArrayList<PreferencesPanel> sortedPreferencesPanels = groups.get(groupName);
                 Collections.sort(sortedPreferencesPanels, new PreferencesPanelComparator());
 
                 for (PreferencesPanel pp : sortedPreferencesPanels) {
@@ -121,10 +117,6 @@ public class PreferencesView implements PreferencesPanel.PreferencesPanelChangeL
             hbox.add(Box.createHorizontalStrut(5));
             JButton preferencesCancelButton = new JButton("Cancel");
             Action preferencesCancelActionListener = new AbstractAction() {
-
-                private static final long serialVersionUID = 1L;
-
-                @Override
                 public void actionPerformed(ActionEvent actionEvent) { preferencesDialog.setVisible(false); }
             };
             preferencesCancelButton.addActionListener(preferencesCancelActionListener);
@@ -173,7 +165,6 @@ public class PreferencesView implements PreferencesPanel.PreferencesPanelChangeL
     }
 
     // --- PreferencesPanel.PreferencesChangeListener --- //
-    @Override
     public void preferencesPanelChanged(PreferencesPanel source) {
         SwingUtil.invokeLater(() -> {
             boolean valid = source.arePreferencesValid();

@@ -9,20 +9,14 @@ package org.jd.gui.view.component;
 
 import org.jd.gui.api.model.TreeNodeData;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Insets;
-import java.awt.Toolkit;
-import java.awt.event.KeyEvent;
-
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
+import java.awt.*;
+import java.awt.event.KeyEvent;
 
-@SuppressWarnings("all")
 public class List extends JList {
 
-    private static final long serialVersionUID = 1L;
-
+    @SuppressWarnings("unchecked")
     public List() {
         super();
 

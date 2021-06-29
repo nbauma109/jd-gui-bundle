@@ -13,21 +13,26 @@ import org.jd.gui.spi.SourceSaver;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Map;
 
 public class SourceSaverService {
     protected static final SourceSaverService SOURCE_SAVER_SERVICE = new SourceSaverService();
 
     public static SourceSaverService getInstance() { return SOURCE_SAVER_SERVICE; }
 
-    protected Map<String, SourceSavers> mapProviders = new HashMap<>();
+    protected HashMap<String, SourceSavers> mapProviders = new HashMap<>();
 
     protected SourceSaverService() {
         Collection<SourceSaver> providers = ExtensionService.getInstance().load(SourceSaver.class);
 
         for (SourceSaver provider : providers) {
             for (String selector : provider.getSelectors()) {
-                mapProviders.computeIfAbsent(selector, k -> new SourceSavers()).add(provider);
+                SourceSavers savers = mapProviders.get(selector);
+
+                if (savers == null) {
+                    mapProviders.put(selector, savers=new SourceSavers());
+                }
+
+                savers.add(provider);
             }
         }
     }
@@ -82,7 +87,7 @@ public class SourceSaverService {
     }
 
     protected static class SourceSavers {
-        protected Map<String, SourceSaver> savers = new HashMap<>();
+        protected HashMap<String, SourceSaver> savers = new HashMap<>();
         protected SourceSaver defaultSaver;
 
         void add(SourceSaver saver) {

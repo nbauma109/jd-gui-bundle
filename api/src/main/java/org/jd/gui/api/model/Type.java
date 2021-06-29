@@ -7,9 +7,8 @@
 
 package org.jd.gui.api.model;
 
+import javax.swing.*;
 import java.util.Collection;
-
-import javax.swing.Icon;
 
 public interface Type {
     int FLAG_PUBLIC = 1;

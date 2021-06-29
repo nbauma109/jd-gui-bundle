@@ -10,21 +10,20 @@ package org.jd.core.v1.service.converter.classfiletojavasyntax.util;
 import org.jd.core.v1.service.converter.classfiletojavasyntax.model.cfg.BasicBlock;
 
 import java.util.HashSet;
-import java.util.Set;
 
 public class WatchDog {
-    protected Set<Link> links = new HashSet<>();
+    protected HashSet<Link> links = new HashSet<>();
 
     public void clear() {
         links.clear();
     }
 
     public void check(BasicBlock parent, BasicBlock child) {
-        if (child != null && !child.matchType(BasicBlock.GROUP_END)) {
+        if (!child.matchType(BasicBlock.GROUP_END)) {
             Link link = new Link(parent, child);
 
             if (links.contains(link)) {
-                throw new IllegalStateException("CFG watchdog: parent=" + parent + ", child=" + child);
+                throw new RuntimeException("CFG watchdog: parent=" + parent + ", child=" + child);
             }
 
             links.add(link);
@@ -47,11 +46,9 @@ public class WatchDog {
 
         @Override
         public boolean equals(Object o) {
-            if (o instanceof Link) {
-                Link other = (Link)o;
-                return (parentIndex == other.parentIndex) && (childIndex == other.childIndex);
-            }
-            return false;
+            Link other = (Link)o;
+
+            return (parentIndex == other.parentIndex) && (childIndex == other.childIndex);
         }
     }
 }

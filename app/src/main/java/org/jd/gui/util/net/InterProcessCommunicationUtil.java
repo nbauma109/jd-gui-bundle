@@ -18,27 +18,14 @@ import java.net.Socket;
 import java.util.function.Consumer;
 
 public class InterProcessCommunicationUtil {
+    protected static final int PORT = 2015_6;
 
-    protected static final int PORT = 20156;
-
-    private InterProcessCommunicationUtil() {
-    }
-
-    /**
-     * When an additional instance of JD-GUI launched, for example when the user clicks on
-     * another file, instead of opening the new file in the new JD-GUI instance, the arguments,
-     * which hold the file to be opened, will be transmitted to the existing instance,
-     * allowing the new instance to shutdown.
-     *
-     * @param consumer
-     * @throws IOException
-     */
-    public static void listen(final Consumer<String[]> consumer) throws IOException {
-        @SuppressWarnings("all")
-        // Resource leak : The socket cannot be closed until the application is shutdown
+    public static void listen(final Consumer<String[]> consumer) throws Exception {
         final ServerSocket listener = new ServerSocket(PORT);
-        new Thread(() -> {
-            synchronized (listener) {
+
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
                 while (true) {
                     try (Socket socket = listener.accept();
                          ObjectInputStream ois = new ObjectInputStream(socket.getInputStream())) {
@@ -50,7 +37,9 @@ public class InterProcessCommunicationUtil {
                     }
                 }
             }
-        }).start();
+        };
+
+        new Thread(runnable).start();
     }
 
     public static void send(String[] args) {

@@ -52,11 +52,9 @@ public abstract class AbstractJavaSyntaxVisitor extends AbstractTypeArgumentVisi
         safeAccept(declaration.getBodyDeclaration());
     }
 
-    @Override
-    public void visit(CommentStatement statement) {}
+    @Override public void visit(CommentStatement statement) {}
 
-    @Override
-    public void visit(CommentExpression expression) {}
+    @Override public void visit(CommentExpression expression) {}
 
     @Override
     public void visit(ConstructorInvocationExpression expression) {
@@ -90,6 +88,7 @@ public abstract class AbstractJavaSyntaxVisitor extends AbstractTypeArgumentVisi
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void visit(Expressions list) {
         acceptListExpression(list);
     }
@@ -114,8 +113,9 @@ public abstract class AbstractJavaSyntaxVisitor extends AbstractTypeArgumentVisi
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void visit(FieldDeclarators list) {
-        acceptListDeclaration(list);
+        acceptListDeclaration((List<? extends Declaration>)list);
     }
 
     @Override
@@ -127,6 +127,7 @@ public abstract class AbstractJavaSyntaxVisitor extends AbstractTypeArgumentVisi
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void visit(FormalParameters list) {
         acceptListDeclaration(list);
     }
@@ -157,6 +158,7 @@ public abstract class AbstractJavaSyntaxVisitor extends AbstractTypeArgumentVisi
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void visit(LocalVariableDeclarators declarators) {
         acceptListDeclaration(declarators);
     }
@@ -173,6 +175,7 @@ public abstract class AbstractJavaSyntaxVisitor extends AbstractTypeArgumentVisi
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void visit(MemberDeclarations declarations) {
         acceptListDeclaration(declarations);
     }
@@ -181,6 +184,7 @@ public abstract class AbstractJavaSyntaxVisitor extends AbstractTypeArgumentVisi
     public void visit(ModuleDeclaration declarations) {}
 
     @Override
+    @SuppressWarnings("unchecked")
     public void visit(TypeDeclarations list) {
         acceptListDeclaration(list);
     }
@@ -273,8 +277,7 @@ public abstract class AbstractJavaSyntaxVisitor extends AbstractTypeArgumentVisi
         safeAccept(expression.getStatements());
     }
 
-    @Override
-    public void visit(LengthExpression expression) {
+    @Override public void visit(LengthExpression expression) {
         expression.getExpression().accept(this);
     }
 
@@ -407,7 +410,8 @@ public abstract class AbstractJavaSyntaxVisitor extends AbstractTypeArgumentVisi
     }
 
     @Override
-    public void visit(AnnotationReferences<? extends AnnotationReference> list) {
+    @SuppressWarnings("unchecked")
+    public void visit(AnnotationReferences list) {
         acceptListReference(list);
     }
 
@@ -428,6 +432,7 @@ public abstract class AbstractJavaSyntaxVisitor extends AbstractTypeArgumentVisi
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void visit(ElementValues list) {
         acceptListReference(list);
     }
@@ -438,6 +443,7 @@ public abstract class AbstractJavaSyntaxVisitor extends AbstractTypeArgumentVisi
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void visit(ElementValuePairs list) {
         acceptListReference(list);
     }
@@ -447,8 +453,7 @@ public abstract class AbstractJavaSyntaxVisitor extends AbstractTypeArgumentVisi
         visit((ObjectType) reference);
     }
 
-    @Override
-    public void visit(InnerObjectReference reference) {
+    @Override public void visit(InnerObjectReference reference) {
         visit((InnerObjectType) reference);
     }
 
@@ -461,8 +466,7 @@ public abstract class AbstractJavaSyntaxVisitor extends AbstractTypeArgumentVisi
     @Override
     public void visit(BreakStatement statement) {}
 
-    @Override
-    public void visit(ByteCodeStatement statement) {}
+    @Override public void visit(ByteCodeStatement statement) {}
 
     @Override
     public void visit(ContinueStatement statement) {}
@@ -527,8 +531,7 @@ public abstract class AbstractJavaSyntaxVisitor extends AbstractTypeArgumentVisi
     @Override
     public void visit(NoStatement statement) {}
 
-    @Override
-    public void visit(ReturnExpressionStatement statement) {
+    @Override public void visit(ReturnExpressionStatement statement) {
         statement.getExpression().accept(this);
     }
 
@@ -536,6 +539,7 @@ public abstract class AbstractJavaSyntaxVisitor extends AbstractTypeArgumentVisi
     public void visit(ReturnStatement statement) {}
 
     @Override
+    @SuppressWarnings("unchecked")
     public void visit(Statements list) {
         acceptListStatement(list);
     }
@@ -638,6 +642,7 @@ public abstract class AbstractJavaSyntaxVisitor extends AbstractTypeArgumentVisi
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void visit(Types types) {
         Iterator<Type> iterator = types.iterator();
 

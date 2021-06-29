@@ -9,7 +9,7 @@ package org.jd.gui.api.model;
 
 import java.io.InputStream;
 import java.net.URI;
-import java.util.Map;
+import java.util.Collection;
 
 public interface Container {
     String getType();
@@ -19,24 +19,21 @@ public interface Container {
     /**
      * File or directory
      */
-    interface Entry extends EntryPath {
+    interface Entry {
         Container getContainer();
 
         Entry getParent();
 
         URI getUri();
 
+        String getPath();
+
+        boolean isDirectory();
+
         long length();
 
         InputStream getInputStream();
 
-        Map<EntryPath, Entry> getChildren();
-    }
-
-    interface EntryPath {
-
-        boolean isDirectory();
-
-        String getPath();
+        Collection<Entry> getChildren();
     }
 }

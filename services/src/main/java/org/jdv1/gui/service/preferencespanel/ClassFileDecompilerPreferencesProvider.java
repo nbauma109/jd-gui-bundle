@@ -7,8 +7,6 @@
 
 package org.jdv1.gui.service.preferencespanel;
 
-import org.jd.gui.spi.PreferencesPanel;
-
 import java.awt.Color;
 import java.awt.GridLayout;
 import java.util.Map;
@@ -17,14 +15,17 @@ import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 
-import static org.jd.gui.util.decompiler.GuiPreferences.ESCAPE_UNICODE_CHARACTERS;
-import static org.jd.gui.util.decompiler.GuiPreferences.REALIGN_LINE_NUMBERS;
+import org.jd.gui.spi.PreferencesPanel;
 
 public class ClassFileDecompilerPreferencesProvider extends JPanel implements PreferencesPanel {
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	protected static final String ESCAPE_UNICODE_CHARACTERS = "ClassFileDecompilerPreferences.escapeUnicodeCharacters";
+    protected static final String REALIGN_LINE_NUMBERS = "ClassFileDecompilerPreferences.realignLineNumbers";
 
-    private static final long serialVersionUID = 1L;
-
-    protected transient PreferencesPanel.PreferencesPanelChangeListener listener = null;
+    protected PreferencesPanel.PreferencesPanelChangeListener listener = null;
     protected JCheckBox escapeUnicodeCharactersCheckBox;
     protected JCheckBox realignLineNumbersCheckBox;
 
@@ -39,18 +40,13 @@ public class ClassFileDecompilerPreferencesProvider extends JPanel implements Pr
     }
 
     // --- PreferencesPanel --- //
-    @Override
-    public String getPreferencesGroupTitle() { return "Decompiler"; }
-    @Override
-    public String getPreferencesPanelTitle() { return "Class file"; }
-    @Override
-    public JComponent getPanel() { return this; }
+    @Override public String getPreferencesGroupTitle() { return "Decompiler"; }
+    @Override public String getPreferencesPanelTitle() { return "Class file"; }
+    @Override public JComponent getPanel() { return this; }
 
-    @Override
-    public void init(Color errorBackgroundColor) {}
+    @Override public void init(Color errorBackgroundColor) {}
 
-    @Override
-    public boolean isActivated() { return true; }
+    @Override public boolean isActivated() { return true; }
 
     @Override
     public void loadPreferences(Map<String, String> preferences) {
@@ -64,9 +60,7 @@ public class ClassFileDecompilerPreferencesProvider extends JPanel implements Pr
         preferences.put(REALIGN_LINE_NUMBERS, Boolean.toString(realignLineNumbersCheckBox.isSelected()));
     }
 
-    @Override
-    public boolean arePreferencesValid() { return true; }
+    @Override public boolean arePreferencesValid() { return true; }
 
-    @Override
-    public void addPreferencesChangeListener(PreferencesPanel.PreferencesPanelChangeListener listener) {}
+    @Override public void addPreferencesChangeListener(PreferencesPanel.PreferencesPanelChangeListener listener) {}
 }

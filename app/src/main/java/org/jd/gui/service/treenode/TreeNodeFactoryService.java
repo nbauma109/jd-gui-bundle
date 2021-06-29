@@ -7,27 +7,32 @@
 
 package org.jd.gui.service.treenode;
 
+import java.util.Collection;
+import java.util.HashMap;
+
 import org.jd.gui.api.model.Container;
 import org.jd.gui.service.extension.ExtensionService;
 import org.jd.gui.spi.TreeNodeFactory;
-
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
 public class TreeNodeFactoryService {
     protected static final TreeNodeFactoryService TREE_NODE_FACTORY_SERVICE = new TreeNodeFactoryService();
 
     public static TreeNodeFactoryService getInstance() { return TREE_NODE_FACTORY_SERVICE; }
 
-    protected Map<String, TreeNodeFactories> mapProviders = new HashMap<>();
+    protected HashMap<String, TreeNodeFactories> mapProviders = new HashMap<>();
 
     protected TreeNodeFactoryService() {
         Collection<TreeNodeFactory> providers = ExtensionService.getInstance().load(TreeNodeFactory.class);
 
         for (TreeNodeFactory provider : providers) {
             for (String selector : provider.getSelectors()) {
-                mapProviders.computeIfAbsent(selector, k -> new TreeNodeFactories()).add(provider);
+                TreeNodeFactories factories = mapProviders.get(selector);
+
+                if (factories == null) {
+                    mapProviders.put(selector, factories=new TreeNodeFactories());
+                }
+
+                factories.add(provider);
             }
         }
     }
@@ -82,7 +87,7 @@ public class TreeNodeFactoryService {
     }
 
     protected static class TreeNodeFactories {
-        protected Map<String, TreeNodeFactory> factories = new HashMap<>();
+        protected HashMap<String, TreeNodeFactory> factories = new HashMap<>();
         protected TreeNodeFactory defaultFactory;
 
         public void add(TreeNodeFactory factory) {

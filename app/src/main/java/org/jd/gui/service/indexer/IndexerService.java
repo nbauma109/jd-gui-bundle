@@ -13,21 +13,26 @@ import org.jd.gui.spi.Indexer;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Map;
 
 public class IndexerService {
     protected static final IndexerService INDEXER_SERVICE = new IndexerService();
 
     public static IndexerService getInstance() { return INDEXER_SERVICE; }
 
-    protected Map<String, Indexers> mapProviders = new HashMap<>();
+    protected HashMap<String, Indexers> mapProviders = new HashMap<>();
 
     protected IndexerService() {
         Collection<Indexer> providers = ExtensionService.getInstance().load(Indexer.class);
 
         for (Indexer provider : providers) {
             for (String selector : provider.getSelectors()) {
-                mapProviders.computeIfAbsent(selector, k -> new Indexers()).add(provider);
+                Indexers indexers = mapProviders.get(selector);
+
+                if (indexers == null) {
+                    mapProviders.put(selector, indexers=new Indexers());
+                }
+
+                indexers.add(provider);
             }
         }
     }
@@ -82,7 +87,7 @@ public class IndexerService {
     }
 
     protected static class Indexers {
-        protected Map<String, Indexer> indexers = new HashMap<>();
+        protected HashMap<String, Indexer> indexers = new HashMap<>();
         protected Indexer defaultIndexer;
 
         public void add(Indexer indexer) {

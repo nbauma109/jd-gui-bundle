@@ -7,8 +7,6 @@
 
 package org.jd.core.v1.model.javafragment;
 
-import org.jd.core.v1.model.fragment.Fragment;
-
-public interface JavaFragment extends Fragment {
+public interface JavaFragment {
     void accept(JavaFragmentVisitor visitor);
 }

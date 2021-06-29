@@ -19,7 +19,6 @@ public class NumericConstantToken implements Token {
         return text;
     }
 
-    @Override
     public String toString() {
         return "NumericConstantToken{'" + text + "'}";
     }

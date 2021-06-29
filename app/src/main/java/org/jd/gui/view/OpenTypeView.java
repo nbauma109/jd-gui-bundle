@@ -7,28 +7,53 @@
 
 package org.jd.gui.view;
 
-import org.jd.core.v1.service.converter.classfiletojavasyntax.util.ExceptionUtil;
+import java.awt.BorderLayout;
+import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.Map;
+import java.util.function.Consumer;
+
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.DefaultListModel;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JPanel;
+import javax.swing.JRootPane;
+import javax.swing.JScrollPane;
+import javax.swing.JTextField;
+import javax.swing.KeyStroke;
+import javax.swing.ScrollPaneConstants;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.text.BadLocationException;
+
 import org.jd.gui.api.API;
 import org.jd.gui.api.model.Container;
 import org.jd.gui.api.model.Type;
+import org.jd.core.v1.service.converter.classfiletojavasyntax.util.ExceptionUtil;
 import org.jd.gui.util.function.TriConsumer;
 import org.jd.gui.util.swing.SwingUtil;
 import org.jd.gui.view.bean.OpenTypeListCellBean;
 import org.jd.gui.view.renderer.OpenTypeListCellRenderer;
-
-import java.awt.*;
-import java.awt.event.*;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Consumer;
-
-import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-import javax.swing.text.BadLocationException;
 
 public class OpenTypeView {
     protected static final int MAX_LINE_COUNT = 80;
@@ -39,7 +64,6 @@ public class OpenTypeView {
     protected JDialog openTypeDialog;
     protected JTextField openTypeEnterTextField;
     protected JLabel openTypeMatchLabel;
-    @SuppressWarnings("all")
     protected JList openTypeList;
 
     @SuppressWarnings("unchecked")
@@ -66,25 +90,22 @@ public class OpenTypeView {
             vbox.add(Box.createVerticalStrut(10));
 
             // Text field
-            openTypeEnterTextField = new JTextField(30);
-            vbox.add(openTypeEnterTextField);
+            vbox.add(openTypeEnterTextField = new JTextField(30));
             openTypeEnterTextField.addKeyListener(new KeyAdapter() {
-                @Override
-                public void keyTyped(KeyEvent e) {
+                @Override public void keyTyped(KeyEvent e) {
                     switch (e.getKeyChar()) {
                         case '=': case '(': case ')': case '{': case '}': case '[': case ']':
                             e.consume();
                             break;
                         default:
-                            if (Character.isDigit(e.getKeyChar()) && (openTypeEnterTextField.getText().isEmpty())) {
+                            if (Character.isDigit(e.getKeyChar()) && (openTypeEnterTextField.getText().length() == 0)) {
                                 // First character can not be a digit
                                 e.consume();
                             }
                             break;
                     }
                 }
-                @Override
-                public void keyPressed(KeyEvent e) {
+                @Override public void keyPressed(KeyEvent e) {
                     if ((e.getKeyCode() == KeyEvent.VK_DOWN) && (openTypeList.getModel().getSize() > 0)) {
                         openTypeList.setSelectedIndex(0);
                         openTypeList.requestFocus();
@@ -93,18 +114,13 @@ public class OpenTypeView {
                 }
             });
             openTypeEnterTextField.addFocusListener(new FocusListener() {
-                @Override
-                public void focusGained(FocusEvent e) { openTypeList.clearSelection(); }
-                @Override
-                public void focusLost(FocusEvent e) {}
+                @Override public void focusGained(FocusEvent e) { openTypeList.clearSelection(); }
+                @Override public void focusLost(FocusEvent e) {}
             });
             openTypeEnterTextField.getDocument().addDocumentListener(new DocumentListener() {
-                @Override
-                public void insertUpdate(DocumentEvent e) { call(e); }
-                @Override
-                public void removeUpdate(DocumentEvent e) { call(e); }
-                @Override
-                public void changedUpdate(DocumentEvent e) { call(e); }
+                @Override public void insertUpdate(DocumentEvent e) { call(e); }
+                @Override public void removeUpdate(DocumentEvent e) { call(e); }
+                @Override public void changedUpdate(DocumentEvent e) { call(e); }
                 protected void call(DocumentEvent e) {
                     try {
                         changedPatternCallback.accept(e.getDocument().getText(0, e.getDocument().getLength()));
@@ -117,19 +133,16 @@ public class OpenTypeView {
             vbox.add(Box.createVerticalStrut(10));
 
             hbox = Box.createHorizontalBox();
-            openTypeMatchLabel = new JLabel("Matching types:");
-            hbox.add(openTypeMatchLabel);
+            hbox.add(openTypeMatchLabel = new JLabel("Matching types:"));
             hbox.add(Box.createHorizontalGlue());
             vbox.add(hbox);
 
             vbox.add(Box.createVerticalStrut(10));
 
             // List of types
-            openTypeList = new JList<>();
-            JScrollPane scrollPane = new JScrollPane(openTypeList);
+            JScrollPane scrollPane = new JScrollPane(openTypeList = new JList());
             openTypeList.addKeyListener(new KeyAdapter() {
-                @Override
-                public void keyPressed(KeyEvent e) {
+                @Override public void keyPressed(KeyEvent e) {
                     if ((e.getKeyCode() == KeyEvent.VK_UP) && (openTypeList.getSelectedIndex()  == 0)) {
                         openTypeEnterTextField.requestFocus();
                         e.consume();
@@ -139,8 +152,7 @@ public class OpenTypeView {
             openTypeList.setModel(new DefaultListModel<OpenTypeListCellBean>());
             openTypeList.setCellRenderer(new OpenTypeListCellRenderer());
             openTypeList.addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
+                @Override public void mouseClicked(MouseEvent e) {
                     if (e.getClickCount() == 2) {
                         onTypeSelected(selectedTypeCallback);
                     }
@@ -154,8 +166,7 @@ public class OpenTypeView {
             vbox = Box.createVerticalBox();
             panel.add(vbox, BorderLayout.SOUTH);
             vbox.add(Box.createVerticalStrut(25));
-            hbox = Box.createHorizontalBox();
-            vbox.add(hbox);
+            vbox.add(hbox = Box.createHorizontalBox());
             hbox.add(Box.createHorizontalGlue());
             JButton openTypeOpenButton = new JButton("Open");
             hbox.add(openTypeOpenButton);
@@ -165,11 +176,7 @@ public class OpenTypeView {
             JButton openTypeCancelButton = new JButton("Cancel");
             hbox.add(openTypeCancelButton);
             Action openTypeCancelActionListener = new AbstractAction() {
-
-                private static final long serialVersionUID = 1L;
-
-                @Override
-                public void actionPerformed(ActionEvent actionEvent) { openTypeDialog.setVisible(false); }
+                @Override public void actionPerformed(ActionEvent actionEvent) { openTypeDialog.setVisible(false); }
             };
             openTypeCancelButton.addActionListener(openTypeCancelActionListener);
 
@@ -214,9 +221,8 @@ public class OpenTypeView {
     @SuppressWarnings("unchecked")
     public void updateList(Map<String, Collection<Container.Entry>> map) {
         SwingUtil.invokeLater(() -> {
-            @SuppressWarnings("all")
             DefaultListModel model = (DefaultListModel)openTypeList.getModel();
-            List<String> typeNames = new ArrayList<>(map.keySet());
+            ArrayList<String> typeNames = new ArrayList<>(map.keySet());
             int index = 0;
 
             typeNames.sort(TYPE_NAME_COMPARATOR);

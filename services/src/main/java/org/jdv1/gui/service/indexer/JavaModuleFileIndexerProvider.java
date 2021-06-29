@@ -7,37 +7,35 @@
 
 package org.jdv1.gui.service.indexer;
 
-import org.jd.gui.api.API;
-import org.jd.gui.api.model.Container;
-import org.jd.gui.api.model.Indexes;
-import org.jd.gui.model.container.entry.path.DirectoryEntryPath;
-import org.jd.gui.service.indexer.AbstractIndexerProvider;
-import org.jd.gui.spi.Indexer;
-
 import java.util.Collection;
 import java.util.Map;
 
+import org.jd.gui.api.API;
+import org.jd.gui.api.model.Container;
+import org.jd.gui.api.model.Indexes;
+import org.jd.gui.service.indexer.AbstractIndexerProvider;
+import org.jd.gui.spi.Indexer;
+
 public class JavaModuleFileIndexerProvider extends AbstractIndexerProvider {
 
-    @Override
-    public String[] getSelectors() { return appendSelectors("*:file:*.jmod"); }
+    @Override public String[] getSelectors() { return appendSelectors("*:file:*.jmod"); }
 
-    @SuppressWarnings("rawtypes")
     @Override
     public void index(API api, Container.Entry entry, Indexes indexes) {
-        DirectoryEntryPath classesDir = new DirectoryEntryPath("classes");
-        Container.Entry e = entry.getChildren().get(classesDir);
-        if (e != null) {
-            Map<String, Collection> packageDeclarationIndex = indexes.getIndex("packageDeclarations");
+        for (Container.Entry e : entry.getChildren()) {
+            if (e.isDirectory() && e.getPath().equals("classes")) {
+                Map<String, Collection> packageDeclarationIndex = indexes.getIndex("packageDeclarations");
 
-            // Index module-info, packages and CLASS files
-            index(api, e, indexes, packageDeclarationIndex);
+                // Index module-info, packages and CLASS files
+                index(api, e, indexes, packageDeclarationIndex);
+                break;
+            }
         }
     }
 
-    @SuppressWarnings({ "rawtypes" })
+    @SuppressWarnings("unchecked")
     protected static void index(API api, Container.Entry entry, Indexes indexes, Map<String, Collection> packageDeclarationIndex) {
-        for (Container.Entry e : entry.getChildren().values()) {
+        for (Container.Entry e : entry.getChildren()) {
             if (e.isDirectory()) {
                 String path = e.getPath();
 

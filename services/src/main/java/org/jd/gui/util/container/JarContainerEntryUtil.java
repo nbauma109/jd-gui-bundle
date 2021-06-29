@@ -7,61 +7,57 @@
 
 package org.jd.gui.util.container;
 
-import org.jd.core.v1.service.converter.classfiletojavasyntax.util.ExceptionUtil;
-import org.jd.core.v1.util.StringConstants;
 import org.jd.gui.api.model.Container;
 import org.jd.gui.model.container.ContainerEntryComparator;
+import org.jd.core.v1.service.converter.classfiletojavasyntax.util.ExceptionUtil;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.Opcodes;
 
 import java.io.InputStream;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
 
 public class JarContainerEntryUtil {
+    public static Collection<Container.Entry> removeInnerTypeEntries(Collection<Container.Entry> entries) {
+        HashSet<String> potentialOuterTypePaths = new HashSet<>();
+        Collection<Container.Entry> filtredSubEntries;
 
-    private JarContainerEntryUtil() {
-        super();
-    }
-
-    public static Collection<Container.Entry> removeInnerTypeEntries(Map<Container.EntryPath, Container.Entry> entries) {
-        Set<String> potentialOuterTypePaths = new HashSet<>();
-        Map<Container.EntryPath, Container.Entry> filteredSubEntries;
-
-        for (Container.Entry e : entries.values()) {
+        for (Container.Entry e : entries) {
             if (!e.isDirectory()) {
                 String p = e.getPath();
 
-                if (p.toLowerCase().endsWith(StringConstants.CLASS_FILE_SUFFIX)) {
+                if (p.toLowerCase().endsWith(".class")) {
                     int lastSeparatorIndex = p.lastIndexOf('/');
-                    int dollarIndex = p.indexOf('$', lastSeparatorIndex+1);
+                    int dollarIndex = p.substring(lastSeparatorIndex+1).indexOf('$');
 
                     if (dollarIndex != -1) {
-                        potentialOuterTypePaths.add(p.substring(0, dollarIndex) + StringConstants.CLASS_FILE_SUFFIX);
+                        potentialOuterTypePaths.add(p.substring(0, lastSeparatorIndex+1+dollarIndex) + ".class");
                     }
                 }
             }
         }
 
-        if (potentialOuterTypePaths.isEmpty()) {
-            filteredSubEntries = entries;
+        if (potentialOuterTypePaths.size() == 0) {
+            filtredSubEntries = entries;
         } else {
-            Set<String> innerTypePaths = new HashSet<>();
+            HashSet<String> innerTypePaths = new HashSet<>();
 
-            for (Container.Entry e : entries.values()) {
+            for (Container.Entry e : entries) {
                 if (!e.isDirectory() && potentialOuterTypePaths.contains(e.getPath())) {
                     populateInnerTypePaths(innerTypePaths, e);
                 }
             }
 
-            filteredSubEntries = new TreeMap<>(ContainerEntryComparator.COMPARATOR);
+            filtredSubEntries = new ArrayList<>();
 
-            for (Map.Entry<Container.EntryPath, Container.Entry> entry : entries.entrySet()) {
-                Container.Entry e = entry.getValue();
+            for (Container.Entry e : entries) {
                 if (!e.isDirectory()) {
                     String p = e.getPath();
 
-                    if (p.toLowerCase().endsWith(StringConstants.CLASS_FILE_SUFFIX)) {
+                    if (p.toLowerCase().endsWith(".class")) {
                         int indexDollar = p.lastIndexOf('$');
 
                         if (indexDollar != -1) {
@@ -71,35 +67,38 @@ public class JarContainerEntryUtil {
                                 if (innerTypePaths.contains(p)) {
                                     // Inner class found -> Skip
                                     continue;
-                                }
-                                populateInnerTypePaths(innerTypePaths, e);
+                                } else {
+                                    populateInnerTypePaths(innerTypePaths, e);
 
-                                if (innerTypePaths.contains(p)) {
-                                    // Inner class found -> Skip
-                                    continue;
+                                    if (innerTypePaths.contains(p)) {
+                                        // Inner class found -> Skip
+                                        continue;
+                                    }
                                 }
                             }
                         }
                     }
                 }
                 // Valid path
-                filteredSubEntries.put(entry.getKey(), e);
+                filtredSubEntries.add(e);
             }
         }
 
-        return filteredSubEntries.values();
+        List<Container.Entry> list = new ArrayList<>(filtredSubEntries);
+        list.sort(ContainerEntryComparator.COMPARATOR);
+
+        return list;
     }
 
-    protected static void populateInnerTypePaths(final Set<String> innerTypePaths, Container.Entry entry) {
+    protected static void populateInnerTypePaths(final HashSet<String> innerTypePaths, Container.Entry entry) {
         try (InputStream is = entry.getInputStream()) {
             ClassReader classReader = new ClassReader(is);
             String p = entry.getPath();
             final String prefixPath = p.substring(0, p.length() - classReader.getClassName().length() - 6);
 
             ClassVisitor classVisitor = new ClassVisitor(Opcodes.ASM7) {
-                @Override
                 public void visitInnerClass(final String name, final String outerName, final String innerName, final int access) {
-                    innerTypePaths.add(prefixPath + name + StringConstants.CLASS_FILE_SUFFIX);
+                    innerTypePaths.add(prefixPath + name + ".class");
                 }
             };
 

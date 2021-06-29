@@ -26,7 +26,6 @@ public class EndBlockToken implements Token {
         return text;
     }
 
-    @Override
     public String toString() {
         return "EndBlockToken{'" + text + "'}";
     }

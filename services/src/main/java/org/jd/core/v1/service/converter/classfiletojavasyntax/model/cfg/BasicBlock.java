@@ -11,7 +11,6 @@ import org.jd.core.v1.util.DefaultList;
 
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Set;
 
 public class BasicBlock {
     public static final int TYPE_DELETED                         = 0;
@@ -70,6 +69,7 @@ public class BasicBlock {
     public static final BasicBlock END = new ImmutableBasicBlock(TYPE_END);
     public static final BasicBlock RETURN = new ImmutableBasicBlock(TYPE_RETURN);
 
+
     protected ControlFlowGraph controlFlowGraph;
 
     protected int index;
@@ -86,13 +86,13 @@ public class BasicBlock {
     protected BasicBlock sub2;
     protected DefaultList<ExceptionHandler> exceptionHandlers = EMPTY_EXCEPTION_HANDLERS;
     protected DefaultList<SwitchCase> switchCases = EMPTY_SWITCH_CASES;
-    protected Set<BasicBlock> predecessors;
+    protected HashSet<BasicBlock> predecessors;
 
     public BasicBlock(ControlFlowGraph controlFlowGraph, int index, BasicBlock original) {
         this(controlFlowGraph, index, original, new HashSet<>());
     }
 
-    public BasicBlock(ControlFlowGraph controlFlowGraph, int index, BasicBlock original, Set<BasicBlock> predecessors) {
+    public BasicBlock(ControlFlowGraph controlFlowGraph, int index, BasicBlock original, HashSet<BasicBlock> predecessors) {
         this.controlFlowGraph = controlFlowGraph;
         this.index = index;
         this.type = original.type;
@@ -113,7 +113,7 @@ public class BasicBlock {
         this(controlFlowGraph, index, type, fromOffset, toOffset, inverseCondition, new HashSet<>());
     }
 
-    public BasicBlock(ControlFlowGraph controlFlowGraph, int index, int type, int fromOffset, int toOffset, boolean inverseCondition, Set<BasicBlock> predecessors) {
+    public BasicBlock(ControlFlowGraph controlFlowGraph, int index, int type, int fromOffset, int toOffset, boolean inverseCondition, HashSet<BasicBlock> predecessors) {
         this.controlFlowGraph = controlFlowGraph;
         this.index = index;
         this.type = type;
@@ -216,7 +216,7 @@ public class BasicBlock {
         this.sub2 = sub2;
     }
 
-    public Set<BasicBlock> getPredecessors() {
+    public HashSet<BasicBlock> getPredecessors() {
         return predecessors;
     }
 
@@ -282,7 +282,7 @@ public class BasicBlock {
         }
     }
 
-    public void replace(Set<BasicBlock> olds, BasicBlock nevv) {
+    public void replace(HashSet<BasicBlock> olds, BasicBlock nevv) {
         if (olds.contains(next))
             next = nevv;
 
@@ -343,7 +343,8 @@ public class BasicBlock {
                 sub2.inverseCondition();
                 break;
             default:
-                throw new IllegalStateException("Invalid condition");
+                assert false : "Invalid condition";
+                break;
         }
     }
 
@@ -384,7 +385,7 @@ public class BasicBlock {
 
     @Override
     public boolean equals(Object other) {
-        return other instanceof BasicBlock && index == ((BasicBlock)other).index;
+        return index == ((BasicBlock)other).index;
     }
 
     public static class ExceptionHandler {
@@ -424,7 +425,7 @@ public class BasicBlock {
                 basicBlock = nevv;
         }
 
-        public void replace(Set<BasicBlock> olds, BasicBlock nevv) {
+        public void replace(HashSet<BasicBlock> olds, BasicBlock nevv) {
             if (olds.contains(basicBlock))
                 basicBlock = nevv;
         }
@@ -433,7 +434,8 @@ public class BasicBlock {
         public String toString() {
             if (otherInternalThrowableNames == null)
                 return "BasicBlock.Handler{" + internalThrowableName + " -> " + basicBlock + "}";
-            return "BasicBlock.Handler{" + internalThrowableName + ", " + otherInternalThrowableNames + " -> " + basicBlock + "}";
+            else
+                return "BasicBlock.Handler{" + internalThrowableName + ", " + otherInternalThrowableNames + " -> " + basicBlock + "}";
         }
     }
 
@@ -481,7 +483,7 @@ public class BasicBlock {
                 basicBlock = nevv;
         }
 
-        public void replace(Set<BasicBlock> olds, BasicBlock nevv) {
+        public void replace(HashSet<BasicBlock> olds, BasicBlock nevv) {
             if (olds.contains(basicBlock))
                 basicBlock = nevv;
         }
@@ -490,7 +492,8 @@ public class BasicBlock {
         public String toString() {
             if (defaultCase)
                 return "BasicBlock.SwitchCase{default: " + basicBlock + "}";
-            return "BasicBlock.SwitchCase{'" + value + "': " + basicBlock + "}";
+            else
+                return "BasicBlock.SwitchCase{'" + value + "': " + basicBlock + "}";
         }
     }
 
@@ -499,18 +502,12 @@ public class BasicBlock {
             super(
                 null, -1, type, 0, 0, true,
                 new HashSet<BasicBlock>() {
-
-                    private static final long serialVersionUID = 1L;
-
-                    @Override
                     public boolean add(BasicBlock e) { return false; }
                 }
             );
         }
 
-        @Override
         public int getFirstLineNumber() { return 0; }
-        @Override
         public int getLastLineNumber() { return 0; }
     }
 }

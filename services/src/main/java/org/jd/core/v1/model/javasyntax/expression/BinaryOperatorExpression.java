@@ -50,7 +50,6 @@ public class BinaryOperatorExpression extends AbstractLineNumberTypeExpression {
         this.rightExpression = rightExpression;
     }
 
-    @Override
     public int getPriority() {
         return priority;
     }
@@ -71,9 +70,4 @@ public class BinaryOperatorExpression extends AbstractLineNumberTypeExpression {
     public String toString() {
         return "BinaryOperatorExpression{" + leftExpression.toString() + ' ' + operator + ' ' + rightExpression.toString() + "}";
     }
-
-	@Override
-	public Expression copyTo(int lineNumber) {
-		return new BinaryOperatorExpression(lineNumber, type, leftExpression, operator, rightExpression, priority);
-	}
 }

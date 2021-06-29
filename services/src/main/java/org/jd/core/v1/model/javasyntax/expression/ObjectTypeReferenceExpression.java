@@ -77,9 +77,4 @@ public class ObjectTypeReferenceExpression implements Expression {
     public String toString() {
         return "ObjectTypeReferenceExpression{" + type + "}";
     }
-
-	@Override
-	public Expression copyTo(int lineNumber) {
-		return new ObjectTypeReferenceExpression(lineNumber, type, explicit);
-	}
 }

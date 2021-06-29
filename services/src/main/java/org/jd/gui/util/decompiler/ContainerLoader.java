@@ -7,72 +7,77 @@
 
 package org.jd.gui.util.decompiler;
 
+import java.io.DataInputStream;
+import java.io.IOException;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.nio.charset.Charset;
+
 import org.jd.core.v1.api.loader.Loader;
 import org.jd.core.v1.api.loader.LoaderException;
-import org.jd.core.v1.util.StringConstants;
 import org.jd.gui.api.model.Container;
-import org.jd.gui.api.model.Container.Entry;
-import org.jd.gui.model.container.entry.path.FileEntryPath;
 import org.jd.gui.util.IOUtils;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.Charset;
-import java.util.Map;
+public class ContainerLoader implements InvocationHandler, Loader {
 
-public class ContainerLoader implements Loader {
+	protected Container.Entry entry;
 
-    protected Container.Entry entry;
+	public ContainerLoader() {
+		this.entry = null;
+	}
 
-    public ContainerLoader() {
-        this.entry = null;
-    }
+	public ContainerLoader(Container.Entry entry) {
+		this.entry = entry;
+	}
 
-    public ContainerLoader(Container.Entry entry) {
-        this.entry = entry;
-    }
+	public void setEntry(Container.Entry e) {
+		this.entry = e;
+	}
 
-    public void setEntry(Container.Entry e) {
-        this.entry = e;
-    }
+	protected Container.Entry getEntry(String internalPath) {
+		String path = internalPath + ".class";
+		if (entry.getPath().equals(path) || entry.getPath().equals(internalPath)) {
+			return entry;
+		}
+		for (Container.Entry e : entry.getParent().getChildren()) {
+			if (e.getPath().equals(path) || e.getPath().equals(internalPath)) {
+				return e;
+			}
+		}
+		return null;
+	}
 
-    protected Container.Entry getEntry(String internalPath) {
-        String path = internalPath + StringConstants.CLASS_FILE_SUFFIX;
-        if (entry.getPath().equals(path) || entry.getPath().equals(internalPath)) {
-            return entry;
-        }
-        Map<Container.EntryPath, Container.Entry> children = entry.getParent().getChildren();
-        Entry childEntry = children.get(new FileEntryPath(path));
-        if (childEntry != null) {
-            return childEntry;
-        }
-        childEntry = children.get(new FileEntryPath(internalPath));
-        if (childEntry != null) {
-            return childEntry;
-        }
-        return null;
-    }
+	@Override
+	public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+		switch (method.getName()) {
+		case "canLoad":
+			return canLoad((String) args[0]);
+		case "load":
+			return new DataInputStream(getEntry((String) args[0]).getInputStream());
+		}
+		throw new IllegalArgumentException("Unknown method call");
+	}
 
-    @Override
-    public boolean canLoad(String internalPath) {
-        return getEntry(internalPath) != null;
-    }
+	@Override
+	public boolean canLoad(String internalPath) {
+		return getEntry(internalPath) != null;
+	}
 
-    @Override
-    public byte[] load(String internalName) throws LoaderException {
-        Container.Entry entry = getEntry(internalName);
-        try (InputStream inputStream = entry.getInputStream()) {
-            return IOUtils.toByteArray(inputStream);
-        } catch (IOException e) {
-            throw new LoaderException(e);
-        }
-    }
+	@Override
+	public byte[] load(String internalName) throws LoaderException {
+		Container.Entry entry = getEntry(internalName);
+		try {
+			return IOUtils.toByteArray(entry.getInputStream());
+		} catch (IOException e) {
+			throw new LoaderException(e);
+		}
+	}
 
-    public static char[] loadEntry(Container.Entry entry, Charset charset) throws LoaderException {
-        try (InputStream inputStream = entry.getInputStream()) {
-            return IOUtils.toCharArray(inputStream, charset);
-        } catch (IOException e) {
-            throw new LoaderException(e);
-        }
-    }
+	public static char[] loadEntry(Container.Entry entry, Charset charset) throws LoaderException {
+		try {
+			return IOUtils.toCharArray(entry.getInputStream());
+		} catch (IOException e) {
+			throw new LoaderException(e);
+		}
+	}
 }

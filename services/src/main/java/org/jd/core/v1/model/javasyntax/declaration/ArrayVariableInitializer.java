@@ -11,9 +11,7 @@ import org.jd.core.v1.model.javasyntax.type.Type;
 import org.jd.core.v1.util.DefaultList;
 
 public class ArrayVariableInitializer extends DefaultList<VariableInitializer> implements VariableInitializer {
-
-    private static final long serialVersionUID = 1L;
-    protected transient Type type;
+    protected Type type;
 
     public ArrayVariableInitializer(Type type) {
         this.type = type;

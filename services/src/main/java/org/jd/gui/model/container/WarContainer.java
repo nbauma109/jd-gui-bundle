@@ -17,6 +17,5 @@ public class WarContainer extends GenericContainer {
         super(api, parentEntry, rootPath);
     }
 
-    @Override
     public String getType() { return "war"; }
 }

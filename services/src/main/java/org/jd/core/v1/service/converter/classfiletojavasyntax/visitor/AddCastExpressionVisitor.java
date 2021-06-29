@@ -4,6 +4,7 @@
  * This is a Copyleft license that gives the user the right to use,
  * copy and modify the code freely for non-commercial purposes.
  */
+
 package org.jd.core.v1.service.converter.classfiletojavasyntax.visitor;
 
 import org.jd.core.v1.model.javasyntax.AbstractJavaSyntaxVisitor;
@@ -17,13 +18,9 @@ import org.jd.core.v1.service.converter.classfiletojavasyntax.model.javasyntax.d
 import org.jd.core.v1.service.converter.classfiletojavasyntax.model.javasyntax.declaration.ClassFileConstructorDeclaration;
 import org.jd.core.v1.service.converter.classfiletojavasyntax.model.javasyntax.declaration.ClassFileMethodDeclaration;
 import org.jd.core.v1.service.converter.classfiletojavasyntax.model.javasyntax.declaration.ClassFileStaticInitializerDeclaration;
-import org.jd.core.v1.service.converter.classfiletojavasyntax.model.javasyntax.expression.ClassFileConstructorInvocationExpression;
-import org.jd.core.v1.service.converter.classfiletojavasyntax.model.javasyntax.expression.ClassFileMethodInvocationExpression;
-import org.jd.core.v1.service.converter.classfiletojavasyntax.model.javasyntax.expression.ClassFileNewExpression;
-import org.jd.core.v1.service.converter.classfiletojavasyntax.model.javasyntax.expression.ClassFileSuperConstructorInvocationExpression;
+import org.jd.core.v1.service.converter.classfiletojavasyntax.model.javasyntax.expression.*;
 import org.jd.core.v1.service.converter.classfiletojavasyntax.util.TypeMaker;
 import org.jd.core.v1.util.DefaultList;
-import org.jd.core.v1.util.StringConstants;
 
 import java.util.Map;
 
@@ -86,6 +83,7 @@ public class AddCastExpressionVisitor extends AbstractJavaSyntaxVisitor {
             }
         }
     }
+
 
     @Override
     public void visit(StaticInitializerDeclaration declaration) {
@@ -159,7 +157,7 @@ public class AddCastExpressionVisitor extends AbstractJavaSyntaxVisitor {
 
     @Override
     public void visit(ThrowStatement statement) {
-        if (exceptionTypes != null && exceptionTypes.size() == 1) {
+        if ((exceptionTypes != null) && (exceptionTypes.size() == 1)) {
             Type exceptionType = exceptionTypes.getFirst();
 
             if (exceptionType.isGenericType() && !statement.getExpression().getType().equals(exceptionType)) {
@@ -203,7 +201,7 @@ public class AddCastExpressionVisitor extends AbstractJavaSyntaxVisitor {
         } else {
             Type t = type;
 
-            type = type.createType(Math.max(0, type.getDimension() - 1));
+            type = type.createType(type.getDimension() - 1);
             acceptListDeclaration(declaration);
             type = t;
         }
@@ -229,9 +227,9 @@ public class AddCastExpressionVisitor extends AbstractJavaSyntaxVisitor {
     public void visit(SuperConstructorInvocationExpression expression) {
         BaseExpression parameters = expression.getParameters();
 
-        if (parameters != null && parameters.size() > 0) {
-            boolean unique = typeMaker.matchCount(expression.getObjectType().getInternalName(), StringConstants.INSTANCE_CONSTRUCTOR, parameters.size(), true) <= 1;
-            boolean forceCast = !unique && typeMaker.matchCount(typeBounds, expression.getObjectType().getInternalName(), StringConstants.INSTANCE_CONSTRUCTOR, parameters, true) > 1;
+        if ((parameters != null) && (parameters.size() > 0)) {
+            boolean unique = typeMaker.matchCount(expression.getObjectType().getInternalName(), "<init>", parameters.size(), true) <= 1;
+            boolean forceCast = !unique && (typeMaker.matchCount(typeBounds, expression.getObjectType().getInternalName(), "<init>", parameters, true) > 1);
             expression.setParameters(updateParameters(((ClassFileSuperConstructorInvocationExpression)expression).getParameterTypes(), parameters, forceCast, unique));
         }
     }
@@ -240,9 +238,9 @@ public class AddCastExpressionVisitor extends AbstractJavaSyntaxVisitor {
     public void visit(ConstructorInvocationExpression expression) {
         BaseExpression parameters = expression.getParameters();
 
-        if (parameters != null && parameters.size() > 0) {
-            boolean unique = typeMaker.matchCount(expression.getObjectType().getInternalName(), StringConstants.INSTANCE_CONSTRUCTOR, parameters.size(), true) <= 1;
-            boolean forceCast = !unique && typeMaker.matchCount(typeBounds, expression.getObjectType().getInternalName(), StringConstants.INSTANCE_CONSTRUCTOR, parameters, true) > 1;
+        if ((parameters != null) && (parameters.size() > 0)) {
+            boolean unique = typeMaker.matchCount(expression.getObjectType().getInternalName(), "<init>", parameters.size(), true) <= 1;
+            boolean forceCast = !unique && (typeMaker.matchCount(typeBounds, expression.getObjectType().getInternalName(), "<init>", parameters, true) > 1);
             expression.setParameters(updateParameters(((ClassFileConstructorInvocationExpression)expression).getParameterTypes(), parameters, forceCast, unique));
         }
     }
@@ -251,12 +249,12 @@ public class AddCastExpressionVisitor extends AbstractJavaSyntaxVisitor {
     public void visit(MethodInvocationExpression expression) {
         BaseExpression parameters = expression.getParameters();
 
-        if (parameters != null && parameters.size() > 0) {
+        if ((parameters != null) && (parameters.size() > 0)) {
             boolean unique = typeMaker.matchCount(expression.getInternalTypeName(), expression.getName(), parameters.size(), false) <= 1;
-            boolean forceCast = !unique && typeMaker.matchCount(typeBounds, expression.getInternalTypeName(), expression.getName(), parameters, false) > 1;
+            boolean forceCast = !unique && (typeMaker.matchCount(typeBounds, expression.getInternalTypeName(), expression.getName(), parameters, false) > 1);
             expression.setParameters(updateParameters(((ClassFileMethodInvocationExpression)expression).getParameterTypes(), parameters, forceCast, unique));
         }
-
+        
         expression.getExpression().accept(this);
     }
 
@@ -265,8 +263,8 @@ public class AddCastExpressionVisitor extends AbstractJavaSyntaxVisitor {
         BaseExpression parameters = expression.getParameters();
 
         if (parameters != null) {
-            boolean unique = typeMaker.matchCount(expression.getObjectType().getInternalName(), StringConstants.INSTANCE_CONSTRUCTOR, parameters.size(), true) <= 1;
-            boolean forceCast = !unique && typeMaker.matchCount(typeBounds, expression.getObjectType().getInternalName(), StringConstants.INSTANCE_CONSTRUCTOR, parameters, true) > 1;
+            boolean unique = typeMaker.matchCount(expression.getObjectType().getInternalName(), "<init>", parameters.size(), true) <= 1;
+            boolean forceCast = !unique && (typeMaker.matchCount(typeBounds, expression.getObjectType().getInternalName(), "<init>", parameters, true) > 1);
             expression.setParameters(updateParameters(((ClassFileNewExpression)expression).getParameterTypes(), parameters, forceCast, unique));
         }
     }
@@ -288,7 +286,7 @@ public class AddCastExpressionVisitor extends AbstractJavaSyntaxVisitor {
     public void visit(FieldReferenceExpression expression) {
         Expression exp = expression.getExpression();
 
-        if (exp != null && !exp.isObjectTypeReferenceExpression()) {
+        if ((exp != null) && !exp.isObjectTypeReferenceExpression()) {
             Type type = typeMaker.makeFromInternalTypeName(expression.getInternalTypeName());
 
             if (type.getName() != null) {
@@ -303,7 +301,7 @@ public class AddCastExpressionVisitor extends AbstractJavaSyntaxVisitor {
 
         Expression rightExpression = expression.getRightExpression();
 
-        if ("=".equals(expression.getOperator())) {
+        if (expression.getOperator().equals("=")) {
             if (rightExpression.isMethodInvocationExpression()) {
                 ClassFileMethodInvocationExpression mie = (ClassFileMethodInvocationExpression)rightExpression;
 
@@ -330,6 +328,7 @@ public class AddCastExpressionVisitor extends AbstractJavaSyntaxVisitor {
         expression.setFalseExpression(updateExpression(expressionType, expression.getFalseExpression(), false, true));
     }
 
+    @SuppressWarnings("unchecked")
     protected BaseExpression updateParameters(BaseType types, BaseExpression expressions, boolean forceCast, boolean unique) {
         if (expressions != null) {
             if (expressions.isList()) {
@@ -399,7 +398,7 @@ public class AddCastExpressionVisitor extends AbstractJavaSyntaxVisitor {
                             BaseTypeArgument ta2 = expressionObjectType.getTypeArguments();
                             Type t = type;
 
-                            if (ta1 != null && ta2 != null && !ta1.isTypeArgumentAssignableFrom(typeBounds, ta2)) {
+                            if ((ta1 != null) && (ta2 != null) && !ta1.isTypeArgumentAssignableFrom(typeBounds, ta2)) {
                                 // Incompatible typeArgument arguments => Add cast
                                 t = objectType.createType(null);
                             }
@@ -408,8 +407,10 @@ public class AddCastExpressionVisitor extends AbstractJavaSyntaxVisitor {
                     } else if (expressionType.isGenericType() && !ObjectType.TYPE_OBJECT.equals(type)) {
                         expression = addCastExpression(type, expression);
                     }
-                } else if (type.isGenericType() && (expressionType.isObjectType() || expressionType.isGenericType())) {
-                    expression = addCastExpression(type, expression);
+                } else if (type.isGenericType()) {
+                    if (expressionType.isObjectType() || expressionType.isGenericType()) {
+                        expression = addCastExpression(type, expression);
+                    }
                 }
             }
 
@@ -420,7 +421,10 @@ public class AddCastExpressionVisitor extends AbstractJavaSyntaxVisitor {
                     ObjectType ot1 = (ObjectType)type;
                     ObjectType ot2 = (ObjectType)ceExpressionType;
 
-                    if (ot1.equals(ot2) || (unique && typeMaker.isAssignable(typeBounds, ot1, ot2))) {
+                    if (ot1.equals(ot2)) {
+                        // Remove cast expression
+                        expression = expression.getExpression();
+                    } else if (unique && typeMaker.isAssignable(typeBounds, ot1, ot2)) {
                         // Remove cast expression
                         expression = expression.getExpression();
                     }
@@ -434,65 +438,44 @@ public class AddCastExpressionVisitor extends AbstractJavaSyntaxVisitor {
     }
 
     private Expression addCastExpression(Type type, Expression expression) {
-        if (!expression.isCastExpression()) {
+        if (expression.isCastExpression()) {
+            if (type.equals(expression.getExpression().getType())) {
+                return expression.getExpression();
+            } else {
+                CastExpression ce = (CastExpression)expression;
+
+                ce.setType(type);
+                return ce;
+            }
+        } else {
             searchFirstLineNumberVisitor.init();
             expression.accept(searchFirstLineNumberVisitor);
             return new CastExpression(searchFirstLineNumberVisitor.getLineNumber(), type, expression);
         }
-        if (type.equals(expression.getExpression().getType())) {
-            return expression.getExpression();
-        }
-        CastExpression ce = (CastExpression)expression;
-        ce.setType(type);
-        return ce;
     }
 
-    @Override
-    public void visit(FloatConstantExpression expression) {}
-    @Override
-    public void visit(IntegerConstantExpression expression) {}
-    @Override
-    public void visit(ConstructorReferenceExpression expression) {}
-    @Override
-    public void visit(DoubleConstantExpression expression) {}
-    @Override
-    public void visit(EnumConstantReferenceExpression expression) {}
-    @Override
-    public void visit(LocalVariableReferenceExpression expression) {}
-    @Override
-    public void visit(LongConstantExpression expression) {}
-    @Override
-    public void visit(BreakStatement statement) {}
-    @Override
-    public void visit(ByteCodeStatement statement) {}
-    @Override
-    public void visit(ContinueStatement statement) {}
-    @Override
-    public void visit(NullExpression expression) {}
-    @Override
-    public void visit(ObjectTypeReferenceExpression expression) {}
-    @Override
-    public void visit(SuperExpression expression) {}
-    @Override
-    public void visit(ThisExpression expression) {}
-    @Override
-    public void visit(TypeReferenceDotClassExpression expression) {}
-    @Override
-    public void visit(ObjectReference reference) {}
-    @Override
-    public void visit(InnerObjectReference reference) {}
-    @Override
-    public void visit(TypeArguments type) {}
-    @Override
-    public void visit(WildcardExtendsTypeArgument type) {}
-    @Override
-    public void visit(ObjectType type) {}
-    @Override
-    public void visit(InnerObjectType type) {}
-    @Override
-    public void visit(WildcardSuperTypeArgument type) {}
-    @Override
-    public void visit(Types list) {}
-    @Override
-    public void visit(TypeParameterWithTypeBounds type) {}
+    @Override public void visit(FloatConstantExpression expression) {}
+    @Override public void visit(IntegerConstantExpression expression) {}
+    @Override public void visit(ConstructorReferenceExpression expression) {}
+    @Override public void visit(DoubleConstantExpression expression) {}
+    @Override public void visit(EnumConstantReferenceExpression expression) {}
+    @Override public void visit(LocalVariableReferenceExpression expression) {}
+    @Override public void visit(LongConstantExpression expression) {}
+    @Override public void visit(BreakStatement statement) {}
+    @Override public void visit(ByteCodeStatement statement) {}
+    @Override public void visit(ContinueStatement statement) {}
+    @Override public void visit(NullExpression expression) {}
+    @Override public void visit(ObjectTypeReferenceExpression expression) {}
+    @Override public void visit(SuperExpression expression) {}
+    @Override public void visit(ThisExpression expression) {}
+    @Override public void visit(TypeReferenceDotClassExpression expression) {}
+    @Override public void visit(ObjectReference reference) {}
+    @Override public void visit(InnerObjectReference reference) {}
+    @Override public void visit(TypeArguments type) {}
+    @Override public void visit(WildcardExtendsTypeArgument type) {}
+    @Override public void visit(ObjectType type) {}
+    @Override public void visit(InnerObjectType type) {}
+    @Override public void visit(WildcardSuperTypeArgument type) {}
+    @Override public void visit(Types list) {}
+    @Override public void visit(TypeParameterWithTypeBounds type) {}
 }

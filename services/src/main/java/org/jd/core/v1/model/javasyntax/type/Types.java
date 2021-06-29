@@ -4,6 +4,7 @@
  * This is a Copyleft license that gives the user the right to use,
  * copy and modify the code freely for non-commercial purposes.
  */
+
 package org.jd.core.v1.model.javasyntax.type;
 
 import org.jd.core.v1.util.DefaultList;
@@ -11,8 +12,6 @@ import org.jd.core.v1.util.DefaultList;
 import java.util.Collection;
 
 public class Types extends DefaultList<Type> implements BaseType {
-    private static final long serialVersionUID = 1L;
-
     public Types() {}
 
     public Types(int capacity) {
@@ -23,11 +22,10 @@ public class Types extends DefaultList<Type> implements BaseType {
         super(collection);
     }
 
+    @SuppressWarnings("unchecked")
     public Types(Type type, Type... types) {
         super(type, types);
-        if (types.length <= 0) {
-            throw new IllegalArgumentException("Use 'Type' implementation instead");
-        }
+        assert (types != null) && (types.length > 0) : "Uses 'Type' implementation instead";
     }
 
     @Override

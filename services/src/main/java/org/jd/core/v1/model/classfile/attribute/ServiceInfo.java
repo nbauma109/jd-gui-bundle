@@ -7,8 +7,6 @@
 
 package org.jd.core.v1.model.classfile.attribute;
 
-import java.util.Arrays;
-
 public class ServiceInfo {
     protected String   interfaceTypeName;
     protected String[] implementationTypeNames;
@@ -33,7 +31,7 @@ public class ServiceInfo {
         sb.append("ServiceInfo{interfaceTypeName=").append(interfaceTypeName);
 
         if (implementationTypeNames != null) {
-            sb.append(", implementationTypeNames=").append(Arrays.toString(implementationTypeNames));
+            sb.append(", implementationTypeNames=").append(implementationTypeNames);
         }
 
         return sb.append("}").toString();

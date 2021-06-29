@@ -40,9 +40,4 @@ public class ConstructorReferenceExpression extends AbstractLineNumberTypeExpres
     public void accept(ExpressionVisitor visitor) {
         visitor.visit(this);
     }
-
-	@Override
-	public Expression copyTo(int lineNumber) {
-		return new ConstructorReferenceExpression(lineNumber, type, objectType, descriptor);
-	}
 }

@@ -7,39 +7,41 @@
 
 package org.jdv1.gui.service.treenode;
 
-import org.fife.ui.rsyntaxtextarea.Theme;
-import org.jd.core.v1.service.converter.classfiletojavasyntax.util.ExceptionUtil;
-import org.jd.gui.api.API;
-import org.jd.gui.api.feature.ContainerEntryGettable;
-import org.jd.gui.api.feature.PageCreator;
-import org.jd.gui.api.feature.UriGettable;
-import org.jd.gui.api.model.Container;
-import org.jd.gui.util.io.TextReader;
-import org.jd.gui.view.component.TextPage;
-import org.jd.gui.view.data.TreeNodeBean;
-
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URI;
 
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.tree.DefaultMutableTreeNode;
 
+import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
+import org.fife.ui.rsyntaxtextarea.Theme;
+import org.fife.ui.rtextarea.Gutter;
+import org.jd.gui.api.API;
+import org.jd.gui.api.feature.ContainerEntryGettable;
+import org.jd.gui.api.feature.PageCreator;
+import org.jd.gui.api.feature.UriGettable;
+import org.jd.gui.api.model.Container;
+import org.jd.core.v1.service.converter.classfiletojavasyntax.util.ExceptionUtil;
+import org.jd.gui.util.io.TextReader;
+import org.jd.gui.view.component.TextPage;
+import org.jd.gui.view.data.TreeNodeBean;
+
 public class TextFileTreeNodeFactoryProvider extends FileTreeNodeFactoryProvider {
     protected static final ImageIcon ICON = new ImageIcon(TextFileTreeNodeFactoryProvider.class.getClassLoader().getResource("org/jd/gui/images/ascii_obj.png"));
 
     static {
-        try (InputStream inputStream = TextFileTreeNodeFactoryProvider.class.getClassLoader().getResourceAsStream("rsyntaxtextarea/themes/eclipse.xml")) {
-            Theme.load(inputStream);
+        // Early class loading
+        new Gutter(new RSyntaxTextArea());
+        try {
+            Theme.load(TextFileTreeNodeFactoryProvider.class.getClassLoader().getResourceAsStream("rsyntaxtextarea/themes/eclipse.xml"));
         } catch (IOException e) {
             assert ExceptionUtil.printStackTrace(e);
         }
     }
 
-    @Override
-    public String[] getSelectors() {
+    @Override public String[] getSelectors() {
         return appendSelectors("*:file:*.txt", "*:file:*.md", "*:file:*.SF", "*:file:*.policy", "*:file:*.yaml", "*:file:*.yml", "*:file:*/COPYRIGHT", "*:file:*/LICENSE");
     }
 
@@ -53,10 +55,12 @@ public class TextFileTreeNodeFactoryProvider extends FileTreeNodeFactoryProvider
     }
 
     protected static class TreeNode extends FileTreeNodeFactoryProvider.TreeNode implements PageCreator {
+        /**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
 
-        private static final long serialVersionUID = 1L;
-
-        public TreeNode(Container.Entry entry, Object userObject) { super(entry, userObject); }
+		public TreeNode(Container.Entry entry, Object userObject) { super(entry, userObject); }
 
         // --- PageCreator --- //
         @Override
@@ -67,25 +71,21 @@ public class TextFileTreeNodeFactoryProvider extends FileTreeNodeFactoryProvider
     }
 
     protected static class Page extends TextPage implements UriGettable {
-
-        private static final long serialVersionUID = 1L;
-        protected transient Container.Entry entry;
+        /**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+		protected Container.Entry entry;
 
         public Page(Container.Entry entry) {
             this.entry = entry;
-            try (InputStream inputStream = entry.getInputStream()) {
-                setText(TextReader.getText(inputStream));
-            } catch (IOException e) {
-                assert ExceptionUtil.printStackTrace(e);
-            }
+            setText(TextReader.getText(entry.getInputStream()));
         }
 
         // --- UriGettable --- //
-        @Override
-        public URI getUri() { return entry.getUri(); }
+        @Override public URI getUri() { return entry.getUri(); }
 
         // --- ContentSavable --- //
-        @Override
         public String getFileName() {
             String path = entry.getPath();
             int index = path.lastIndexOf("/");

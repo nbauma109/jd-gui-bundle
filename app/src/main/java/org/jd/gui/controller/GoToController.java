@@ -11,9 +11,8 @@ import org.jd.gui.api.feature.LineNumberNavigable;
 import org.jd.gui.model.configuration.Configuration;
 import org.jd.gui.view.GoToView;
 
+import javax.swing.*;
 import java.util.function.IntConsumer;
-
-import javax.swing.JFrame;
 
 public class GoToController {
     protected GoToView goToView;

@@ -11,8 +11,8 @@ import org.jd.core.v1.util.DefaultList;
 
 import java.util.Map;
 
+@SuppressWarnings("unchecked")
 public interface BaseTypeArgument extends TypeArgumentVisitable {
-    @SuppressWarnings("unused")
     default boolean isTypeArgumentAssignableFrom(Map<String, BaseType> typeBounds, BaseTypeArgument typeArgument) {
         return false;
     }
@@ -25,7 +25,6 @@ public interface BaseTypeArgument extends TypeArgumentVisitable {
         return (TypeArgument)this;
     }
 
-    @SuppressWarnings("unchecked")
     default DefaultList<TypeArgument> getTypeArgumentList() {
         return (DefaultList<TypeArgument>)this;
     }

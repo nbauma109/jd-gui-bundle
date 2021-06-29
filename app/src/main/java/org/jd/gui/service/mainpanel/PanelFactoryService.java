@@ -13,14 +13,13 @@ import org.jd.gui.spi.PanelFactory;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Map;
 
 public class PanelFactoryService {
     protected static final PanelFactoryService PANEL_FACTORY_SERVICE = new PanelFactoryService();
 
     public static PanelFactoryService getInstance() { return PANEL_FACTORY_SERVICE; }
 
-    protected Map<String, PanelFactory> mapProviders = new HashMap<>();
+    protected HashMap<String, PanelFactory> mapProviders = new HashMap<>();
 
     protected PanelFactoryService() {
         Collection<PanelFactory> providers = ExtensionService.getInstance().load(PanelFactory.class);

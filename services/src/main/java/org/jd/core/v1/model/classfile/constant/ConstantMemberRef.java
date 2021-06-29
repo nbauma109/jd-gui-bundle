@@ -15,7 +15,7 @@ public class ConstantMemberRef extends Constant {
     protected int nameAndTypeIndex;
 
     public ConstantMemberRef(int classIndex, int nameAndTypeIndex) {
-        super(CONSTANT_MEMBERREF);
+        super(CONSTANT_MemberRef);
         this.classIndex = classIndex;
         this.nameAndTypeIndex = nameAndTypeIndex;
     }
