@@ -9,7 +9,7 @@ public class HyperlinkReferenceData extends HyperlinkData {
         this.reference = reference;
     }
 
-	public ReferenceData getReference() {
-		return reference;
-	}
+    public ReferenceData getReference() {
+        return reference;
+    }
 }

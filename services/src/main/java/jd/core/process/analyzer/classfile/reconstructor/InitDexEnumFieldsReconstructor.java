@@ -72,133 +72,133 @@ import jd.core.util.StringConstants;
  */
 public class InitDexEnumFieldsReconstructor
 {
-	public static void Reconstruct(ClassFile classFile)
-	{
-		Method method = classFile.getStaticMethod();
-		if (method == null)
-			return;
+    public static void Reconstruct(ClassFile classFile)
+    {
+        Method method = classFile.getStaticMethod();
+        if (method == null)
+            return;
 
-		Field[] fields = classFile.getFields();
-		if (fields == null)
-			return;
+        Field[] fields = classFile.getFields();
+        if (fields == null)
+            return;
 
-		List<Instruction> list = method.getFastNodes();
-		if (list == null)
-			return;
+        List<Instruction> list = method.getFastNodes();
+        if (list == null)
+            return;
 
-		ConstantPool constants = classFile.getConstantPool();
+        ConstantPool constants = classFile.getConstantPool();
 
-		// Search field initialisation from the end
+        // Search field initialisation from the end
 
-		// Search PutStatic("ENUM$VALUES", ALoad(...))
-		int indexInstruction = list.size();
+        // Search PutStatic("ENUM$VALUES", ALoad(...))
+        int indexInstruction = list.size();
 
-		if (indexInstruction > 0)
-		{
-			// Saute la derniere instruction 'return'
-			indexInstruction--;
+        if (indexInstruction > 0)
+        {
+            // Saute la derniere instruction 'return'
+            indexInstruction--;
 
-			while (indexInstruction-- > 0)
-			{
-				Instruction instruction = list.get(indexInstruction);
-				if (instruction.opcode != ByteCodeConstants.PUTSTATIC)
-					break;
+            while (indexInstruction-- > 0)
+            {
+                Instruction instruction = list.get(indexInstruction);
+                if (instruction.opcode != ByteCodeConstants.PUTSTATIC)
+                    break;
 
-				PutStatic putStatic = (PutStatic)instruction;
-				if (putStatic.valueref.opcode != ByteCodeConstants.ALOAD)
-					break;
+                PutStatic putStatic = (PutStatic)instruction;
+                if (putStatic.valueref.opcode != ByteCodeConstants.ALOAD)
+                    break;
 
-				ConstantFieldref cfr = constants.getConstantFieldref(putStatic.index);
-				if (cfr.class_index != classFile.getThisClassIndex())
-					break;
+                ConstantFieldref cfr = constants.getConstantFieldref(putStatic.index);
+                if (cfr.class_index != classFile.getThisClassIndex())
+                    break;
 
-				ConstantNameAndType cnat =
-					constants.getConstantNameAndType(cfr.name_and_type_index);
+                ConstantNameAndType cnat =
+                    constants.getConstantNameAndType(cfr.name_and_type_index);
 
-				String name = constants.getConstantUtf8(cnat.name_index);
-				if (! name.equals(StringConstants.ENUM_VALUES_ARRAY_NAME_ECLIPSE))
-					break;
+                String name = constants.getConstantUtf8(cnat.name_index);
+                if (! name.equals(StringConstants.ENUM_VALUES_ARRAY_NAME_ECLIPSE))
+                    break;
 
-				int indexField = fields.length;
+                int indexField = fields.length;
 
-				while (indexField-- > 0)
-				{
-					Field field = fields[indexField];
+                while (indexField-- > 0)
+                {
+                    Field field = fields[indexField];
 
-					if (((field.access_flags & (ClassFileConstants.ACC_STATIC|ClassFileConstants.ACC_SYNTHETIC|ClassFileConstants.ACC_FINAL|ClassFileConstants.ACC_PRIVATE)) ==
-							(ClassFileConstants.ACC_STATIC|ClassFileConstants.ACC_SYNTHETIC|ClassFileConstants.ACC_FINAL|ClassFileConstants.ACC_PRIVATE)) &&
-						(cnat.descriptor_index == field.descriptor_index) &&
-						(cnat.name_index == field.name_index))
-					{
-						// "ENUM$VALUES = ..." found.
-						ALoad aload = (ALoad)putStatic.valueref;
-						int localEnumArrayIndex = aload.index;
-						int index = indexInstruction;
+                    if (((field.access_flags & (ClassFileConstants.ACC_STATIC|ClassFileConstants.ACC_SYNTHETIC|ClassFileConstants.ACC_FINAL|ClassFileConstants.ACC_PRIVATE)) ==
+                            (ClassFileConstants.ACC_STATIC|ClassFileConstants.ACC_SYNTHETIC|ClassFileConstants.ACC_FINAL|ClassFileConstants.ACC_PRIVATE)) &&
+                        (cnat.descriptor_index == field.descriptor_index) &&
+                        (cnat.name_index == field.name_index))
+                    {
+                        // "ENUM$VALUES = ..." found.
+                        ALoad aload = (ALoad)putStatic.valueref;
+                        int localEnumArrayIndex = aload.index;
+                        int index = indexInstruction;
 
-						// Middle instructions of pattern : AAStore(...)
-						ArrayList<Instruction> values = new ArrayList<Instruction>();
+                        // Middle instructions of pattern : AAStore(...)
+                        ArrayList<Instruction> values = new ArrayList<Instruction>();
 
-						while (index-- > 0)
-						{
-							instruction = list.get(index);
-							if (instruction.opcode != ByteCodeConstants.AASTORE)
-								break;
-							AAStore aastore = (AAStore)instruction;
-							if ((aastore.arrayref.opcode != ByteCodeConstants.ALOAD) ||
-								(aastore.valueref.opcode != ByteCodeConstants.GETSTATIC) ||
-								(((ALoad)aastore.arrayref).index != localEnumArrayIndex))
-								break;
-							values.add(aastore.valueref);
-						}
+                        while (index-- > 0)
+                        {
+                            instruction = list.get(index);
+                            if (instruction.opcode != ByteCodeConstants.AASTORE)
+                                break;
+                            AAStore aastore = (AAStore)instruction;
+                            if ((aastore.arrayref.opcode != ByteCodeConstants.ALOAD) ||
+                                (aastore.valueref.opcode != ByteCodeConstants.GETSTATIC) ||
+                                (((ALoad)aastore.arrayref).index != localEnumArrayIndex))
+                                break;
+                            values.add(aastore.valueref);
+                        }
 
-						// FastDeclaration(AStore(...))
-						if (instruction.opcode != FastConstants.DECLARE)
-							break;
-						FastDeclaration declaration = (FastDeclaration)instruction;
-						if (declaration.instruction.opcode != ByteCodeConstants.ASTORE)
-							break;
-						AStore astore = (AStore)declaration.instruction;
-						if (astore.index != localEnumArrayIndex)
-							break;
+                        // FastDeclaration(AStore(...))
+                        if (instruction.opcode != FastConstants.DECLARE)
+                            break;
+                        FastDeclaration declaration = (FastDeclaration)instruction;
+                        if (declaration.instruction.opcode != ByteCodeConstants.ASTORE)
+                            break;
+                        AStore astore = (AStore)declaration.instruction;
+                        if (astore.index != localEnumArrayIndex)
+                            break;
 
-						int valuesLength = values.size();
+                        int valuesLength = values.size();
 
-						if (valuesLength > 0)
-						{
-							// Pattern found.
+                        if (valuesLength > 0)
+                        {
+                            // Pattern found.
 
-							// Construct new pattern
-							InitArrayInstruction iai =
-								new InitArrayInstruction(
-									ByteCodeConstants.INITARRAY,
-									putStatic.offset,
-									declaration.lineNumber,
-									new ANewArray(
-										ByteCodeConstants.ANEWARRAY,
-										putStatic.offset,
-										declaration.lineNumber,
-										classFile.getThisClassIndex(),
-										new IConst(
-											ByteCodeConstants.ICONST,
-											putStatic.offset,
-											declaration.lineNumber,
-											valuesLength)),
-									values);
-							field.setValueAndMethod(iai, method);
+                            // Construct new pattern
+                            InitArrayInstruction iai =
+                                new InitArrayInstruction(
+                                    ByteCodeConstants.INITARRAY,
+                                    putStatic.offset,
+                                    declaration.lineNumber,
+                                    new ANewArray(
+                                        ByteCodeConstants.ANEWARRAY,
+                                        putStatic.offset,
+                                        declaration.lineNumber,
+                                        classFile.getThisClassIndex(),
+                                        new IConst(
+                                            ByteCodeConstants.ICONST,
+                                            putStatic.offset,
+                                            declaration.lineNumber,
+                                            valuesLength)),
+                                    values);
+                            field.setValueAndMethod(iai, method);
 
-							// Remove PutStatic
-							list.remove(indexInstruction);
-							// Remove AAStores
-							while (--indexInstruction > index)
-								list.remove(indexInstruction);
-							// Remove FastDeclaration
-							list.remove(indexInstruction);
-						}
+                            // Remove PutStatic
+                            list.remove(indexInstruction);
+                            // Remove AAStores
+                            while (--indexInstruction > index)
+                                list.remove(indexInstruction);
+                            // Remove FastDeclaration
+                            list.remove(indexInstruction);
+                        }
 
-						break;
-					}
-				}
-			}
-		}
-	}
+                        break;
+                    }
+                }
+            }
+        }
+    }
 }

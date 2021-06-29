@@ -18,10 +18,10 @@ import java.util.Map;
 
 public class DirectoryIndexerPreferencesProvider extends JPanel implements PreferencesPanel, DocumentListener {
     /**
-	 *
-	 */
-	private static final long serialVersionUID = 1L;
-	protected static final int MAX_VALUE = 30;
+     *
+     */
+    private static final long serialVersionUID = 1L;
+    protected static final int MAX_VALUE = 30;
     protected static final String MAXIMUM_DEPTH_KEY = "DirectoryIndexerPreferences.maximumDepth";
 
     protected PreferencesPanel.PreferencesPanelChangeListener listener = null;

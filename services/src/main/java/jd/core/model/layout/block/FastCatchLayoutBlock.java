@@ -24,21 +24,21 @@ import jd.core.model.instruction.fast.instruction.FastTry.FastCatch;
 
 public class FastCatchLayoutBlock extends LayoutBlock
 {
-	public ClassFile classFile;
-	public Method method;
-	public FastCatch fc;
+    public ClassFile classFile;
+    public Method method;
+    public FastCatch fc;
 
-	public FastCatchLayoutBlock(
-		ClassFile classFile, Method method, FastCatch fc)
-	{
-		super(
-			LayoutBlockConstants.FRAGMENT_CATCH,
-			Instruction.UNKNOWN_LINE_NUMBER,
-			Instruction.UNKNOWN_LINE_NUMBER,
-			0, 0, 0);
+    public FastCatchLayoutBlock(
+        ClassFile classFile, Method method, FastCatch fc)
+    {
+        super(
+            LayoutBlockConstants.FRAGMENT_CATCH,
+            Instruction.UNKNOWN_LINE_NUMBER,
+            Instruction.UNKNOWN_LINE_NUMBER,
+            0, 0, 0);
 
-		this.classFile = classFile;
-		this.method = method;
-		this.fc = fc;
-	}
+        this.classFile = classFile;
+        this.method = method;
+        this.fc = fc;
+    }
 }

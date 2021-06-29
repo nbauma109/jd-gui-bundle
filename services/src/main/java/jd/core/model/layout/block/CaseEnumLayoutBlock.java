@@ -22,18 +22,18 @@ import jd.core.model.instruction.fast.instruction.FastSwitch;
 
 public class CaseEnumLayoutBlock extends CaseLayoutBlock
 {
-	public int switchMapKeyIndex;
+    public int switchMapKeyIndex;
 
-	public CaseEnumLayoutBlock(
-		ClassFile classFile, Method method,
-		FastSwitch fs, int firstIndex, int lastIndex,
-		int switchMapKeyIndex)
-	{
-		super(
-			LayoutBlockConstants.FRAGMENT_CASE_ENUM,
-			classFile, method, fs,
-			firstIndex, lastIndex, lastIndex-firstIndex);
+    public CaseEnumLayoutBlock(
+        ClassFile classFile, Method method,
+        FastSwitch fs, int firstIndex, int lastIndex,
+        int switchMapKeyIndex)
+    {
+        super(
+            LayoutBlockConstants.FRAGMENT_CASE_ENUM,
+            classFile, method, fs,
+            firstIndex, lastIndex, lastIndex-firstIndex);
 
-		this.switchMapKeyIndex = switchMapKeyIndex;
-	}
+        this.switchMapKeyIndex = switchMapKeyIndex;
+    }
 }

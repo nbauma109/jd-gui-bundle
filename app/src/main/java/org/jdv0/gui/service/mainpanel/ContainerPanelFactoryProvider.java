@@ -41,20 +41,20 @@ import org.jd.gui.view.component.panel.TreeTabbedPanel;
 public class ContainerPanelFactoryProvider implements PanelFactory {
     protected static final String[] TYPES = { "default" };
 
-	@Override public String[] getTypes() { return TYPES; }
+    @Override public String[] getTypes() { return TYPES; }
 
     @Override
     @SuppressWarnings("unchecked")
     public <T extends JComponent & UriGettable> T make(API api, Container container) {
         return (T)new ContainerPanel(api, container);
-	}
+    }
 
     protected class ContainerPanel extends TreeTabbedPanel implements ContentIndexable, SourcesSavable {
         /**
-		 *
-		 */
-		private static final long serialVersionUID = 1L;
-		protected Container.Entry entry;
+         *
+         */
+        private static final long serialVersionUID = 1L;
+        protected Container.Entry entry;
 
         public ContainerPanel(API api, Container container) {
             super(api, container.getRoot().getParent().getUri());
@@ -182,7 +182,7 @@ public class ContainerPanelFactoryProvider implements PanelFactory {
     }
 
     protected static class MapMapCollectionWithDefault extends MapWrapper<String, Map<String, Collection>> {
-	    protected HashMap<String, Map<String, Collection>> wrappers = new HashMap<>();
+        protected HashMap<String, Map<String, Collection>> wrappers = new HashMap<>();
 
         public MapMapCollectionWithDefault(Map<String, Map<String, Collection>> map) { super(map); }
 

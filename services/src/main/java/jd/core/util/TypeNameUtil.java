@@ -26,17 +26,17 @@ package jd.core.util;
  */
 public class TypeNameUtil
 {
-	public static String InternalTypeNameToInternalPackageName(String path)
-	{
-		int index = path.lastIndexOf(StringConstants.INTERNAL_PACKAGE_SEPARATOR);
-		return (index == -1) ? "" : path.substring(0, index);
-	}
+    public static String InternalTypeNameToInternalPackageName(String path)
+    {
+        int index = path.lastIndexOf(StringConstants.INTERNAL_PACKAGE_SEPARATOR);
+        return (index == -1) ? "" : path.substring(0, index);
+    }
 
-	public static String InternalTypeNameToQualifiedTypeName(String path)
-	{
-		return path.replace(StringConstants.INTERNAL_PACKAGE_SEPARATOR,
-				            StringConstants.PACKAGE_SEPARATOR)
-				   .replace(StringConstants.INTERNAL_INNER_SEPARATOR,
-				            StringConstants.INNER_SEPARATOR);
-	}
+    public static String InternalTypeNameToQualifiedTypeName(String path)
+    {
+        return path.replace(StringConstants.INTERNAL_PACKAGE_SEPARATOR,
+                            StringConstants.PACKAGE_SEPARATOR)
+                   .replace(StringConstants.INTERNAL_INNER_SEPARATOR,
+                            StringConstants.INNER_SEPARATOR);
+    }
 }

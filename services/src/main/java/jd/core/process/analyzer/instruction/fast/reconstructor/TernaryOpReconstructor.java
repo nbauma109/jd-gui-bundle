@@ -37,105 +37,105 @@ import jd.core.process.analyzer.instruction.fast.visitor.ReplaceInstructionVisit
  */
 public class TernaryOpReconstructor
 {
-	public static void Reconstruct(List<Instruction> list)
-	{
-		int length = list.size();
+    public static void Reconstruct(List<Instruction> list)
+    {
+        int length = list.size();
 
-		for (int index=1; index<length; ++index)
-		{
-			Instruction i = list.get(index);
+        for (int index=1; index<length; ++index)
+        {
+            Instruction i = list.get(index);
 
-			if ((i.opcode == ByteCodeConstants.TERNARYOPSTORE) &&
-				(index+2<length))
-			{
-				// Search test
-				Instruction gi = list.get(index+1);
-				Instruction afterGi = list.get(index+2);
-				Instruction test = null;
-				int indexTest = index;
+            if ((i.opcode == ByteCodeConstants.TERNARYOPSTORE) &&
+                (index+2<length))
+            {
+                // Search test
+                Instruction gi = list.get(index+1);
+                Instruction afterGi = list.get(index+2);
+                Instruction test = null;
+                int indexTest = index;
 
-				while (indexTest-- > 0)
-				{
-					Instruction instruction = list.get(indexTest);
-					int opcode = instruction.opcode;
+                while (indexTest-- > 0)
+                {
+                    Instruction instruction = list.get(indexTest);
+                    int opcode = instruction.opcode;
 
-					if ((opcode == ByteCodeConstants.IF) ||
-						(opcode == ByteCodeConstants.IFCMP) ||
-						(opcode == ByteCodeConstants.IFXNULL) ||
-						(opcode == ByteCodeConstants.COMPLEXIF))
-					{
-						int jumpOffset =
-							((BranchInstruction)instruction).GetJumpOffset();
-						if ((gi.offset < jumpOffset) &&
-							(jumpOffset <= afterGi.offset))
-						{
-							test = instruction;
-							break;
-						}
-					}
-				}
+                    if ((opcode == ByteCodeConstants.IF) ||
+                        (opcode == ByteCodeConstants.IFCMP) ||
+                        (opcode == ByteCodeConstants.IFXNULL) ||
+                        (opcode == ByteCodeConstants.COMPLEXIF))
+                    {
+                        int jumpOffset =
+                            ((BranchInstruction)instruction).GetJumpOffset();
+                        if ((gi.offset < jumpOffset) &&
+                            (jumpOffset <= afterGi.offset))
+                        {
+                            test = instruction;
+                            break;
+                        }
+                    }
+                }
 
-				if (test == null)
-					continue;
+                if (test == null)
+                    continue;
 
-				TernaryOpStore value1 = (TernaryOpStore)i;
+                TernaryOpStore value1 = (TernaryOpStore)i;
 
-				ComparisonInstructionAnalyzer.InverseComparison(test);
+                ComparisonInstructionAnalyzer.InverseComparison(test);
 
-				TernaryOperator fto = new TernaryOperator(
-					ByteCodeConstants.TERNARYOP,
-					value1.ternaryOp2ndValueOffset, test.lineNumber,
-					test, value1.objectref, null);
+                TernaryOperator fto = new TernaryOperator(
+                    ByteCodeConstants.TERNARYOP,
+                    value1.ternaryOp2ndValueOffset, test.lineNumber,
+                    test, value1.objectref, null);
 
-				ReplaceInstructionVisitor visitor =
-					new ReplaceInstructionVisitor(
-							value1.ternaryOp2ndValueOffset, fto);
+                ReplaceInstructionVisitor visitor =
+                    new ReplaceInstructionVisitor(
+                            value1.ternaryOp2ndValueOffset, fto);
 
-				int indexVisitor = index+2;
-				while ((indexVisitor<length) && (visitor.getOldInstruction()==null))
-					visitor.visit(list.get(indexVisitor++));
+                int indexVisitor = index+2;
+                while ((indexVisitor<length) && (visitor.getOldInstruction()==null))
+                    visitor.visit(list.get(indexVisitor++));
 
-				fto.value2 = visitor.getOldInstruction();
+                fto.value2 = visitor.getOldInstruction();
 
-				if (isBooleanConstant(fto.value1) &&
-					isBooleanConstant(fto.value2))
-				{
-					if (((IConst)fto.value1).value == 0)
-						ComparisonInstructionAnalyzer.InverseComparison(fto.test);
+                if (isBooleanConstant(fto.value1) &&
+                    isBooleanConstant(fto.value2))
+                {
+                    if (((IConst)fto.value1).value == 0)
+                        ComparisonInstructionAnalyzer.InverseComparison(fto.test);
 
-					visitor.init(fto.offset, fto.test);
+                    visitor.init(fto.offset, fto.test);
 
-					indexVisitor = index+2;
-					while ((indexVisitor<length) && (visitor.getOldInstruction()==null))
-						visitor.visit(list.get(indexVisitor++));
-				}
+                    indexVisitor = index+2;
+                    while ((indexVisitor<length) && (visitor.getOldInstruction()==null))
+                        visitor.visit(list.get(indexVisitor++));
+                }
 
-				// Remove Goto
-				list.remove(index+1);
-				// Remove TernaryOpStore
-				list.remove(index);
-				// Remove test
-				list.remove(indexTest);
+                // Remove Goto
+                list.remove(index+1);
+                // Remove TernaryOpStore
+                list.remove(index);
+                // Remove test
+                list.remove(indexTest);
 
-				index -= 2;
-				length -= 3;
-			}
-		}
-	}
+                index -= 2;
+                length -= 3;
+            }
+        }
+    }
 
-	private static boolean isBooleanConstant(Instruction instruction)
-	{
-		if (instruction == null)
-			return false;
+    private static boolean isBooleanConstant(Instruction instruction)
+    {
+        if (instruction == null)
+            return false;
 
-		switch (instruction.opcode)
-		{
-		case ByteCodeConstants.BIPUSH:
-		case ByteCodeConstants.ICONST:
-		case ByteCodeConstants.SIPUSH:
-			return "Z".equals(instruction.getReturnedSignature(null, null));
-		default:
-			return false;
-		}
-	}
+        switch (instruction.opcode)
+        {
+        case ByteCodeConstants.BIPUSH:
+        case ByteCodeConstants.ICONST:
+        case ByteCodeConstants.SIPUSH:
+            return "Z".equals(instruction.getReturnedSignature(null, null));
+        default:
+            return false;
+        }
+    }
 }

@@ -63,177 +63,177 @@ import jd.core.util.StringConstants;
  */
 public class DotClassEclipseReconstructor
 {
-	public static void Reconstruct(
-		ReferenceMap referenceMap, ClassFile classFile, List<Instruction> list)
-	{
-		int i = list.size();
+    public static void Reconstruct(
+        ReferenceMap referenceMap, ClassFile classFile, List<Instruction> list)
+    {
+        int i = list.size();
 
-		if  (i < 3)
-			return;
+        if  (i < 3)
+            return;
 
-		i -= 2;
-		ConstantPool constants = classFile.getConstantPool();
+        i -= 2;
+        ConstantPool constants = classFile.getConstantPool();
 
-		while (i-- > 0)
-		{
-			Instruction instruction = list.get(i);
+        while (i-- > 0)
+        {
+            Instruction instruction = list.get(i);
 
-			if (instruction.opcode != FastConstants.IFXNULL)
-				continue;
+            if (instruction.opcode != FastConstants.IFXNULL)
+                continue;
 
-			IfInstruction ii = (IfInstruction)instruction;
+            IfInstruction ii = (IfInstruction)instruction;
 
-			if (ii.value.opcode != ByteCodeConstants.GETSTATIC)
-				continue;
+            if (ii.value.opcode != ByteCodeConstants.GETSTATIC)
+                continue;
 
-			int jumpOffset = ii.GetJumpOffset();
+            int jumpOffset = ii.GetJumpOffset();
 
-			instruction = list.get(i+1);
+            instruction = list.get(i+1);
 
-			if (instruction.opcode != FastConstants.TRY)
-				continue;
+            if (instruction.opcode != FastConstants.TRY)
+                continue;
 
-			FastTry ft = (FastTry)instruction;
+            FastTry ft = (FastTry)instruction;
 
-			if ((ft.catches.size() != 1) || (ft.finallyInstructions != null) ||
-				(ft.instructions.size() != 2))
-				continue;
+            if ((ft.catches.size() != 1) || (ft.finallyInstructions != null) ||
+                (ft.instructions.size() != 2))
+                continue;
 
-			FastCatch fc = ft.catches.get(0);
+            FastCatch fc = ft.catches.get(0);
 
-			if ((fc.instructions.size() != 1) ||
-				(fc.otherExceptionTypeIndexes != null))
-					continue;
+            if ((fc.instructions.size() != 1) ||
+                (fc.otherExceptionTypeIndexes != null))
+                    continue;
 
-			instruction = list.get(i+2);
+            instruction = list.get(i+2);
 
-			if ((ft.offset >= jumpOffset) || (jumpOffset > instruction.offset))
-				continue;
+            if ((ft.offset >= jumpOffset) || (jumpOffset > instruction.offset))
+                continue;
 
-			GetStatic gs = (GetStatic)ii.value;
+            GetStatic gs = (GetStatic)ii.value;
 
-			ConstantFieldref cfr = constants.getConstantFieldref(gs.index);
+            ConstantFieldref cfr = constants.getConstantFieldref(gs.index);
 
-			if (cfr.class_index != classFile.getThisClassIndex())
-				continue;
+            if (cfr.class_index != classFile.getThisClassIndex())
+                continue;
 
-			ConstantNameAndType cnatField = constants.getConstantNameAndType(
-					cfr.name_and_type_index);
+            ConstantNameAndType cnatField = constants.getConstantNameAndType(
+                    cfr.name_and_type_index);
 
-			String signature =
-				constants.getConstantUtf8(cnatField.descriptor_index);
+            String signature =
+                constants.getConstantUtf8(cnatField.descriptor_index);
 
-			if (! StringConstants.INTERNAL_CLASS_SIGNATURE.equals(signature))
-				continue;
+            if (! StringConstants.INTERNAL_CLASS_SIGNATURE.equals(signature))
+                continue;
 
-			String name = constants.getConstantUtf8(cnatField.name_index);
+            String name = constants.getConstantUtf8(cnatField.name_index);
 
-			if (! name.startsWith(StringConstants.CLASS_DOLLAR))
-				continue;
+            if (! name.startsWith(StringConstants.CLASS_DOLLAR))
+                continue;
 
-			instruction = ft.instructions.get(0);
+            instruction = ft.instructions.get(0);
 
-			if (instruction.opcode != ByteCodeConstants.DUPSTORE)
-				continue;
+            if (instruction.opcode != ByteCodeConstants.DUPSTORE)
+                continue;
 
-			DupStore ds = (DupStore)instruction;
+            DupStore ds = (DupStore)instruction;
 
-			if (ds.objectref.opcode != ByteCodeConstants.INVOKESTATIC)
-				continue;
+            if (ds.objectref.opcode != ByteCodeConstants.INVOKESTATIC)
+                continue;
 
-			Invokestatic is = (Invokestatic)ds.objectref;
+            Invokestatic is = (Invokestatic)ds.objectref;
 
-			if (is.args.size() != 1)
-				continue;
+            if (is.args.size() != 1)
+                continue;
 
-			instruction = is.args.get(0);
+            instruction = is.args.get(0);
 
-			if (instruction.opcode != ByteCodeConstants.LDC)
-				continue;
+            if (instruction.opcode != ByteCodeConstants.LDC)
+                continue;
 
-			ConstantMethodref cmr =
-				constants.getConstantMethodref(is.index);
+            ConstantMethodref cmr =
+                constants.getConstantMethodref(is.index);
 
-			name = constants.getConstantClassName(cmr.class_index);
+            name = constants.getConstantClassName(cmr.class_index);
 
-			if (! name.equals(StringConstants.INTERNAL_CLASS_CLASS_NAME))
-				continue;
+            if (! name.equals(StringConstants.INTERNAL_CLASS_CLASS_NAME))
+                continue;
 
-			ConstantNameAndType cnatMethod =
-				constants.getConstantNameAndType(cmr.name_and_type_index);
-			name = constants.getConstantUtf8(cnatMethod.name_index);
+            ConstantNameAndType cnatMethod =
+                constants.getConstantNameAndType(cmr.name_and_type_index);
+            name = constants.getConstantUtf8(cnatMethod.name_index);
 
-			if (! name.equals(StringConstants.FORNAME_METHOD_NAME))
-				continue;
+            if (! name.equals(StringConstants.FORNAME_METHOD_NAME))
+                continue;
 
-			Ldc ldc = (Ldc)instruction;
-			ConstantValue cv = constants.getConstantValue(ldc.index);
+            Ldc ldc = (Ldc)instruction;
+            ConstantValue cv = constants.getConstantValue(ldc.index);
 
-			if (cv.tag != ConstantConstant.CONSTANT_String)
-				continue;
+            if (cv.tag != ConstantConstant.CONSTANT_String)
+                continue;
 
-			instruction = ft.instructions.get(1);
+            instruction = ft.instructions.get(1);
 
-			if (instruction.opcode != ByteCodeConstants.PUTSTATIC)
-				continue;
+            if (instruction.opcode != ByteCodeConstants.PUTSTATIC)
+                continue;
 
-			PutStatic ps = (PutStatic)instruction;
+            PutStatic ps = (PutStatic)instruction;
 
-			if ((ps.index != gs.index) ||
-				(ps.valueref.opcode != ByteCodeConstants.DUPLOAD) ||
-				(ps.valueref.offset != ds.offset))
-				continue;
+            if ((ps.index != gs.index) ||
+                (ps.valueref.opcode != ByteCodeConstants.DUPLOAD) ||
+                (ps.valueref.offset != ds.offset))
+                continue;
 
-			String exceptionName =
-				constants.getConstantClassName(fc.exceptionTypeIndex);
+            String exceptionName =
+                constants.getConstantClassName(fc.exceptionTypeIndex);
 
-			if (! exceptionName.equals(StringConstants.INTERNAL_CLASSNOTFOUNDEXCEPTION_SIGNATURE))
-				continue;
+            if (! exceptionName.equals(StringConstants.INTERNAL_CLASSNOTFOUNDEXCEPTION_SIGNATURE))
+                continue;
 
-			if (fc.instructions.get(0).opcode != ByteCodeConstants.ATHROW)
-				continue;
+            if (fc.instructions.get(0).opcode != ByteCodeConstants.ATHROW)
+                continue;
 
-			// Trouve !
-			ConstantString cs = (ConstantString)cv;
-			String className = constants.getConstantUtf8(cs.string_index);
-			String internalName = className.replace(
-				StringConstants.PACKAGE_SEPARATOR,
-				StringConstants.INTERNAL_PACKAGE_SEPARATOR);
+            // Trouve !
+            ConstantString cs = (ConstantString)cv;
+            String className = constants.getConstantUtf8(cs.string_index);
+            String internalName = className.replace(
+                StringConstants.PACKAGE_SEPARATOR,
+                StringConstants.INTERNAL_PACKAGE_SEPARATOR);
 
-			referenceMap.add(internalName);
+            referenceMap.add(internalName);
 
-			// Ajout du nom interne
-			int index = constants.addConstantUtf8(internalName);
-			// Ajout d'une nouvelle classe
-			index = constants.addConstantClass(index);
-			ldc = new Ldc(
-				ByteCodeConstants.LDC, ii.offset,
-				ii.lineNumber, index);
+            // Ajout du nom interne
+            int index = constants.addConstantUtf8(internalName);
+            // Ajout d'une nouvelle classe
+            index = constants.addConstantClass(index);
+            ldc = new Ldc(
+                ByteCodeConstants.LDC, ii.offset,
+                ii.lineNumber, index);
 
-			// Remplacement de l'intruction GetStatic par l'instruction Ldc
-			ReplaceDupLoadVisitor visitor = new ReplaceDupLoadVisitor(ds, ldc);
+            // Remplacement de l'intruction GetStatic par l'instruction Ldc
+            ReplaceDupLoadVisitor visitor = new ReplaceDupLoadVisitor(ds, ldc);
 
-			visitor.visit(list.get(i+2));
+            visitor.visit(list.get(i+2));
 
-			// Retrait de l'intruction FastTry
-			list.remove(i+1);
-			// Retrait de l'intruction IfNotNull
-			list.remove(i);
+            // Retrait de l'intruction FastTry
+            list.remove(i+1);
+            // Retrait de l'intruction IfNotNull
+            list.remove(i);
 
-			// Recherche de l'attribut statique et ajout de l'attribut SYNTHETIC
-			Field[] fields = classFile.getFields();
-			int j = fields.length;
+            // Recherche de l'attribut statique et ajout de l'attribut SYNTHETIC
+            Field[] fields = classFile.getFields();
+            int j = fields.length;
 
-			while (j-- > 0)
-			{
-				Field field = fields[j];
+            while (j-- > 0)
+            {
+                Field field = fields[j];
 
-				if (field.name_index == cnatField.name_index)
-				{
-					field.access_flags |= ClassFileConstants.ACC_SYNTHETIC;
-					break;
-				}
-			}
-		}
-	}
+                if (field.name_index == cnatField.name_index)
+                {
+                    field.access_flags |= ClassFileConstants.ACC_SYNTHETIC;
+                    break;
+                }
+            }
+        }
+    }
 }

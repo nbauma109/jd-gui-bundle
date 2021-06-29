@@ -37,10 +37,10 @@ import org.fife.ui.rtextarea.RTextAreaUI;
 
 public abstract class CustomLineNumbersPage extends HyperlinkPage {
     /**
-	 *
-	 */
-	private static final long serialVersionUID = 1L;
-	protected Color errorForeground = Color.RED;
+     *
+     */
+    private static final long serialVersionUID = 1L;
+    protected Color errorForeground = Color.RED;
     protected boolean showMisalignment = true;
 
     public void setErrorForeground(Color color) {
@@ -128,16 +128,16 @@ public abstract class CustomLineNumbersPage extends HyperlinkPage {
     @Override protected RSyntaxTextArea newSyntaxTextArea() { return new SourceSyntaxTextArea(); }
 
     public int[] getLineNumberMap() {
-		return lineNumberMap;
-	}
+        return lineNumberMap;
+    }
 
-	public class SourceSyntaxTextArea extends HyperlinkSyntaxTextArea {
+    public class SourceSyntaxTextArea extends HyperlinkSyntaxTextArea {
         /**
-		 *
-		 */
-		private static final long serialVersionUID = 1L;
+         *
+         */
+        private static final long serialVersionUID = 1L;
 
-		@Override protected RTextAreaUI createRTextAreaUI() { return new SourceSyntaxTextAreaUI(this); }
+        @Override protected RTextAreaUI createRTextAreaUI() { return new SourceSyntaxTextAreaUI(this); }
     }
 
     /**
@@ -151,11 +151,11 @@ public abstract class CustomLineNumbersPage extends HyperlinkPage {
 
     public class SourceSyntaxTextAreaEditorKit extends RSyntaxTextAreaEditorKit {
         /**
-		 *
-		 */
-		private static final long serialVersionUID = 1L;
+         *
+         */
+        private static final long serialVersionUID = 1L;
 
-		@Override public LineNumberList createLineNumberList(RTextArea textArea) { return new SourceLineNumberList(textArea); }
+        @Override public LineNumberList createLineNumberList(RTextArea textArea) { return new SourceLineNumberList(textArea); }
     }
 
     /**
@@ -163,10 +163,10 @@ public abstract class CustomLineNumbersPage extends HyperlinkPage {
      */
     public class SourceLineNumberList extends LineNumberList {
         /**
-		 *
-		 */
-		private static final long serialVersionUID = 1L;
-		protected RTextArea rTextArea;
+         *
+         */
+        private static final long serialVersionUID = 1L;
+        protected RTextArea rTextArea;
         protected Map<?,?> aaHints;
         protected Rectangle visibleRect;
         protected Insets textAreaInsets;

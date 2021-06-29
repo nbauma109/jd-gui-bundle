@@ -25,7 +25,7 @@ public class Context {
         return descriptor;
     }
 
-	public String put(String name, String descriptor) {
-		return nameToDescriptor.put(name, descriptor);
-	}
+    public String put(String name, String descriptor) {
+        return nameToDescriptor.put(name, descriptor);
+    }
 }

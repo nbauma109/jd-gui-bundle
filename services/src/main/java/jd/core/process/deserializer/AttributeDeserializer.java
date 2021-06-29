@@ -47,281 +47,281 @@ import jd.core.model.classfile.attribute.UnknowAttribute;
 
 public class AttributeDeserializer
 {
-	public static Attribute[] Deserialize(
-			DataInput di, ConstantPool constants)
-		throws IOException
-	{
-		int count = di.readUnsignedShort();
-		if (count == 0)
-			return null;
+    public static Attribute[] Deserialize(
+            DataInput di, ConstantPool constants)
+        throws IOException
+    {
+        int count = di.readUnsignedShort();
+        if (count == 0)
+            return null;
 
-		Attribute[] attributes = new Attribute[count];
+        Attribute[] attributes = new Attribute[count];
 
-		for (int i=0; i<count; i++)
-		{
-			int attribute_name_index = di.readUnsignedShort();
-			int attribute_length = di.readInt();
+        for (int i=0; i<count; i++)
+        {
+            int attribute_name_index = di.readUnsignedShort();
+            int attribute_length = di.readInt();
 
-			if (attribute_name_index == constants.annotationDefaultAttributeNameIndex)
-			{
-			    attributes[i] = new AttributeAnnotationDefault(
-			    		AttributeConstants.ATTR_ANNOTATION_DEFAULT,
-			    		attribute_name_index,
-			    		AnnotationDeserializer.DeserializeElementValue(di));
-			}
-			else if (attribute_name_index == constants.codeAttributeNameIndex)
-			{
-			    attributes[i] = new AttributeCode(
-			    		AttributeConstants.ATTR_CODE,
-    		            attribute_name_index,
-		                di.readUnsignedShort(),
-		                di.readUnsignedShort(),
-		                DeserializeCode(di),
-		                DeserializeCodeExceptions(di),
-		                Deserialize(di, constants));
-			}
-			else if (attribute_name_index == constants.constantValueAttributeNameIndex)
-			{
-				if (attribute_length != 2)
-					throw new ClassFormatException("Invalid attribute length");
-				attributes[i] = new AttributeConstantValue(
-						AttributeConstants.ATTR_CONSTANT_VALUE,
-	                    attribute_name_index,
-	                    di.readUnsignedShort());
-			}
-			else if (attribute_name_index == constants.deprecatedAttributeNameIndex)
-			{
-				if (attribute_length != 0)
-					throw new ClassFormatException("Invalid attribute length");
-			    attributes[i] = new AttributeDeprecated(
-			    		AttributeConstants.ATTR_DEPRECATED,
-						attribute_name_index);
-			}
-			else if (attribute_name_index == constants.enclosingMethodAttributeNameIndex)
-			{
-				if (attribute_length != 4)
-					throw new ClassFormatException("Invalid attribute length");
-			    attributes[i] = new AttributeEnclosingMethod(
-			    		AttributeConstants.ATTR_ENCLOSING_METHOD,
-		    		    attribute_name_index,
-		    		    di.readUnsignedShort(),
-		    		    di.readUnsignedShort());
-			}
-			else if (attribute_name_index == constants.exceptionsAttributeNameIndex)
-			{
-			    attributes[i] = new AttributeExceptions(
-			    		AttributeConstants.ATTR_EXCEPTIONS,
-    		            attribute_name_index,
-    		            DeserializeExceptionIndexTable(di));
-			}
-			else if (attribute_name_index == constants.innerClassesAttributeNameIndex)
-			{
-			    attributes[i] = new AttributeInnerClasses(
-			    		AttributeConstants.ATTR_INNER_CLASSES,
-    		            attribute_name_index,
-    		            DeserializeInnerClasses(di));
-			}
-			else if (attribute_name_index == constants.lineNumberTableAttributeNameIndex)
-			{
-			    attributes[i] = new AttributeNumberTable(
-			    		AttributeConstants.ATTR_NUMBER_TABLE,
-    		            attribute_name_index,
-	                    DeserializeLineNumbers(di));
-			}
-			else if (attribute_name_index == constants.localVariableTableAttributeNameIndex)
-			{
-			    attributes[i] = new AttributeLocalVariableTable(
-			    		AttributeConstants.ATTR_LOCAL_VARIABLE_TABLE,
-    		            attribute_name_index,
-    		            DeserializeLocalVariable(di));
-			}
-			else if (attribute_name_index == constants.localVariableTypeTableAttributeNameIndex)
-			{
-			    attributes[i] = new AttributeLocalVariableTable(
-			    		AttributeConstants.ATTR_LOCAL_VARIABLE_TYPE_TABLE,
-    		            attribute_name_index,
-    		            DeserializeLocalVariable(di));
-			}
-			else if (attribute_name_index == constants.runtimeInvisibleAnnotationsAttributeNameIndex)
-			{
-			    attributes[i] = new AttributeRuntimeAnnotations(
-			    		AttributeConstants.ATTR_RUNTIME_INVISIBLE_ANNOTATIONS,
-    		            attribute_name_index,
-    		            AnnotationDeserializer.Deserialize(di));
-			}
-			else if (attribute_name_index == constants.runtimeVisibleAnnotationsAttributeNameIndex)
-			{
-			    attributes[i] = new AttributeRuntimeAnnotations(
-			    		AttributeConstants.ATTR_RUNTIME_VISIBLE_ANNOTATIONS,
-				        attribute_name_index,
-    		            AnnotationDeserializer.Deserialize(di));
-			}
-			else if (attribute_name_index == constants.runtimeInvisibleParameterAnnotationsAttributeNameIndex)
-			{
-			    attributes[i] = new AttributeRuntimeParameterAnnotations(
-			    		AttributeConstants.ATTR_RUNTIME_INVISIBLE_PARAMETER_ANNOTATIONS,
-				        attribute_name_index,
-				        DeserializeParameterAnnotations(di));
-			}
-			else if (attribute_name_index == constants.runtimeVisibleParameterAnnotationsAttributeNameIndex)
-			{
-			    attributes[i] = new AttributeRuntimeParameterAnnotations(
-			    		AttributeConstants.ATTR_RUNTIME_VISIBLE_PARAMETER_ANNOTATIONS,
-				        attribute_name_index,
-				        DeserializeParameterAnnotations(di));
-			}
-			else if (attribute_name_index == constants.signatureAttributeNameIndex)
-			{
-				if (attribute_length != 2)
-					throw new ClassFormatException("Invalid attribute length");
-				attributes[i] = new AttributeSignature(
-						AttributeConstants.ATTR_SIGNATURE,
-	                    attribute_name_index,
-	                    di.readUnsignedShort());
-			}
-			else if (attribute_name_index == constants.sourceFileAttributeNameIndex)
-			{
-				if (attribute_length != 2)
-					throw new ClassFormatException("Invalid attribute length");
-				attributes[i] = new AttributeSourceFile(
-						AttributeConstants.ATTR_SOURCE_FILE,
-	                    attribute_name_index,
-	                    di.readUnsignedShort());
-			}
-			else if (attribute_name_index == constants.syntheticAttributeNameIndex)
-			{
-				if (attribute_length != 0)
-					throw new ClassFormatException("Invalid attribute length");
-			    attributes[i] = new AttributeSynthetic(
-			    		AttributeConstants.ATTR_SYNTHETIC,
-			    		attribute_name_index);
-			}
-			else
-			{
-				attributes[i] = new UnknowAttribute(
-						AttributeConstants.ATTR_UNKNOWN,
-						attribute_name_index);
-				for (int j=0; j<attribute_length; j++)
-					di.readByte();
-			}
-		}
+            if (attribute_name_index == constants.annotationDefaultAttributeNameIndex)
+            {
+                attributes[i] = new AttributeAnnotationDefault(
+                        AttributeConstants.ATTR_ANNOTATION_DEFAULT,
+                        attribute_name_index,
+                        AnnotationDeserializer.DeserializeElementValue(di));
+            }
+            else if (attribute_name_index == constants.codeAttributeNameIndex)
+            {
+                attributes[i] = new AttributeCode(
+                        AttributeConstants.ATTR_CODE,
+                        attribute_name_index,
+                        di.readUnsignedShort(),
+                        di.readUnsignedShort(),
+                        DeserializeCode(di),
+                        DeserializeCodeExceptions(di),
+                        Deserialize(di, constants));
+            }
+            else if (attribute_name_index == constants.constantValueAttributeNameIndex)
+            {
+                if (attribute_length != 2)
+                    throw new ClassFormatException("Invalid attribute length");
+                attributes[i] = new AttributeConstantValue(
+                        AttributeConstants.ATTR_CONSTANT_VALUE,
+                        attribute_name_index,
+                        di.readUnsignedShort());
+            }
+            else if (attribute_name_index == constants.deprecatedAttributeNameIndex)
+            {
+                if (attribute_length != 0)
+                    throw new ClassFormatException("Invalid attribute length");
+                attributes[i] = new AttributeDeprecated(
+                        AttributeConstants.ATTR_DEPRECATED,
+                        attribute_name_index);
+            }
+            else if (attribute_name_index == constants.enclosingMethodAttributeNameIndex)
+            {
+                if (attribute_length != 4)
+                    throw new ClassFormatException("Invalid attribute length");
+                attributes[i] = new AttributeEnclosingMethod(
+                        AttributeConstants.ATTR_ENCLOSING_METHOD,
+                        attribute_name_index,
+                        di.readUnsignedShort(),
+                        di.readUnsignedShort());
+            }
+            else if (attribute_name_index == constants.exceptionsAttributeNameIndex)
+            {
+                attributes[i] = new AttributeExceptions(
+                        AttributeConstants.ATTR_EXCEPTIONS,
+                        attribute_name_index,
+                        DeserializeExceptionIndexTable(di));
+            }
+            else if (attribute_name_index == constants.innerClassesAttributeNameIndex)
+            {
+                attributes[i] = new AttributeInnerClasses(
+                        AttributeConstants.ATTR_INNER_CLASSES,
+                        attribute_name_index,
+                        DeserializeInnerClasses(di));
+            }
+            else if (attribute_name_index == constants.lineNumberTableAttributeNameIndex)
+            {
+                attributes[i] = new AttributeNumberTable(
+                        AttributeConstants.ATTR_NUMBER_TABLE,
+                        attribute_name_index,
+                        DeserializeLineNumbers(di));
+            }
+            else if (attribute_name_index == constants.localVariableTableAttributeNameIndex)
+            {
+                attributes[i] = new AttributeLocalVariableTable(
+                        AttributeConstants.ATTR_LOCAL_VARIABLE_TABLE,
+                        attribute_name_index,
+                        DeserializeLocalVariable(di));
+            }
+            else if (attribute_name_index == constants.localVariableTypeTableAttributeNameIndex)
+            {
+                attributes[i] = new AttributeLocalVariableTable(
+                        AttributeConstants.ATTR_LOCAL_VARIABLE_TYPE_TABLE,
+                        attribute_name_index,
+                        DeserializeLocalVariable(di));
+            }
+            else if (attribute_name_index == constants.runtimeInvisibleAnnotationsAttributeNameIndex)
+            {
+                attributes[i] = new AttributeRuntimeAnnotations(
+                        AttributeConstants.ATTR_RUNTIME_INVISIBLE_ANNOTATIONS,
+                        attribute_name_index,
+                        AnnotationDeserializer.Deserialize(di));
+            }
+            else if (attribute_name_index == constants.runtimeVisibleAnnotationsAttributeNameIndex)
+            {
+                attributes[i] = new AttributeRuntimeAnnotations(
+                        AttributeConstants.ATTR_RUNTIME_VISIBLE_ANNOTATIONS,
+                        attribute_name_index,
+                        AnnotationDeserializer.Deserialize(di));
+            }
+            else if (attribute_name_index == constants.runtimeInvisibleParameterAnnotationsAttributeNameIndex)
+            {
+                attributes[i] = new AttributeRuntimeParameterAnnotations(
+                        AttributeConstants.ATTR_RUNTIME_INVISIBLE_PARAMETER_ANNOTATIONS,
+                        attribute_name_index,
+                        DeserializeParameterAnnotations(di));
+            }
+            else if (attribute_name_index == constants.runtimeVisibleParameterAnnotationsAttributeNameIndex)
+            {
+                attributes[i] = new AttributeRuntimeParameterAnnotations(
+                        AttributeConstants.ATTR_RUNTIME_VISIBLE_PARAMETER_ANNOTATIONS,
+                        attribute_name_index,
+                        DeserializeParameterAnnotations(di));
+            }
+            else if (attribute_name_index == constants.signatureAttributeNameIndex)
+            {
+                if (attribute_length != 2)
+                    throw new ClassFormatException("Invalid attribute length");
+                attributes[i] = new AttributeSignature(
+                        AttributeConstants.ATTR_SIGNATURE,
+                        attribute_name_index,
+                        di.readUnsignedShort());
+            }
+            else if (attribute_name_index == constants.sourceFileAttributeNameIndex)
+            {
+                if (attribute_length != 2)
+                    throw new ClassFormatException("Invalid attribute length");
+                attributes[i] = new AttributeSourceFile(
+                        AttributeConstants.ATTR_SOURCE_FILE,
+                        attribute_name_index,
+                        di.readUnsignedShort());
+            }
+            else if (attribute_name_index == constants.syntheticAttributeNameIndex)
+            {
+                if (attribute_length != 0)
+                    throw new ClassFormatException("Invalid attribute length");
+                attributes[i] = new AttributeSynthetic(
+                        AttributeConstants.ATTR_SYNTHETIC,
+                        attribute_name_index);
+            }
+            else
+            {
+                attributes[i] = new UnknowAttribute(
+                        AttributeConstants.ATTR_UNKNOWN,
+                        attribute_name_index);
+                for (int j=0; j<attribute_length; j++)
+                    di.readByte();
+            }
+        }
 
-		return attributes;
-	}
+        return attributes;
+    }
 
-	private static byte[] DeserializeCode(DataInput di)
-		throws IOException
-	{
-		int code_length = di.readInt();
-		if (code_length == 0)
-			return null;
+    private static byte[] DeserializeCode(DataInput di)
+        throws IOException
+    {
+        int code_length = di.readInt();
+        if (code_length == 0)
+            return null;
 
-		byte[] code = new byte[code_length];
-		di.readFully(code);
+        byte[] code = new byte[code_length];
+        di.readFully(code);
 
-		return code;
-	}
+        return code;
+    }
 
-	private static CodeException[] DeserializeCodeExceptions(DataInput di)
-		throws IOException
-	{
-		int count = di.readUnsignedShort();
-		if (count == 0)
-			return null;
+    private static CodeException[] DeserializeCodeExceptions(DataInput di)
+        throws IOException
+    {
+        int count = di.readUnsignedShort();
+        if (count == 0)
+            return null;
 
-		CodeException[] codeExceptions = new CodeException[count];
+        CodeException[] codeExceptions = new CodeException[count];
 
-		for (int i=0; i<count; i++)
-			codeExceptions[i] = new CodeException(i,
-					                              di.readUnsignedShort(),
-												  di.readUnsignedShort(),
-												  di.readUnsignedShort(),
-												  di.readUnsignedShort());
-		return codeExceptions;
-	}
+        for (int i=0; i<count; i++)
+            codeExceptions[i] = new CodeException(i,
+                                                  di.readUnsignedShort(),
+                                                  di.readUnsignedShort(),
+                                                  di.readUnsignedShort(),
+                                                  di.readUnsignedShort());
+        return codeExceptions;
+    }
 
-	private static LineNumber[] DeserializeLineNumbers(DataInput di)
-		throws IOException
-	{
-		int count = di.readUnsignedShort();
-		if (count == 0)
-			return null;
+    private static LineNumber[] DeserializeLineNumbers(DataInput di)
+        throws IOException
+    {
+        int count = di.readUnsignedShort();
+        if (count == 0)
+            return null;
 
-		LineNumber[] lineNumbers = new LineNumber[count];
+        LineNumber[] lineNumbers = new LineNumber[count];
 
-		for (int i=0; i<count; i++)
-			lineNumbers[i] = new LineNumber(di.readUnsignedShort(),
-											di.readUnsignedShort());
-		return lineNumbers;
-	}
+        for (int i=0; i<count; i++)
+            lineNumbers[i] = new LineNumber(di.readUnsignedShort(),
+                                            di.readUnsignedShort());
+        return lineNumbers;
+    }
 
-	private static LocalVariable[] DeserializeLocalVariable(DataInput di)
-		throws IOException
-	{
-		int count = di.readUnsignedShort();
-		if (count == 0)
-			return null;
+    private static LocalVariable[] DeserializeLocalVariable(DataInput di)
+        throws IOException
+    {
+        int count = di.readUnsignedShort();
+        if (count == 0)
+            return null;
 
-		LocalVariable[] localVariables = new LocalVariable[count];
+        LocalVariable[] localVariables = new LocalVariable[count];
 
-		for (int i=0; i<count; i++)
-			localVariables[i] = new LocalVariable(di.readUnsignedShort(),
-											      di.readUnsignedShort(),
-											      di.readUnsignedShort(),
-											      di.readUnsignedShort(),
-											      di.readUnsignedShort());
+        for (int i=0; i<count; i++)
+            localVariables[i] = new LocalVariable(di.readUnsignedShort(),
+                                                  di.readUnsignedShort(),
+                                                  di.readUnsignedShort(),
+                                                  di.readUnsignedShort(),
+                                                  di.readUnsignedShort());
 
-		return localVariables;
-	}
+        return localVariables;
+    }
 
-	private static int[] DeserializeExceptionIndexTable(DataInput di)
-		throws IOException
-	{
-		int number_of_exceptions = di.readUnsignedShort();
-		if (number_of_exceptions == 0)
-			return null;
+    private static int[] DeserializeExceptionIndexTable(DataInput di)
+        throws IOException
+    {
+        int number_of_exceptions = di.readUnsignedShort();
+        if (number_of_exceptions == 0)
+            return null;
 
-		int[] exception_index_table = new int[number_of_exceptions];
+        int[] exception_index_table = new int[number_of_exceptions];
 
-	    for(int i=0; i < number_of_exceptions; i++)
-	        exception_index_table[i] = di.readUnsignedShort();
+        for(int i=0; i < number_of_exceptions; i++)
+            exception_index_table[i] = di.readUnsignedShort();
 
-		return exception_index_table;
-	}
+        return exception_index_table;
+    }
 
-	private static InnerClass[] DeserializeInnerClasses(DataInput di)
-		throws IOException
-	{
-		int number_of_classes = di.readUnsignedShort();
-		if (number_of_classes == 0)
-			return null;
+    private static InnerClass[] DeserializeInnerClasses(DataInput di)
+        throws IOException
+    {
+        int number_of_classes = di.readUnsignedShort();
+        if (number_of_classes == 0)
+            return null;
 
-		InnerClass[] classes = new InnerClass[number_of_classes];
+        InnerClass[] classes = new InnerClass[number_of_classes];
 
-	    for(int i=0; i < number_of_classes; i++)
-	    	classes[i] = new InnerClass(di.readUnsignedShort(),
-						    		 di.readUnsignedShort(),
-						    		 di.readUnsignedShort(),
-						    		 di.readUnsignedShort());
+        for(int i=0; i < number_of_classes; i++)
+            classes[i] = new InnerClass(di.readUnsignedShort(),
+                                     di.readUnsignedShort(),
+                                     di.readUnsignedShort(),
+                                     di.readUnsignedShort());
 
-		return classes;
-	}
+        return classes;
+    }
 
-	private static ParameterAnnotations[] DeserializeParameterAnnotations(
-			                               DataInput di)
-		throws IOException
-	{
-		int num_parameters = di.readUnsignedByte();
-		if (num_parameters == 0)
-			return null;
+    private static ParameterAnnotations[] DeserializeParameterAnnotations(
+                                           DataInput di)
+        throws IOException
+    {
+        int num_parameters = di.readUnsignedByte();
+        if (num_parameters == 0)
+            return null;
 
-		ParameterAnnotations[] parameterAnnotations =
-			new ParameterAnnotations[num_parameters];
+        ParameterAnnotations[] parameterAnnotations =
+            new ParameterAnnotations[num_parameters];
 
-		for(int i=0; i < num_parameters; i++)
-			parameterAnnotations[i] = new ParameterAnnotations(
-					AnnotationDeserializer.Deserialize(di));
+        for(int i=0; i < num_parameters; i++)
+            parameterAnnotations[i] = new ParameterAnnotations(
+                    AnnotationDeserializer.Deserialize(di));
 
-		return parameterAnnotations;
-	}
+        return parameterAnnotations;
+    }
 }

@@ -32,32 +32,32 @@ import jd.core.model.instruction.bytecode.instruction.New;
  * Invokespecial(New, <init>, [ IConst_1 ])
  */
 public class SimpleNewInstructionReconstructor
-	extends NewInstructionReconstructorBase
+    extends NewInstructionReconstructorBase
 {
-	public static void Reconstruct(
-		ClassFile classFile, Method method, List<Instruction> list)
-	{
-		for (int invokespecialIndex=0;
-			 invokespecialIndex<list.size();
-			 invokespecialIndex++)
-		{
-			if (list.get(invokespecialIndex).opcode != ByteCodeConstants.INVOKESPECIAL)
-				continue;
+    public static void Reconstruct(
+        ClassFile classFile, Method method, List<Instruction> list)
+    {
+        for (int invokespecialIndex=0;
+             invokespecialIndex<list.size();
+             invokespecialIndex++)
+        {
+            if (list.get(invokespecialIndex).opcode != ByteCodeConstants.INVOKESPECIAL)
+                continue;
 
-			Invokespecial is = (Invokespecial)list.get(invokespecialIndex);
+            Invokespecial is = (Invokespecial)list.get(invokespecialIndex);
 
-			if (is.objectref.opcode != ByteCodeConstants.NEW)
-				continue;
+            if (is.objectref.opcode != ByteCodeConstants.NEW)
+                continue;
 
-			New nw = (New)is.objectref;
-			InvokeNew invokeNew = new InvokeNew(
-				ByteCodeConstants.INVOKENEW, is.offset,
-				nw.lineNumber, is.index, is.args);
+            New nw = (New)is.objectref;
+            InvokeNew invokeNew = new InvokeNew(
+                ByteCodeConstants.INVOKENEW, is.offset,
+                nw.lineNumber, is.index, is.args);
 
-			list.set(invokespecialIndex, invokeNew);
+            list.set(invokespecialIndex, invokeNew);
 
-			InitAnonymousClassConstructorParameterName(
-				classFile, method, invokeNew);
-		}
-	}
+            InitAnonymousClassConstructorParameterName(
+                classFile, method, invokeNew);
+        }
+    }
 }

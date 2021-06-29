@@ -51,10 +51,10 @@ import org.jd.gui.api.API;
 
 public class TreeTabbedPanel<T extends DefaultMutableTreeNode & ContainerEntryGettable & UriGettable> extends JPanel implements UriGettable, UriOpenable, PageChangeable, PageClosable, PreferencesChangeListener {
     /**
-	 *
-	 */
-	private static final long serialVersionUID = 1L;
-	protected API api;
+     *
+     */
+    private static final long serialVersionUID = 1L;
+    protected API api;
     protected URI uri;
     protected Tree tree;
     protected TabbedPanel tabbedPanel;

@@ -43,65 +43,65 @@ import jd.core.process.analyzer.util.ReconstructorUtil;
  */
 public class NewInstructionReconstructor extends NewInstructionReconstructorBase
 {
-	public static void Reconstruct(
-			ClassFile classFile, Method method, List<Instruction> list)
-	{
-		for (int dupStoreIndex=0; dupStoreIndex<list.size(); dupStoreIndex++)
-		{
-			if (list.get(dupStoreIndex).opcode != ByteCodeConstants.DUPSTORE)
-				continue;
+    public static void Reconstruct(
+            ClassFile classFile, Method method, List<Instruction> list)
+    {
+        for (int dupStoreIndex=0; dupStoreIndex<list.size(); dupStoreIndex++)
+        {
+            if (list.get(dupStoreIndex).opcode != ByteCodeConstants.DUPSTORE)
+                continue;
 
-			DupStore ds = (DupStore)list.get(dupStoreIndex);
+            DupStore ds = (DupStore)list.get(dupStoreIndex);
 
-			if (ds.objectref.opcode != ByteCodeConstants.NEW)
-				continue;
+            if (ds.objectref.opcode != ByteCodeConstants.NEW)
+                continue;
 
-			int invokespecialIndex = dupStoreIndex;
-			final int length = list.size();
+            int invokespecialIndex = dupStoreIndex;
+            final int length = list.size();
 
-			while (++invokespecialIndex < length)
-			{
-				Instruction instruction = list.get(invokespecialIndex);
+            while (++invokespecialIndex < length)
+            {
+                Instruction instruction = list.get(invokespecialIndex);
 
-				if (instruction.opcode != ByteCodeConstants.INVOKESPECIAL)
-					continue;
+                if (instruction.opcode != ByteCodeConstants.INVOKESPECIAL)
+                    continue;
 
-				Invokespecial is = (Invokespecial)instruction;
+                Invokespecial is = (Invokespecial)instruction;
 
-				if (is.objectref.opcode != ByteCodeConstants.DUPLOAD)
-					continue;
+                if (is.objectref.opcode != ByteCodeConstants.DUPLOAD)
+                    continue;
 
-				DupLoad dl = (DupLoad)is.objectref;
+                DupLoad dl = (DupLoad)is.objectref;
 
-				if (dl.offset != ds.offset)
-					continue;
+                if (dl.offset != ds.offset)
+                    continue;
 
-				ConstantPool constants = classFile.getConstantPool();
-				ConstantMethodref cmr = constants.getConstantMethodref(is.index);
-				ConstantNameAndType cnat =
-					constants.getConstantNameAndType(cmr.name_and_type_index);
+                ConstantPool constants = classFile.getConstantPool();
+                ConstantMethodref cmr = constants.getConstantMethodref(is.index);
+                ConstantNameAndType cnat =
+                    constants.getConstantNameAndType(cmr.name_and_type_index);
 
-				if (cnat.name_index == constants.instanceConstructorIndex)
-				{
-					New nw = (New)ds.objectref;
-					InvokeNew invokeNew = new InvokeNew(
-						ByteCodeConstants.INVOKENEW, is.offset,
-						nw.lineNumber, is.index, is.args);
+                if (cnat.name_index == constants.instanceConstructorIndex)
+                {
+                    New nw = (New)ds.objectref;
+                    InvokeNew invokeNew = new InvokeNew(
+                        ByteCodeConstants.INVOKENEW, is.offset,
+                        nw.lineNumber, is.index, is.args);
 
-					Instruction parentFound = ReconstructorUtil.ReplaceDupLoad(
-						list, invokespecialIndex+1, ds, invokeNew);
+                    Instruction parentFound = ReconstructorUtil.ReplaceDupLoad(
+                        list, invokespecialIndex+1, ds, invokeNew);
 
-					list.remove(invokespecialIndex);
-					if (parentFound == null)
-						list.set(dupStoreIndex, invokeNew);
-					else
-						list.remove(dupStoreIndex--);
+                    list.remove(invokespecialIndex);
+                    if (parentFound == null)
+                        list.set(dupStoreIndex, invokeNew);
+                    else
+                        list.remove(dupStoreIndex--);
 
-					InitAnonymousClassConstructorParameterName(
-						classFile, method, invokeNew);
-					break;
-				}
-			}
-		}
-	}
+                    InitAnonymousClassConstructorParameterName(
+                        classFile, method, invokeNew);
+                    break;
+                }
+            }
+        }
+    }
 }

@@ -23,11 +23,11 @@ import org.jd.gui.util.io.NewlineOutputStream;
 public class TextPage extends AbstractTextPage implements ContentCopyable, ContentSelectable, ContentSavable {
 
     /**
-	 *
-	 */
-	private static final long serialVersionUID = 1L;
+     *
+     */
+    private static final long serialVersionUID = 1L;
 
-	// --- ContentCopyable --- //
+    // --- ContentCopyable --- //
     @Override
     public void copy() {
         if (textArea.getSelectionStart() == textArea.getSelectionEnd()) {

@@ -35,11 +35,11 @@ public class ManifestFileTreeNodeFactoryProvider extends FileTreeNodeFactoryProv
 
     protected static class TreeNode extends FileTreeNodeFactoryProvider.TreeNode implements PageCreator {
         /**
-		 *
-		 */
-		private static final long serialVersionUID = 1L;
+         *
+         */
+        private static final long serialVersionUID = 1L;
 
-		public TreeNode(Container.Entry entry, Object userObject) { super(entry, userObject); }
+        public TreeNode(Container.Entry entry, Object userObject) { super(entry, userObject); }
 
         // --- PageCreator --- //
         @Override

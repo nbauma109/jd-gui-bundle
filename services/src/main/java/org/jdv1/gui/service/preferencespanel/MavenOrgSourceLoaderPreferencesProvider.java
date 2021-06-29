@@ -28,10 +28,10 @@ import org.jd.gui.spi.PreferencesPanel;
 
 public class MavenOrgSourceLoaderPreferencesProvider extends JPanel implements PreferencesPanel, DocumentListener, ActionListener {
     /**
-	 *
-	 */
-	private static final long serialVersionUID = 1L;
-	public static final String ACTIVATED = "MavenOrgSourceLoaderPreferencesProvider.activated";
+     *
+     */
+    private static final long serialVersionUID = 1L;
+    public static final String ACTIVATED = "MavenOrgSourceLoaderPreferencesProvider.activated";
     public static final String FILTERS = "MavenOrgSourceLoaderPreferencesProvider.filters";
 
     public static final String DEFAULT_FILTERS_VALUE =
@@ -62,10 +62,10 @@ public class MavenOrgSourceLoaderPreferencesProvider extends JPanel implements P
 
         JComponent spacer = new JComponent() {
 
-			/**
-			 *
-			 */
-			private static final long serialVersionUID = 1L;};
+            /**
+             *
+             */
+            private static final long serialVersionUID = 1L;};
         JScrollPane scrollPane = new JScrollPane(filtersTextArea);
 
         String osName = System.getProperty("os.name").toLowerCase();

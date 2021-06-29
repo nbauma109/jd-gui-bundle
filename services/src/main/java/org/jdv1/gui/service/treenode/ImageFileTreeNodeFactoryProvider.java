@@ -45,11 +45,11 @@ public class ImageFileTreeNodeFactoryProvider extends FileTreeNodeFactoryProvide
 
     protected static class TreeNode extends FileTreeNodeFactoryProvider.TreeNode implements PageCreator {
         /**
-		 *
-		 */
-		private static final long serialVersionUID = 1L;
+         *
+         */
+        private static final long serialVersionUID = 1L;
 
-		public TreeNode(Container.Entry entry, Object userObject) { super(entry, userObject); }
+        public TreeNode(Container.Entry entry, Object userObject) { super(entry, userObject); }
 
         // --- PageCreator --- //
         @Override
@@ -61,10 +61,10 @@ public class ImageFileTreeNodeFactoryProvider extends FileTreeNodeFactoryProvide
 
     protected static class ImagePage extends JPanel implements UriGettable {
         /**
-		 *
-		 */
-		private static final long serialVersionUID = 1L;
-		protected Container.Entry entry;
+         *
+         */
+        private static final long serialVersionUID = 1L;
+        protected Container.Entry entry;
 
         public ImagePage(Container.Entry entry) {
             super(new BorderLayout());

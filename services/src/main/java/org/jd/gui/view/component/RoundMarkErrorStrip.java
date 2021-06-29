@@ -83,11 +83,11 @@ import java.util.List;
 public class RoundMarkErrorStrip extends JComponent {
 
     /**
-	 *
-	 */
-	private static final long serialVersionUID = 1L;
+     *
+     */
+    private static final long serialVersionUID = 1L;
 
-	/**
+    /**
      * The text area.
      */
     private RSyntaxTextArea textArea;
@@ -776,10 +776,10 @@ public class RoundMarkErrorStrip extends JComponent {
     private class Marker extends JComponent {
 
         /**
-		 *
-		 */
-		private static final long serialVersionUID = 1L;
-		private List<ParserNotice> notices;
+         *
+         */
+        private static final long serialVersionUID = 1L;
+        private List<ParserNotice> notices;
 
         public Marker(ParserNotice notice) {
             notices = new ArrayList<ParserNotice>(1); // Usually just 1

@@ -24,13 +24,13 @@ import org.jd.gui.util.parser.jdt.core.HyperlinkData;
 public abstract class TypeReferencePage extends HyperlinkPage {
 
     /**
-	 *
-	 */
-	private static final long serialVersionUID = 1L;
+     *
+     */
+    private static final long serialVersionUID = 1L;
 
-	// --- UriOpenable --- //
+    // --- UriOpenable --- //
     @Override
-	public boolean openUri(URI uri) {
+    public boolean openUri(URI uri) {
         ArrayList<DocumentRange> ranges = new ArrayList<>();
         String query = uri.getQuery();
 

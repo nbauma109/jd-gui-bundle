@@ -40,44 +40,44 @@ import jd.core.process.analyzer.instruction.bytecode.ComparisonInstructionAnalyz
  */
 public class IfGotoToIfReconstructor
 {
-	public static void Reconstruct(List<Instruction> list)
-	{
-		int length = list.size();
-		if (length < 3)
-			return;
+    public static void Reconstruct(List<Instruction> list)
+    {
+        int length = list.size();
+        if (length < 3)
+            return;
 
-		int index = length-2;
+        int index = length-2;
 
-		while (index-- > 0)
-		{
-			Instruction i = list.get(index);
+        while (index-- > 0)
+        {
+            Instruction i = list.get(index);
 
-			switch (i.opcode)
-			{
-			case ByteCodeConstants.IF:
-			case ByteCodeConstants.IFCMP:
-			case ByteCodeConstants.IFXNULL:
-			case ByteCodeConstants.COMPLEXIF:
-				BranchInstruction bi = (BranchInstruction)i;
+            switch (i.opcode)
+            {
+            case ByteCodeConstants.IF:
+            case ByteCodeConstants.IFCMP:
+            case ByteCodeConstants.IFXNULL:
+            case ByteCodeConstants.COMPLEXIF:
+                BranchInstruction bi = (BranchInstruction)i;
 
-				i = list.get(index+1);
-				if (i.opcode != ByteCodeConstants.GOTO)
-					continue;
+                i = list.get(index+1);
+                if (i.opcode != ByteCodeConstants.GOTO)
+                    continue;
 
-				Goto g = (Goto)i;
+                Goto g = (Goto)i;
 
-				i = list.get(index+2);
-				int jumpOffset = bi.GetJumpOffset();
+                i = list.get(index+2);
+                int jumpOffset = bi.GetJumpOffset();
 
-				if ((jumpOffset <= g.offset) || (i.offset < jumpOffset))
-					continue;
+                if ((jumpOffset <= g.offset) || (i.offset < jumpOffset))
+                    continue;
 
-				// Setup BranchInstruction
-				bi.branch = g.GetJumpOffset() - bi.offset;
-				ComparisonInstructionAnalyzer.InverseComparison(bi);
-				// Delete Goto
-				list.remove(index+1);
-			}
-		}
-	}
+                // Setup BranchInstruction
+                bi.branch = g.GetJumpOffset() - bi.offset;
+                ComparisonInstructionAnalyzer.InverseComparison(bi);
+                // Delete Goto
+                list.remove(index+1);
+            }
+        }
+    }
 }

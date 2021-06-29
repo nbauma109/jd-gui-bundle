@@ -20,20 +20,20 @@ public class IndexToIndexMap
 {
     private static final int INITIAL_CAPACITY = 128;
 
-	private MapEntry[] entries;
+    private MapEntry[] entries;
 
-	public IndexToIndexMap()
-	{
-		this.entries = new MapEntry[INITIAL_CAPACITY];
-	}
+    public IndexToIndexMap()
+    {
+        this.entries = new MapEntry[INITIAL_CAPACITY];
+    }
 
-	public void put(int key, int value)
-	{
-		int index = hashCodeToIndex(key, this.entries.length);
-		MapEntry entry = this.entries[index];
+    public void put(int key, int value)
+    {
+        int index = hashCodeToIndex(key, this.entries.length);
+        MapEntry entry = this.entries[index];
 
-		while (entry != null)
-		{
+        while (entry != null)
+        {
             if (entry.key == key)
             {
                 entry.value = value;
@@ -42,23 +42,23 @@ public class IndexToIndexMap
             entry = entry.next;
         }
 
-		this.entries[index] = new MapEntry(key, value, this.entries[index]);
-	}
+        this.entries[index] = new MapEntry(key, value, this.entries[index]);
+    }
 
-	public int get(int key)
-	{
-		int index = hashCodeToIndex(key, this.entries.length);
-		MapEntry entry = this.entries[index];
+    public int get(int key)
+    {
+        int index = hashCodeToIndex(key, this.entries.length);
+        MapEntry entry = this.entries[index];
 
-		 while (entry != null)
-		 {
-			 if (entry.key == key)
-				 return entry.value;
+         while (entry != null)
+         {
+             if (entry.key == key)
+                 return entry.value;
             entry = entry.next;
-		 }
+         }
 
-		 return -1;
-	}
+         return -1;
+    }
 
     private int hashCodeToIndex(int hashCode, int size)
     {
@@ -67,15 +67,15 @@ public class IndexToIndexMap
 
     private static class MapEntry
     {
-    	public int key;
-    	public int value;
-    	public MapEntry next;
+        public int key;
+        public int value;
+        public MapEntry next;
 
-    	public MapEntry(int key, int value, MapEntry next)
-    	{
-    		this.key = key;
-    		this.value = value;
-    		this.next = next;
-    	}
+        public MapEntry(int key, int value, MapEntry next)
+        {
+            this.key = key;
+            this.value = value;
+            this.next = next;
+        }
     }
 }

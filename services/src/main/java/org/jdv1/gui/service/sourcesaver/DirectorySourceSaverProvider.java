@@ -26,13 +26,13 @@ public class DirectorySourceSaverProvider extends AbstractSourceSaverProvider {
     @Override public String[] getSelectors() { return appendSelectors("*:dir:*"); }
 
     @Override public String getSourcePath(Container.Entry entry) {
-    	File file = new File(entry.getUri());
-    	Pattern jarPattern = Pattern.compile("\\.jar$");
-    	Matcher jarMatcher = jarPattern.matcher(file.getAbsolutePath());
-    	if(jarMatcher.find()) {
-    		return jarMatcher.replaceFirst("-sources.jar");
-    	}
-    	return entry.getPath() + ".src.zip";
+        File file = new File(entry.getUri());
+        Pattern jarPattern = Pattern.compile("\\.jar$");
+        Matcher jarMatcher = jarPattern.matcher(file.getAbsolutePath());
+        if(jarMatcher.find()) {
+            return jarMatcher.replaceFirst("-sources.jar");
+        }
+        return entry.getPath() + ".src.zip";
     }
 
     @Override public int getFileCount(API api, Container.Entry entry) { return getFileCount(api, entry.getChildren()); }

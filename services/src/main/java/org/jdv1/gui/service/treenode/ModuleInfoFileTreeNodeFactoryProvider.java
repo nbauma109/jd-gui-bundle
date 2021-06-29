@@ -52,11 +52,11 @@ public class ModuleInfoFileTreeNodeFactoryProvider extends ClassFileTreeNodeFact
 
     protected static class ModuleInfoFileTreeNode extends FileTreeNode {
         /**
-		 *
-		 */
-		private static final long serialVersionUID = 1L;
+         *
+         */
+        private static final long serialVersionUID = 1L;
 
-		public ModuleInfoFileTreeNode(Container.Entry entry, Object userObject, PageAndTipFactory pageAndTipFactory) {
+        public ModuleInfoFileTreeNode(Container.Entry entry, Object userObject, PageAndTipFactory pageAndTipFactory) {
             super(entry, null, userObject, pageAndTipFactory);
         }
 

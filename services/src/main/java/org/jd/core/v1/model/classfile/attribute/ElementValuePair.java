@@ -8,7 +8,7 @@
 package org.jd.core.v1.model.classfile.attribute;
 
 public class ElementValuePair {
-	protected String elementName;
+    protected String elementName;
     protected ElementValue elementValue;
 
     public ElementValuePair(String elementName, ElementValue elementValue) {

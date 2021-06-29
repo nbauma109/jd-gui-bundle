@@ -11,17 +11,17 @@ import javax.swing.*;
 import java.awt.*;
 
 public class IconButton extends JButton {
-	protected static final Insets INSETS0 = new Insets(0, 0, 0, 0);
+    protected static final Insets INSETS0 = new Insets(0, 0, 0, 0);
 
-	public IconButton(String text, Action action) {
-		setFocusPainted(false);
-		setBorderPainted(false);
-		setMargin(INSETS0);
-		setAction(action);
-		setText(text);
-	}
+    public IconButton(String text, Action action) {
+        setFocusPainted(false);
+        setBorderPainted(false);
+        setMargin(INSETS0);
+        setAction(action);
+        setText(text);
+    }
 
-	public IconButton(Action action) {
-		this(null, action);
-	}
+    public IconButton(Action action) {
+        this(null, action);
+    }
 }

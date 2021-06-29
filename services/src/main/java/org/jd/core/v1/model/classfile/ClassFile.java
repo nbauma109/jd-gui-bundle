@@ -7,7 +7,6 @@
 
 package org.jd.core.v1.model.classfile;
 
-
 import org.jd.core.v1.model.classfile.attribute.Attribute;
 
 import java.util.List;

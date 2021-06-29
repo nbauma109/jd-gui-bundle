@@ -64,256 +64,256 @@ import jd.core.util.StringConstants;
  */
 public class DotClass118AReconstructor
 {
-	public static void Reconstruct(
-		ReferenceMap referenceMap, ClassFile classFile, List<Instruction> list)
-	{
-		int i = list.size();
+    public static void Reconstruct(
+        ReferenceMap referenceMap, ClassFile classFile, List<Instruction> list)
+    {
+        int i = list.size();
 
-		if  (i < 6)
-			return;
+        if  (i < 6)
+            return;
 
-		i -= 5;
-		ConstantPool constants = classFile.getConstantPool();
+        i -= 5;
+        ConstantPool constants = classFile.getConstantPool();
 
-		while (i-- > 0)
-		{
-			Instruction instruction = list.get(i);
+        while (i-- > 0)
+        {
+            Instruction instruction = list.get(i);
 
-			if (instruction.opcode != ByteCodeConstants.IFXNULL)
-				continue;
+            if (instruction.opcode != ByteCodeConstants.IFXNULL)
+                continue;
 
-			IfInstruction ii = (IfInstruction)instruction;
+            IfInstruction ii = (IfInstruction)instruction;
 
-			if (ii.value.opcode != ByteCodeConstants.GETSTATIC)
-				continue;
+            if (ii.value.opcode != ByteCodeConstants.GETSTATIC)
+                continue;
 
-			GetStatic gs = (GetStatic)ii.value;
+            GetStatic gs = (GetStatic)ii.value;
 
-			int jumpOffset = ii.GetJumpOffset();
+            int jumpOffset = ii.GetJumpOffset();
 
-			instruction = list.get(i+1);
+            instruction = list.get(i+1);
 
-			if (instruction.opcode != ByteCodeConstants.TERNARYOPSTORE)
-				continue;
+            if (instruction.opcode != ByteCodeConstants.TERNARYOPSTORE)
+                continue;
 
-			TernaryOpStore tos = (TernaryOpStore)instruction;
+            TernaryOpStore tos = (TernaryOpStore)instruction;
 
-			if ((tos.objectref.opcode != ByteCodeConstants.GETSTATIC) ||
-				(gs.index != ((GetStatic)tos.objectref).index))
-				continue;
+            if ((tos.objectref.opcode != ByteCodeConstants.GETSTATIC) ||
+                (gs.index != ((GetStatic)tos.objectref).index))
+                continue;
 
-			instruction = list.get(i+2);
+            instruction = list.get(i+2);
 
-			if (instruction.opcode != ByteCodeConstants.GOTO)
-				continue;
+            if (instruction.opcode != ByteCodeConstants.GOTO)
+                continue;
 
-			Goto g = (Goto)instruction;
+            Goto g = (Goto)instruction;
 
-			instruction = list.get(i+3);
+            instruction = list.get(i+3);
 
-			if (instruction.opcode != ByteCodeConstants.DUPSTORE)
-				continue;
+            if (instruction.opcode != ByteCodeConstants.DUPSTORE)
+                continue;
 
-			if ((g.offset >= jumpOffset) || (jumpOffset > instruction.offset))
-				continue;
+            if ((g.offset >= jumpOffset) || (jumpOffset > instruction.offset))
+                continue;
 
-			DupStore ds = (DupStore)instruction;
+            DupStore ds = (DupStore)instruction;
 
-			if (ds.objectref.opcode != ByteCodeConstants.INVOKESTATIC)
-				continue;
+            if (ds.objectref.opcode != ByteCodeConstants.INVOKESTATIC)
+                continue;
 
-			Invokestatic is = (Invokestatic)ds.objectref;
+            Invokestatic is = (Invokestatic)ds.objectref;
 
-			if (is.args.size() != 1)
-				continue;
+            if (is.args.size() != 1)
+                continue;
 
-			instruction = is.args.get(0);
+            instruction = is.args.get(0);
 
-			if (instruction.opcode != ByteCodeConstants.LDC)
-				continue;
+            if (instruction.opcode != ByteCodeConstants.LDC)
+                continue;
 
-			ConstantMethodref cmr =
-				constants.getConstantMethodref(is.index);
-			ConstantNameAndType cnatMethod =
-				constants.getConstantNameAndType(cmr.name_and_type_index);
-			String nameMethod = constants.getConstantUtf8(cnatMethod.name_index);
+            ConstantMethodref cmr =
+                constants.getConstantMethodref(is.index);
+            ConstantNameAndType cnatMethod =
+                constants.getConstantNameAndType(cmr.name_and_type_index);
+            String nameMethod = constants.getConstantUtf8(cnatMethod.name_index);
 
-			if (! nameMethod.equals(StringConstants.CLASS_DOLLAR))
-				continue;
+            if (! nameMethod.equals(StringConstants.CLASS_DOLLAR))
+                continue;
 
-			Ldc ldc = (Ldc)instruction;
-			ConstantValue cv = constants.getConstantValue(ldc.index);
+            Ldc ldc = (Ldc)instruction;
+            ConstantValue cv = constants.getConstantValue(ldc.index);
 
-			if (cv.tag != ConstantConstant.CONSTANT_String)
-				continue;
+            if (cv.tag != ConstantConstant.CONSTANT_String)
+                continue;
 
-			instruction = list.get(i+4);
+            instruction = list.get(i+4);
 
-			if (instruction.opcode != ByteCodeConstants.PUTSTATIC)
-				continue;
+            if (instruction.opcode != ByteCodeConstants.PUTSTATIC)
+                continue;
 
-			PutStatic ps = (PutStatic)instruction;
+            PutStatic ps = (PutStatic)instruction;
 
-			if ((ps.valueref.opcode != ByteCodeConstants.DUPLOAD) ||
-				(ds.offset != ps.valueref.offset))
-				continue;
+            if ((ps.valueref.opcode != ByteCodeConstants.DUPLOAD) ||
+                (ds.offset != ps.valueref.offset))
+                continue;
 
-			ConstantFieldref cfr = constants.getConstantFieldref(gs.index);
-			ConstantNameAndType cnatField = constants.getConstantNameAndType(
-				cfr.name_and_type_index);
-			String signatureField =
-				constants.getConstantUtf8(cnatField.descriptor_index);
+            ConstantFieldref cfr = constants.getConstantFieldref(gs.index);
+            ConstantNameAndType cnatField = constants.getConstantNameAndType(
+                cfr.name_and_type_index);
+            String signatureField =
+                constants.getConstantUtf8(cnatField.descriptor_index);
 
-			if (! signatureField.equals(StringConstants.INTERNAL_CLASS_SIGNATURE))
-				continue;
+            if (! signatureField.equals(StringConstants.INTERNAL_CLASS_SIGNATURE))
+                continue;
 
-			String nameField = constants.getConstantUtf8(cnatField.name_index);
+            String nameField = constants.getConstantUtf8(cnatField.name_index);
 
-			if (nameField.startsWith(StringConstants.CLASS_DOLLAR))
-			{
-				// motif 'x.class' classique trouv� !
-				// Substitution par une constante de type 'ClassConstant'
-				ConstantString cs = (ConstantString)cv;
-				String signature = constants.getConstantUtf8(cs.string_index);
-				String internalName = signature.replace(
-					StringConstants.PACKAGE_SEPARATOR,
-					StringConstants.INTERNAL_PACKAGE_SEPARATOR);
+            if (nameField.startsWith(StringConstants.CLASS_DOLLAR))
+            {
+                // motif 'x.class' classique trouv� !
+                // Substitution par une constante de type 'ClassConstant'
+                ConstantString cs = (ConstantString)cv;
+                String signature = constants.getConstantUtf8(cs.string_index);
+                String internalName = signature.replace(
+                    StringConstants.PACKAGE_SEPARATOR,
+                    StringConstants.INTERNAL_PACKAGE_SEPARATOR);
 
-				referenceMap.add(internalName);
+                referenceMap.add(internalName);
 
-				// Ajout du nom interne
-				int index = constants.addConstantUtf8(internalName);
-				// Ajout d'une nouvelle classe
-				index = constants.addConstantClass(index);
-				ldc = new Ldc(
-					ByteCodeConstants.LDC, ii.offset,
-					ii.lineNumber, index);
+                // Ajout du nom interne
+                int index = constants.addConstantUtf8(internalName);
+                // Ajout d'une nouvelle classe
+                index = constants.addConstantClass(index);
+                ldc = new Ldc(
+                    ByteCodeConstants.LDC, ii.offset,
+                    ii.lineNumber, index);
 
-				// Remplacement de l'intruction GetStatic par l'instruction Ldc
-				ReplaceDupLoadVisitor visitor = new ReplaceDupLoadVisitor(ds, ldc);
+                // Remplacement de l'intruction GetStatic par l'instruction Ldc
+                ReplaceDupLoadVisitor visitor = new ReplaceDupLoadVisitor(ds, ldc);
 
-				for (int j=i+5; j<list.size(); j++)
-				{
-					visitor.visit(list.get(j));
-					if (visitor.getParentFound() != null)
-						break;
-				}
-			}
-			else if (nameField.startsWith(StringConstants.ARRAY_DOLLAR))
-			{
-				// motif 'x[].class' trouv� !
-				// Substitution par l'expression 'new x[0].getClass()'
-				ConstantString cs = (ConstantString)cv;
-				String signature = constants.getConstantUtf8(cs.string_index);
-				String signatureWithoutDimension =
-						SignatureUtil.CutArrayDimensionPrefix(signature);
+                for (int j=i+5; j<list.size(); j++)
+                {
+                    visitor.visit(list.get(j));
+                    if (visitor.getParentFound() != null)
+                        break;
+                }
+            }
+            else if (nameField.startsWith(StringConstants.ARRAY_DOLLAR))
+            {
+                // motif 'x[].class' trouv� !
+                // Substitution par l'expression 'new x[0].getClass()'
+                ConstantString cs = (ConstantString)cv;
+                String signature = constants.getConstantUtf8(cs.string_index);
+                String signatureWithoutDimension =
+                        SignatureUtil.CutArrayDimensionPrefix(signature);
 
-				IConst iconst0 = new IConst(
-					ByteCodeConstants.ICONST, ii.offset,
-					ii.lineNumber, 0);
-				Instruction newArray;
+                IConst iconst0 = new IConst(
+                    ByteCodeConstants.ICONST, ii.offset,
+                    ii.lineNumber, 0);
+                Instruction newArray;
 
-				if (SignatureUtil.IsObjectSignature(signatureWithoutDimension))
-				{
-				    //  8: iconst_0
-				    //  9: anewarray 62	java/lang/String
-				    //  12: invokevirtual 64	java/lang/Object:getClass	()Ljava/lang/Class;
-					String tmp = signatureWithoutDimension.replace(
-							StringConstants.PACKAGE_SEPARATOR,
-							StringConstants.INTERNAL_PACKAGE_SEPARATOR);
-					String internalName = tmp.substring(1, tmp.length()-1);
+                if (SignatureUtil.IsObjectSignature(signatureWithoutDimension))
+                {
+                    //  8: iconst_0
+                    //  9: anewarray 62	java/lang/String
+                    //  12: invokevirtual 64	java/lang/Object:getClass	()Ljava/lang/Class;
+                    String tmp = signatureWithoutDimension.replace(
+                            StringConstants.PACKAGE_SEPARATOR,
+                            StringConstants.INTERNAL_PACKAGE_SEPARATOR);
+                    String internalName = tmp.substring(1, tmp.length()-1);
 
-					// Ajout du nom de la classe pour generer la liste des imports
-					referenceMap.add(internalName);
-					// Ajout du nom interne
-					int index = constants.addConstantUtf8(internalName);
-					// Ajout d'une nouvelle classe
-					index = constants.addConstantClass(index);
+                    // Ajout du nom de la classe pour generer la liste des imports
+                    referenceMap.add(internalName);
+                    // Ajout du nom interne
+                    int index = constants.addConstantUtf8(internalName);
+                    // Ajout d'une nouvelle classe
+                    index = constants.addConstantClass(index);
 
-					newArray = new ANewArray(
-							ByteCodeConstants.ANEWARRAY, ii.offset,
-							ii.lineNumber, index, iconst0);
-				}
-				else
-				{
-				    //  8: iconst_0
-				    //  9: newarray byte
-				    //  11: invokevirtual 62	java/lang/Object:getClass	()Ljava/lang/Class;
-					newArray = new NewArray(
-						ByteCodeConstants.NEWARRAY, ii.offset, ii.lineNumber,
-						SignatureUtil.GetTypeFromSignature(signatureWithoutDimension),
-						iconst0);
-				}
+                    newArray = new ANewArray(
+                            ByteCodeConstants.ANEWARRAY, ii.offset,
+                            ii.lineNumber, index, iconst0);
+                }
+                else
+                {
+                    //  8: iconst_0
+                    //  9: newarray byte
+                    //  11: invokevirtual 62	java/lang/Object:getClass	()Ljava/lang/Class;
+                    newArray = new NewArray(
+                        ByteCodeConstants.NEWARRAY, ii.offset, ii.lineNumber,
+                        SignatureUtil.GetTypeFromSignature(signatureWithoutDimension),
+                        iconst0);
+                }
 
-				// Ajout de la methode 'getClass'
-				int methodNameIndex = constants.addConstantUtf8("getClass");
-				int methodDescriptorIndex =
-					constants.addConstantUtf8("()Ljava/lang/Class;");
-				int nameAndTypeIndex = constants.addConstantNameAndType(
-					methodNameIndex, methodDescriptorIndex);
-				int cmrIndex = constants.addConstantMethodref(
-					constants.objectClassIndex, nameAndTypeIndex);
+                // Ajout de la methode 'getClass'
+                int methodNameIndex = constants.addConstantUtf8("getClass");
+                int methodDescriptorIndex =
+                    constants.addConstantUtf8("()Ljava/lang/Class;");
+                int nameAndTypeIndex = constants.addConstantNameAndType(
+                    methodNameIndex, methodDescriptorIndex);
+                int cmrIndex = constants.addConstantMethodref(
+                    constants.objectClassIndex, nameAndTypeIndex);
 
-				Invokevirtual iv = new Invokevirtual(
-					ByteCodeConstants.INVOKEVIRTUAL, ii.offset,
-					ii.lineNumber, cmrIndex, newArray,
-					new ArrayList<Instruction>(0));
+                Invokevirtual iv = new Invokevirtual(
+                    ByteCodeConstants.INVOKEVIRTUAL, ii.offset,
+                    ii.lineNumber, cmrIndex, newArray,
+                    new ArrayList<Instruction>(0));
 
-				// Remplacement de l'intruction
-				ReplaceDupLoadVisitor visitor = new ReplaceDupLoadVisitor(ds, iv);
+                // Remplacement de l'intruction
+                ReplaceDupLoadVisitor visitor = new ReplaceDupLoadVisitor(ds, iv);
 
-				for (int j=i+5; j<list.size(); j++)
-				{
-					visitor.visit(list.get(j));
-					if (visitor.getParentFound() != null)
-						break;
-				}
-			}
-			else
-			{
-				continue;
-			}
+                for (int j=i+5; j<list.size(); j++)
+                {
+                    visitor.visit(list.get(j));
+                    if (visitor.getParentFound() != null)
+                        break;
+                }
+            }
+            else
+            {
+                continue;
+            }
 
-			// Retrait de l'intruction PutStatic
-			list.remove(i+4);
-			// Retrait de l'intruction DupStore
-			list.remove(i+3);
-			// Retrait de l'intruction Goto
-			list.remove(i+2);
-			// Retrait de l'intruction TernaryOpStore
-			list.remove(i+1);
-			// Retrait de l'intruction IfNotNull
-			list.remove(i);
+            // Retrait de l'intruction PutStatic
+            list.remove(i+4);
+            // Retrait de l'intruction DupStore
+            list.remove(i+3);
+            // Retrait de l'intruction Goto
+            list.remove(i+2);
+            // Retrait de l'intruction TernaryOpStore
+            list.remove(i+1);
+            // Retrait de l'intruction IfNotNull
+            list.remove(i);
 
-			// Recherche de l'attribut statique et ajout de l'attribut SYNTHETIC
-			Field[] fields = classFile.getFields();
-			int j = fields.length;
+            // Recherche de l'attribut statique et ajout de l'attribut SYNTHETIC
+            Field[] fields = classFile.getFields();
+            int j = fields.length;
 
-			while (j-- > 0)
-			{
-				Field field = fields[j];
+            while (j-- > 0)
+            {
+                Field field = fields[j];
 
-				if (field.name_index == cnatField.name_index)
-				{
-					field.access_flags |= ClassFileConstants.ACC_SYNTHETIC;
-					break;
-				}
-			}
+                if (field.name_index == cnatField.name_index)
+                {
+                    field.access_flags |= ClassFileConstants.ACC_SYNTHETIC;
+                    break;
+                }
+            }
 
-			// Recherche de la methode statique et ajout de l'attribut SYNTHETIC
-			Method[] methods = classFile.getMethods();
-			j = methods.length;
+            // Recherche de la methode statique et ajout de l'attribut SYNTHETIC
+            Method[] methods = classFile.getMethods();
+            j = methods.length;
 
-			while (j-- > 0)
-			{
-				Method method = methods[j];
+            while (j-- > 0)
+            {
+                Method method = methods[j];
 
-				if (method.name_index == cnatMethod.name_index)
-				{
-					method.access_flags |= ClassFileConstants.ACC_SYNTHETIC;
-					break;
-				}
-			}
-		}
-	}
+                if (method.name_index == cnatMethod.name_index)
+                {
+                    method.access_flags |= ClassFileConstants.ACC_SYNTHETIC;
+                    break;
+                }
+            }
+        }
+    }
 }

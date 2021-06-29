@@ -145,11 +145,11 @@ public class MainController implements API {
                 page -> onCurrentPageChanged((JComponent)page),
                 file -> openFile((File)file));
         });
-	}
+    }
 
-	// --- Show GUI --- //
+    // --- Show GUI --- //
     @SuppressWarnings("unchecked")
-	public void show(List<File> files) {
+    public void show(List<File> files) {
         SwingUtil.invokeLater(() -> {
             // Show main frame
             mainView.show(configuration.getMainWindowLocation(), configuration.getMainWindowSize(), configuration.isMainWindowMaximize());
@@ -199,7 +199,7 @@ public class MainController implements API {
         SourceSaverService.getInstance();
     }
 
-	// --- Actions --- //
+    // --- Actions --- //
     protected void onOpen() {
         Map<String, FileLoader> loaders = FileLoaderService.getInstance().getMapProviders();
         StringBuilder sb = new StringBuilder();
@@ -231,7 +231,7 @@ public class MainController implements API {
             configuration.setRecentLoadDirectory(chooser.getCurrentDirectory());
             openFile(chooser.getSelectedFile());
         }
-	}
+    }
 
     protected void onClose() {
         mainView.closeCurrentTab();
@@ -715,7 +715,7 @@ public class MainController implements API {
             Future<Indexes> indexes = (Future<Indexes>) panel.getClientProperty("indexes");
             if (indexes != null) {
                 try {
-					list.add(indexes.get());
+                    list.add(indexes.get());
                 } catch (Exception e) {
                     assert ExceptionUtil.printStackTrace(e);
                 }

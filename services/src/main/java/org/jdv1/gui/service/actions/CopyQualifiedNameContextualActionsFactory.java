@@ -26,18 +26,18 @@ import org.jd.gui.api.API;
 
 public class CopyQualifiedNameContextualActionsFactory implements ContextualActionsFactory {
 
-	@Override
+    @Override
     public Collection<Action> make(org.jd.gui.api.API api, Container.Entry entry, String fragment) {
         return Collections.<Action>singletonList(new CopyQualifiedNameAction(api, entry, fragment));
     }
 
     public static class CopyQualifiedNameAction extends AbstractAction {
         /**
-		 *
-		 */
-		private static final long serialVersionUID = 1L;
+         *
+         */
+        private static final long serialVersionUID = 1L;
 
-		protected static final ImageIcon ICON = new ImageIcon(CopyQualifiedNameAction.class.getClassLoader().getResource("org/jd/gui/images/cpyqual_menu.png"));
+        protected static final ImageIcon ICON = new ImageIcon(CopyQualifiedNameAction.class.getClassLoader().getResource("org/jd/gui/images/cpyqual_menu.png"));
 
         protected API api;
         protected Container.Entry entry;

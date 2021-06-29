@@ -35,53 +35,53 @@ import jd.core.process.analyzer.classfile.visitor.ReplaceDupLoadVisitor;
  */
 public class RemoveDupConstantsAttributes
 {
-	public static void Reconstruct(List<Instruction> list)
-	{
-		for (int dupStoreIndex=0; dupStoreIndex<list.size(); dupStoreIndex++)
-		{
-			if (list.get(dupStoreIndex).opcode != ByteCodeConstants.DUPSTORE)
-				continue;
+    public static void Reconstruct(List<Instruction> list)
+    {
+        for (int dupStoreIndex=0; dupStoreIndex<list.size(); dupStoreIndex++)
+        {
+            if (list.get(dupStoreIndex).opcode != ByteCodeConstants.DUPSTORE)
+                continue;
 
-			// DupStore trouv�
-			DupStore dupstore = (DupStore)list.get(dupStoreIndex);
+            // DupStore trouv�
+            DupStore dupstore = (DupStore)list.get(dupStoreIndex);
 
-			int opcode = dupstore.objectref.opcode;
+            int opcode = dupstore.objectref.opcode;
 
-			if (/*(opcode != ByteCodeConstants.GETFIELD) &&
-				(opcode != ByteCodeConstants.GETSTATIC) &&*/
-				(opcode != ByteCodeConstants.BIPUSH) &&
-				(opcode != ByteCodeConstants.SIPUSH) /*&&
-				(opcode != ByteCodeConstants.ALOAD) &&
-				(opcode != ByteCodeConstants.ILOAD)*/)
-				continue;
+            if (/*(opcode != ByteCodeConstants.GETFIELD) &&
+                (opcode != ByteCodeConstants.GETSTATIC) &&*/
+                (opcode != ByteCodeConstants.BIPUSH) &&
+                (opcode != ByteCodeConstants.SIPUSH) /*&&
+                (opcode != ByteCodeConstants.ALOAD) &&
+                (opcode != ByteCodeConstants.ILOAD)*/)
+                continue;
 
-			Instruction i = dupstore.objectref;
-			int dupLoadIndex = dupStoreIndex+1;
-			ReplaceDupLoadVisitor visitor =
-				new ReplaceDupLoadVisitor(dupstore, i);
-			final int length = list.size();
+            Instruction i = dupstore.objectref;
+            int dupLoadIndex = dupStoreIndex+1;
+            ReplaceDupLoadVisitor visitor =
+                new ReplaceDupLoadVisitor(dupstore, i);
+            final int length = list.size();
 
-			// 1er substitution
-			while (dupLoadIndex < length)
-			{
-				visitor.visit(list.get(dupLoadIndex));
-				if (visitor.getParentFound() != null)
-					break;
-				dupLoadIndex++;
-			}
+            // 1er substitution
+            while (dupLoadIndex < length)
+            {
+                visitor.visit(list.get(dupLoadIndex));
+                if (visitor.getParentFound() != null)
+                    break;
+                dupLoadIndex++;
+            }
 
-			visitor.init(dupstore, i);
+            visitor.init(dupstore, i);
 
-			// 2eme substitution
-			while (dupLoadIndex < length)
-			{
-				visitor.visit(list.get(dupLoadIndex));
-				if (visitor.getParentFound() != null)
-					break;
-				dupLoadIndex++;
-			}
+            // 2eme substitution
+            while (dupLoadIndex < length)
+            {
+                visitor.visit(list.get(dupLoadIndex));
+                if (visitor.getParentFound() != null)
+                    break;
+                dupLoadIndex++;
+            }
 
-			list.remove(dupStoreIndex--);
-		}
-	}
+            list.remove(dupStoreIndex--);
+        }
+    }
 }

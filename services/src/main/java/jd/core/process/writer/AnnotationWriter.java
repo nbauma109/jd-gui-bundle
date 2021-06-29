@@ -28,71 +28,71 @@ import jd.core.printer.Printer;
 
 public class AnnotationWriter
 {
-	public static void WriteParameterAnnotation(
-		Loader loader, Printer printer, ReferenceMap referenceMap,
-		ClassFile classFile, ParameterAnnotations parameterAnnotation)
-	{
-		if (parameterAnnotation == null)
-			return;
+    public static void WriteParameterAnnotation(
+        Loader loader, Printer printer, ReferenceMap referenceMap,
+        ClassFile classFile, ParameterAnnotations parameterAnnotation)
+    {
+        if (parameterAnnotation == null)
+            return;
 
-		Annotation[] annotations = parameterAnnotation.annotations;
+        Annotation[] annotations = parameterAnnotation.annotations;
 
-		if (annotations == null)
-			return;
+        if (annotations == null)
+            return;
 
-		for (int i=0; i<annotations.length; i++)
-		{
-			WriteAnnotation(
-				loader, printer, referenceMap, classFile, annotations[i]);
-			printer.print(' ');
-		}
-	}
+        for (int i=0; i<annotations.length; i++)
+        {
+            WriteAnnotation(
+                loader, printer, referenceMap, classFile, annotations[i]);
+            printer.print(' ');
+        }
+    }
 
-	public static void WriteAnnotation(
-		Loader loader, Printer printer, ReferenceMap referenceMap,
-		ClassFile classFile, Annotation annotation)
-	{
-		printer.startOfAnnotationName();
-		printer.print('@');
-		String annotationName =
-			classFile.getConstantPool().getConstantUtf8(annotation.type_index);
-		SignatureWriter.WriteSignature(
-			loader, printer, referenceMap, classFile, annotationName);
-		printer.endOfAnnotationName();
+    public static void WriteAnnotation(
+        Loader loader, Printer printer, ReferenceMap referenceMap,
+        ClassFile classFile, Annotation annotation)
+    {
+        printer.startOfAnnotationName();
+        printer.print('@');
+        String annotationName =
+            classFile.getConstantPool().getConstantUtf8(annotation.type_index);
+        SignatureWriter.WriteSignature(
+            loader, printer, referenceMap, classFile, annotationName);
+        printer.endOfAnnotationName();
 
-		ElementValuePair[] evps = annotation.elementValuePairs;
-		if (evps != null)
-		{
-			if (evps.length > 0)
-			{
-				printer.print('(');
+        ElementValuePair[] evps = annotation.elementValuePairs;
+        if (evps != null)
+        {
+            if (evps.length > 0)
+            {
+                printer.print('(');
 
-				ConstantPool constants = classFile.getConstantPool();
-				String name = constants.getConstantUtf8(evps[0].element_name_index);
+                ConstantPool constants = classFile.getConstantPool();
+                String name = constants.getConstantUtf8(evps[0].element_name_index);
 
-				if ((evps.length > 1) || !"value".equals(name))
-				{
-					printer.print(name);
-					printer.print('=');
-				}
-				ElementValueWriter.WriteElementValue(
-					loader, printer, referenceMap,
-					classFile, evps[0].element_value);
+                if ((evps.length > 1) || !"value".equals(name))
+                {
+                    printer.print(name);
+                    printer.print('=');
+                }
+                ElementValueWriter.WriteElementValue(
+                    loader, printer, referenceMap,
+                    classFile, evps[0].element_value);
 
-				for (int j=1; j<evps.length; j++)
-				{
-					name = constants.getConstantUtf8(evps[j].element_name_index);
+                for (int j=1; j<evps.length; j++)
+                {
+                    name = constants.getConstantUtf8(evps[j].element_name_index);
 
-					printer.print(", ");
-					printer.print(name);
-					printer.print('=');
-					ElementValueWriter.WriteElementValue(
-						loader, printer, referenceMap,
-						classFile, evps[j].element_value);
-				}
+                    printer.print(", ");
+                    printer.print(name);
+                    printer.print('=');
+                    ElementValueWriter.WriteElementValue(
+                        loader, printer, referenceMap,
+                        classFile, evps[j].element_value);
+                }
 
-				printer.print(')');
-			}
-		}
-	}
+                printer.print(')');
+            }
+        }
+    }
 }

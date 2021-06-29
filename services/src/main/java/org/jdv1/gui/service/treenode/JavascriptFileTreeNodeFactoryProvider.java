@@ -35,11 +35,11 @@ public class JavascriptFileTreeNodeFactoryProvider extends TextFileTreeNodeFacto
 
     protected static class TreeNode extends TextFileTreeNodeFactoryProvider.TreeNode {
         /**
-		 *
-		 */
-		private static final long serialVersionUID = 1L;
+         *
+         */
+        private static final long serialVersionUID = 1L;
 
-		public TreeNode(Container.Entry entry, Object userObject) { super(entry, userObject); }
+        public TreeNode(Container.Entry entry, Object userObject) { super(entry, userObject); }
 
         // --- PageCreator --- //
         @Override
@@ -47,11 +47,11 @@ public class JavascriptFileTreeNodeFactoryProvider extends TextFileTreeNodeFacto
         public <T extends JComponent & UriGettable> T createPage(API api) {
             return (T)new TextFileTreeNodeFactoryProvider.Page(entry) {
                 /**
-				 *
-				 */
-				private static final long serialVersionUID = 1L;
+                 *
+                 */
+                private static final long serialVersionUID = 1L;
 
-				@Override public String getSyntaxStyle() { return SyntaxConstants.SYNTAX_STYLE_JAVASCRIPT; }
+                @Override public String getSyntaxStyle() { return SyntaxConstants.SYNTAX_STYLE_JAVASCRIPT; }
             };
         }
     }

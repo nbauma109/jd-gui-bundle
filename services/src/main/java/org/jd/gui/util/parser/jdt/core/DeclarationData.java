@@ -24,19 +24,19 @@ public class DeclarationData {
     public boolean isAMethod() { return (descriptor != null) && descriptor.charAt(0) == '('; }
     public boolean isAConstructor() { return "<init>".equals(getName()); }
 
-	public int getStartPosition() {
-		return startPosition;
-	}
+    public int getStartPosition() {
+        return startPosition;
+    }
 
-	public int getEndPosition() {
-		return endPosition;
-	}
+    public int getEndPosition() {
+        return endPosition;
+    }
 
-	public String getTypeName() {
-		return typeName;
-	}
+    public String getTypeName() {
+        return typeName;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
 }

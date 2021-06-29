@@ -29,19 +29,19 @@ import jd.core.model.instruction.bytecode.instruction.Instruction;
  */
 public class FastList extends BranchInstruction
 {
-	public List<Instruction> instructions;
+    public List<Instruction> instructions;
 
-	public FastList(
-		int opcode, int offset, int lineNumber,
-		int branch, List<Instruction> instructions)
-	{
-		super(opcode, offset, lineNumber, branch);
-		this.instructions = instructions;
-	}
+    public FastList(
+        int opcode, int offset, int lineNumber,
+        int branch, List<Instruction> instructions)
+    {
+        super(opcode, offset, lineNumber, branch);
+        this.instructions = instructions;
+    }
 
-	public String getReturnedSignature(
-			ConstantPool constants, LocalVariables localVariables)
-	{
-		return null;
-	}
+    public String getReturnedSignature(
+            ConstantPool constants, LocalVariables localVariables)
+    {
+        return null;
+    }
 }

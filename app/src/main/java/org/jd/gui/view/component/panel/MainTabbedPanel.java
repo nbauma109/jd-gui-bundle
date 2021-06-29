@@ -108,12 +108,12 @@ public class MainTabbedPanel<T extends JComponent & UriGettable> extends TabbedP
                 }
             }
         });
-		add("tabs", tabbedPane);
+        add("tabs", tabbedPane);
 
-		setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, darker(darker(bg))));
-	}
+        setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, darker(darker(bg))));
+    }
 
-	protected String getFileManagerLabel() {
+    protected String getFileManagerLabel() {
         switch (PlatformService.getInstance().getOs()) {
             case Linux:
                 return "your file manager";
@@ -124,7 +124,7 @@ public class MainTabbedPanel<T extends JComponent & UriGettable> extends TabbedP
         }
     }
 
-	protected JLabel newLabel(String text, Color fontColor) {
+    protected JLabel newLabel(String text, Color fontColor) {
         JLabel label = new JLabel(text);
         label.setForeground(fontColor);
         return label;

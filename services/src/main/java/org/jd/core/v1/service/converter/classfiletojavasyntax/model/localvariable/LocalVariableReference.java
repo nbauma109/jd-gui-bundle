@@ -7,7 +7,6 @@
 
 package org.jd.core.v1.service.converter.classfiletojavasyntax.model.localvariable;
 
-
 public interface LocalVariableReference {
     AbstractLocalVariable getLocalVariable();
 

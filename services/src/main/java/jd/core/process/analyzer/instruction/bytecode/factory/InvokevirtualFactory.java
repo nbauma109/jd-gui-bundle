@@ -32,41 +32,41 @@ import jd.core.util.InvalidParameterException;
 
 public class InvokevirtualFactory extends InstructionFactory
 {
-	public int create(
-			ClassFile classFile, Method method, List<Instruction> list,
-			List<Instruction> listForAnalyze,
-			Stack<Instruction> stack, byte[] code, int offset,
-			int lineNumber, boolean[] jumps)
-	{
-		final int opcode = code[offset] & 255;
-		final int index = ((code[offset+1] & 255) << 8) | (code[offset+2] & 255);
+    public int create(
+            ClassFile classFile, Method method, List<Instruction> list,
+            List<Instruction> listForAnalyze,
+            Stack<Instruction> stack, byte[] code, int offset,
+            int lineNumber, boolean[] jumps)
+    {
+        final int opcode = code[offset] & 255;
+        final int index = ((code[offset+1] & 255) << 8) | (code[offset+2] & 255);
 
-		ConstantMethodref cmr =
-			classFile.getConstantPool().getConstantMethodref(index);
-		if (cmr == null)
-			throw new InvalidParameterException(
-					"Invalid ConstantMethodref index");
+        ConstantMethodref cmr =
+            classFile.getConstantPool().getConstantMethodref(index);
+        if (cmr == null)
+            throw new InvalidParameterException(
+                    "Invalid ConstantMethodref index");
 
-		int nbrOfParameters = cmr.getNbrOfParameters();
-		ArrayList<Instruction> args = new ArrayList<Instruction>(nbrOfParameters);
+        int nbrOfParameters = cmr.getNbrOfParameters();
+        ArrayList<Instruction> args = new ArrayList<Instruction>(nbrOfParameters);
 
-		for (int i=nbrOfParameters; i>0; --i)
-			args.add(stack.pop());
+        for (int i=nbrOfParameters; i>0; --i)
+            args.add(stack.pop());
 
-		Collections.reverse(args);
+        Collections.reverse(args);
 
-		Instruction objectref = stack.pop();
+        Instruction objectref = stack.pop();
 
-		final Instruction instruction = new Invokevirtual(
-			opcode, offset, lineNumber, index, objectref, args);
+        final Instruction instruction = new Invokevirtual(
+            opcode, offset, lineNumber, index, objectref, args);
 
-		if (cmr.returnAResult())
-			stack.push(instruction);
-		else
-			list.add(instruction);
+        if (cmr.returnAResult())
+            stack.push(instruction);
+        else
+            list.add(instruction);
 
-		listForAnalyze.add(instruction);
+        listForAnalyze.add(instruction);
 
-		return ByteCodeConstants.NO_OF_OPERANDS[opcode];
-	}
+        return ByteCodeConstants.NO_OF_OPERANDS[opcode];
+    }
 }

@@ -41,9 +41,9 @@ public class DynamicPage
                    API.LoadSourceListener
 {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	protected API api;
+    protected API api;
     protected Container.Entry entry;
     protected TypePage page;
     protected URI lastOpenedUri;

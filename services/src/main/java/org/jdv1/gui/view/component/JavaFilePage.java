@@ -14,9 +14,9 @@ import org.jd.gui.util.io.TextReader;
 
 public class JavaFilePage extends TypePage {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	public JavaFilePage(API api, Container.Entry entry) {
+    public JavaFilePage(API api, Container.Entry entry) {
         super(api, entry);
         // Load content file
         String text = TextReader.getText(entry.getInputStream()).replace("\r\n", "\n").replace('\r', '\n');
@@ -24,11 +24,11 @@ public class JavaFilePage extends TypePage {
         parseAndSetText(text);
     }
     @Override
-	public String getSyntaxStyle() { return SyntaxConstants.SYNTAX_STYLE_JAVA; }
+    public String getSyntaxStyle() { return SyntaxConstants.SYNTAX_STYLE_JAVA; }
 
     // --- ContentSavable --- //
     @Override
-	public String getFileName() {
+    public String getFileName() {
         String path = entry.getPath();
         int index = path.lastIndexOf('/');
         return path.substring(index+1);

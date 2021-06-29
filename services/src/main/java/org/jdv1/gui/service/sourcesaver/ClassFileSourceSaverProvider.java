@@ -138,7 +138,7 @@ public class ClassFileSourceSaverProvider extends AbstractSourceSaverProvider {
             LineNumberRealigner lineNumberRealigner = new LineNumberRealigner();
             String realigned = lineNumberRealigner.process(stringBuffer.toString());
             try (OutputStream os = Files.newOutputStream(path)) {
-            	os.write(realigned.getBytes(StandardCharsets.UTF_8));
+                os.write(realigned.getBytes(StandardCharsets.UTF_8));
             } catch (IOException e) {
                 assert ExceptionUtil.printStackTrace(e);
             }

@@ -101,7 +101,7 @@ public class ClassFileSourceSaverProvider extends AbstractSourceSaverProvider {
             printer.setPreferences(preferences);
 
             // Decompile class file
-			Loader proxyLoader = (Loader) Proxy.newProxyInstance(getClass().getClassLoader(), new Class<?>[] {Loader.class}, loader);
+            Loader proxyLoader = (Loader) Proxy.newProxyInstance(getClass().getClassLoader(), new Class<?>[] {Loader.class}, loader);
             DECOMPILER.decompile(preferences, proxyLoader, printer, entry.getPath());
 
             // Metadata
@@ -139,9 +139,9 @@ public class ClassFileSourceSaverProvider extends AbstractSourceSaverProvider {
             LineNumberRealigner lineNumberRealigner = new LineNumberRealigner();
             String realigned = lineNumberRealigner.process(new String(baos.toByteArray(), StandardCharsets.UTF_8));
             try (OutputStream os = Files.newOutputStream(path)) {
-            	os.write(realigned.getBytes(StandardCharsets.UTF_8));
+                os.write(realigned.getBytes(StandardCharsets.UTF_8));
             } catch (IOException e) {
-            	assert ExceptionUtil.printStackTrace(e);
+                assert ExceptionUtil.printStackTrace(e);
             }
         } catch (Throwable t) {
             assert ExceptionUtil.printStackTrace(t);

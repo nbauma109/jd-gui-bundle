@@ -21,10 +21,10 @@ import java.util.Map;
 
 public class ViewerPreferencesProvider extends JPanel implements PreferencesPanel, DocumentListener {
     /**
-	 *
-	 */
-	private static final long serialVersionUID = 1L;
-	protected static final int MIN_VALUE = 2;
+     *
+     */
+    private static final long serialVersionUID = 1L;
+    protected static final int MIN_VALUE = 2;
     protected static final int MAX_VALUE = 40;
     protected static final String FONT_SIZE_KEY = "ViewerPreferences.fontSize";
 

@@ -18,22 +18,22 @@ package jd.core.util;
 
 public class CharArrayUtil
 {
-	public static String Substring(char[] ca, int beginIndex, int endIndex)
+    public static String Substring(char[] ca, int beginIndex, int endIndex)
     {
-    	return new String(ca, beginIndex, endIndex - beginIndex);
+        return new String(ca, beginIndex, endIndex - beginIndex);
     }
 
-	public static int IndexOf(char[] ca, char ch, int fromIndex)
+    public static int IndexOf(char[] ca, char ch, int fromIndex)
     {
-    	int length = ca.length;
+        int length = ca.length;
 
-    	while (fromIndex < length)
-    	{
-    		if (ca[fromIndex] == ch)
-    			return fromIndex;
-    		fromIndex++;
-    	}
+        while (fromIndex < length)
+        {
+            if (ca[fromIndex] == ch)
+                return fromIndex;
+            fromIndex++;
+        }
 
-    	return -1;
+        return -1;
     }
 }

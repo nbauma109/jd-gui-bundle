@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 public class Configuration {
-	protected Point mainWindowLocation;
+    protected Point mainWindowLocation;
     protected Dimension mainWindowSize;
     protected boolean mainWindowMaximize;
     protected String lookAndFeel;

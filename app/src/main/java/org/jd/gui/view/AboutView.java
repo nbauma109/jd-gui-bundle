@@ -126,11 +126,11 @@ public class AboutView {
             aboutOkButton = new JButton("    Ok    ");
             Action aboutOkActionListener = new AbstractAction() {
                 /**
-				 *
-				 */
-				private static final long serialVersionUID = 1L;
+                 *
+                 */
+                private static final long serialVersionUID = 1L;
 
-				@Override public void actionPerformed(ActionEvent actionEvent) { aboutDialog.setVisible(false); }
+                @Override public void actionPerformed(ActionEvent actionEvent) { aboutDialog.setVisible(false); }
             };
             aboutOkButton.addActionListener(aboutOkActionListener);
             hbox.add(aboutOkButton);

@@ -59,9 +59,9 @@ public interface API {
 
     Map<String, String> getPreferences();
 
-	Collection<Indexes> getCollectionOfIndexes();
+    Collection<Indexes> getCollectionOfIndexes();
 
-	Collection<Future<Indexes>> getCollectionOfFutureIndexes();
+    Collection<Future<Indexes>> getCollectionOfFutureIndexes();
 
     interface LoadSourceListener {
         void sourceLoaded(String source);

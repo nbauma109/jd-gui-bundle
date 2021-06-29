@@ -28,9 +28,9 @@ public class App {
     protected static MainController controller;
 
     public static void main(String[] args) {
-		if (checkHelpFlag(args)) {
-			JOptionPane.showMessageDialog(null, "Usage: jd-gui [option] [input-file] ...\n\nOption:\n -h Show this help message and exit", Constants.APP_NAME, JOptionPane.INFORMATION_MESSAGE);
-		} else {
+        if (checkHelpFlag(args)) {
+            JOptionPane.showMessageDialog(null, "Usage: jd-gui [option] [input-file] ...\n\nOption:\n -h Show this help message and exit", Constants.APP_NAME, JOptionPane.INFORMATION_MESSAGE);
+        } else {
             // Load preferences
             ConfigurationPersister persister = ConfigurationPersisterService.getInstance().get();
             Configuration configuration = persister.load();
@@ -62,8 +62,8 @@ public class App {
             // Create main controller and show main frame
             controller = new MainController(configuration);
             controller.show(newList(args));
-		}
-	}
+        }
+    }
 
     protected static boolean checkHelpFlag(String[] args) {
         if (args != null) {

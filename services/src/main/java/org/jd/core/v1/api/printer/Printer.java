@@ -7,7 +7,6 @@
 
 package org.jd.core.v1.api.printer;
 
-
 public interface Printer {
     void start(int maxLineNumber, int majorVersion, int minorVersion);
     void end();

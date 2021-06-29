@@ -7,7 +7,6 @@
 
 package org.jd.core.v1.model.javasyntax.statement;
 
-
 public class ByteCodeStatement implements Statement {
     protected String text;
 

@@ -22,11 +22,11 @@ public class FileLoaderService {
 
     protected final Collection<FileLoader> providers = ExtensionService.getInstance().load(FileLoader.class);
 
-	protected HashMap<String, FileLoader> mapProviders = new HashMap<>();
+    protected HashMap<String, FileLoader> mapProviders = new HashMap<>();
 
-	protected FileLoaderService() {
-	    for (FileLoader provider : providers) {
-	        for (String extension : provider.getExtensions()) {
+    protected FileLoaderService() {
+        for (FileLoader provider : providers) {
+            for (String extension : provider.getExtensions()) {
                 mapProviders.put(extension, provider);
             }
         }

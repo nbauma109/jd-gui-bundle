@@ -53,9 +53,9 @@ import org.jd.gui.api.feature.UriOpenable;
 
 public class AbstractTextPage extends JPanel implements LineNumberNavigable, ContentSearchable, UriOpenable, PreferencesChangeListener {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	protected static final String FONT_SIZE_KEY = "ViewerPreferences.fontSize";
+    protected static final String FONT_SIZE_KEY = "ViewerPreferences.fontSize";
 
     protected static final ImageIcon COLLAPSED_ICON = new ImageIcon(AbstractTextPage.class.getClassLoader().getResource("org/jd/gui/images/plus.png"));
     protected static final ImageIcon EXPANDED_ICON = new ImageIcon(AbstractTextPage.class.getClassLoader().getResource("org/jd/gui/images/minus.png"));
@@ -395,7 +395,7 @@ public class AbstractTextPage extends JPanel implements LineNumberNavigable, Con
                 int index = param.indexOf('=');
 
                 String enc = StandardCharsets.UTF_8.name();
-				if (index == -1) {
+                if (index == -1) {
                     parameters.put(URLDecoder.decode(param, enc), "");
                 } else {
                     String key = param.substring(0, index);

@@ -7,7 +7,6 @@
 
 package org.jd.core.v1.model.fragment;
 
-
 public class SpacerBetweenMovableBlocksFragment extends FlexibleFragment {
     public SpacerBetweenMovableBlocksFragment(int minimalLineCount, int lineCount, int maximalLineCount, int weight, String label) {
         super(minimalLineCount, lineCount, maximalLineCount, weight, label);

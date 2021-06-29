@@ -30,9 +30,9 @@ import org.jdv1.gui.util.index.IndexesUtil;
 
 public class ManifestFilePage extends HyperlinkPage implements UriGettable, IndexesChangeListener {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	protected API api;
+    protected API api;
     protected Container.Entry entry;
     protected Collection<Future<Indexes>> collectionOfFutureIndexes = Collections.emptyList();
 
@@ -124,10 +124,10 @@ public class ManifestFilePage extends HyperlinkPage implements UriGettable, Inde
     }
 
     @Override
-	protected boolean isHyperlinkEnabled(HyperlinkData hyperlinkData) { return ((ManifestHyperlinkData)hyperlinkData).enabled; }
+    protected boolean isHyperlinkEnabled(HyperlinkData hyperlinkData) { return ((ManifestHyperlinkData)hyperlinkData).enabled; }
 
     @Override
-	protected void openHyperlink(int x, int y, HyperlinkData hyperlinkData) {
+    protected void openHyperlink(int x, int y, HyperlinkData hyperlinkData) {
         ManifestHyperlinkData data = (ManifestHyperlinkData)hyperlinkData;
 
         if (data.enabled) {
@@ -164,11 +164,11 @@ public class ManifestFilePage extends HyperlinkPage implements UriGettable, Inde
 
     // --- UriGettable --- //
     @Override
-	public URI getUri() { return entry.getUri(); }
+    public URI getUri() { return entry.getUri(); }
 
     // --- ContentSavable --- //
     @Override
-	public String getFileName() {
+    public String getFileName() {
         String path = entry.getPath();
         int index = path.lastIndexOf('/');
         return path.substring(index+1);
@@ -176,7 +176,7 @@ public class ManifestFilePage extends HyperlinkPage implements UriGettable, Inde
 
     // --- IndexesChangeListener --- //
     @Override
-	public void indexesChanged(Collection<Future<Indexes>> collectionOfFutureIndexes) {
+    public void indexesChanged(Collection<Future<Indexes>> collectionOfFutureIndexes) {
         // Update the list of containers
         this.collectionOfFutureIndexes = collectionOfFutureIndexes;
         // Refresh links

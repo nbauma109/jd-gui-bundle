@@ -16,11 +16,11 @@ import org.jd.gui.spi.ContainerFactory;
 
 public class GenericContainerFactoryProvider implements ContainerFactory {
 
-	public String getType() { return "generic"; }
+    public String getType() { return "generic"; }
 
-	public boolean accept(API api, Path rootPath) { return true; }
+    public boolean accept(API api, Path rootPath) { return true; }
 
-	public Container make(API api, Container.Entry parentEntry, Path rootPath) {
-		return new GenericContainer(api, parentEntry, rootPath);
-	}
+    public Container make(API api, Container.Entry parentEntry, Path rootPath) {
+        return new GenericContainer(api, parentEntry, rootPath);
+    }
 }

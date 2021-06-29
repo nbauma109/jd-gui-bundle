@@ -27,97 +27,97 @@ import com.strobel.decompiler.languages.BytecodeLanguage;
 
 public class JarEntryDecompiler {
 
-	public List<TypeDefinition> decompileJarEntry(final URI jarFilePath, final String targetedEntry,
-			final DecompilationOptions decompilationOptions, final ITextOutput output) throws IOException {
+    public List<TypeDefinition> decompileJarEntry(final URI jarFilePath, final String targetedEntry,
+            final DecompilationOptions decompilationOptions, final ITextOutput output) throws IOException {
 
-		List<TypeDefinition> types = new ArrayList<>();
+        List<TypeDefinition> types = new ArrayList<>();
 
-		final File jarFile = new File(jarFilePath);
+        final File jarFile = new File(jarFilePath);
 
-		if (!jarFile.exists()) {
-			throw new FileNotFoundException("File not found: " + jarFilePath);
-		}
+        if (!jarFile.exists()) {
+            throw new FileNotFoundException("File not found: " + jarFilePath);
+        }
 
-		final DecompilerSettings settings = decompilationOptions.getSettings();
-		final JarFile jar = new JarFile(jarFile);
-		final Enumeration<JarEntry> entries = jar.entries();
+        final DecompilerSettings settings = decompilationOptions.getSettings();
+        final JarFile jar = new JarFile(jarFile);
+        final Enumeration<JarEntry> entries = jar.entries();
 
-		final boolean oldShowSyntheticMembers = settings.getShowSyntheticMembers();
-		final ITypeLoader oldTypeLoader = settings.getTypeLoader();
+        final boolean oldShowSyntheticMembers = settings.getShowSyntheticMembers();
+        final ITypeLoader oldTypeLoader = settings.getTypeLoader();
 
-		settings.setShowSyntheticMembers(false);
-		settings.setTypeLoader(new CompositeTypeLoader(new JarTypeLoader(jar), oldTypeLoader));
+        settings.setShowSyntheticMembers(false);
+        settings.setTypeLoader(new CompositeTypeLoader(new JarTypeLoader(jar), oldTypeLoader));
 
-		try {
-			MetadataSystem metadataSystem = new MetadataSystem(settings.getTypeLoader());
+        try {
+            MetadataSystem metadataSystem = new MetadataSystem(settings.getTypeLoader());
 
-			while (entries.hasMoreElements()) {
-				final JarEntry entry = entries.nextElement();
-				final String name = entry.getName();
+            while (entries.hasMoreElements()) {
+                final JarEntry entry = entries.nextElement();
+                final String name = entry.getName();
 
-				if (!name.endsWith(".class")) {
-					continue;
-				}
+                if (!name.endsWith(".class")) {
+                    continue;
+                }
 
-				final String internalName = StringUtilities.removeRight(name, ".class");
-				final String intargetName = StringUtilities.removeRight(targetedEntry, ".class");
+                final String internalName = StringUtilities.removeRight(name, ".class");
+                final String intargetName = StringUtilities.removeRight(targetedEntry, ".class");
 
-				if (!internalName.equals(intargetName) && !internalName.startsWith(intargetName + '$')) {
-					continue;
-				}
+                if (!internalName.equals(intargetName) && !internalName.startsWith(intargetName + '$')) {
+                    continue;
+                }
 
-				TypeDefinition type = decompileType(metadataSystem, internalName, decompilationOptions, false, output);
-				if (type != null) {
-					types.add(type);
-				}
-			}
-		} finally {
-			settings.setShowSyntheticMembers(oldShowSyntheticMembers);
-			settings.setTypeLoader(oldTypeLoader);
-		}
-		return types;
-	}
+                TypeDefinition type = decompileType(metadataSystem, internalName, decompilationOptions, false, output);
+                if (type != null) {
+                    types.add(type);
+                }
+            }
+        } finally {
+            settings.setShowSyntheticMembers(oldShowSyntheticMembers);
+            settings.setTypeLoader(oldTypeLoader);
+        }
+        return types;
+    }
 
-	public TypeDefinition decompileType(final MetadataSystem metadataSystem, final String typeName,
-			final DecompilationOptions options, final boolean includeNested, final ITextOutput output)
-			throws IOException {
+    public TypeDefinition decompileType(final MetadataSystem metadataSystem, final String typeName,
+            final DecompilationOptions options, final boolean includeNested, final ITextOutput output)
+            throws IOException {
 
-		final TypeReference type;
-		final DecompilerSettings settings = options.getSettings();
+        final TypeReference type;
+        final DecompilerSettings settings = options.getSettings();
 
-		if (typeName.length() == 1) {
-			//
-			// Hack to get around classes whose descriptors clash with primitive types.
-			//
+        if (typeName.length() == 1) {
+            //
+            // Hack to get around classes whose descriptors clash with primitive types.
+            //
 
-			final MetadataParser parser = new MetadataParser(IMetadataResolver.EMPTY);
-			final TypeReference reference = parser.parseTypeDescriptor(typeName);
+            final MetadataParser parser = new MetadataParser(IMetadataResolver.EMPTY);
+            final TypeReference reference = parser.parseTypeDescriptor(typeName);
 
-			type = metadataSystem.resolve(reference);
-		} else {
-			type = metadataSystem.lookupType(typeName);
-		}
+            type = metadataSystem.resolve(reference);
+        } else {
+            type = metadataSystem.lookupType(typeName);
+        }
 
-		final TypeDefinition resolvedType;
+        final TypeDefinition resolvedType;
 
-		if (type == null || (resolvedType = type.resolve()) == null) {
-			System.err.printf("!!! ERROR: Failed to load class %s.\n", typeName);
-			return null;
-		}
+        if (type == null || (resolvedType = type.resolve()) == null) {
+            System.err.printf("!!! ERROR: Failed to load class %s.\n", typeName);
+            return null;
+        }
 
-		DeobfuscationUtilities.processType(resolvedType);
+        DeobfuscationUtilities.processType(resolvedType);
 
-		if (!includeNested && (resolvedType.isNested() || resolvedType.isAnonymous() || resolvedType.isSynthetic())) {
-			return null;
-		}
+        if (!includeNested && (resolvedType.isNested() || resolvedType.isAnonymous() || resolvedType.isSynthetic())) {
+            return null;
+        }
 
-		if (settings.getLanguage() instanceof BytecodeLanguage) {
-			output.setIndentToken("  ");
-		}
+        if (settings.getLanguage() instanceof BytecodeLanguage) {
+            output.setIndentToken("  ");
+        }
 
-		settings.getLanguage().decompileType(resolvedType, output, options);
+        settings.getLanguage().decompileType(resolvedType, output, options);
 
-		return resolvedType;
-	}
+        return resolvedType;
+    }
 
 }

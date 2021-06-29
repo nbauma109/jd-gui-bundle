@@ -60,12 +60,12 @@ public class DirectoryTreeNodeFactoryProvider extends AbstractTreeNodeFactoryPro
 
     protected static class TreeNode extends DefaultMutableTreeNode implements ContainerEntryGettable, UriGettable, TreeNodeExpandable {
         /**
-		 *
-		 */
-		private static final long serialVersionUID = 1L;
+         *
+         */
+        private static final long serialVersionUID = 1L;
 
-		protected Container.Entry entry;
-		protected boolean initialized;
+        protected Container.Entry entry;
+        protected boolean initialized;
 
         public TreeNode(Container.Entry entry, Object userObject) {
             super(userObject);

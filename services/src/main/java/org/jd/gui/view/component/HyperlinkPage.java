@@ -21,10 +21,10 @@ import org.jd.gui.util.parser.jdt.core.HyperlinkData;
 
 public abstract class HyperlinkPage extends TextPage {
     /**
-	 *
-	 */
-	private static final long serialVersionUID = 1L;
-	protected static final Cursor DEFAULT_CURSOR = Cursor.getDefaultCursor();
+     *
+     */
+    private static final long serialVersionUID = 1L;
+    protected static final Cursor DEFAULT_CURSOR = Cursor.getDefaultCursor();
     protected static final Cursor HAND_CURSOR = Cursor.getPredefinedCursor(Cursor.HAND_CURSOR);
 
     protected TreeMap<Integer, HyperlinkData> hyperlinks = new TreeMap<>();
@@ -36,7 +36,7 @@ public abstract class HyperlinkPage extends TextPage {
             int lastModifiers = -1;
 
             @Override
-			public void mouseClicked(MouseEvent e) {
+            public void mouseClicked(MouseEvent e) {
                 if ((e.getClickCount() == 1) && ((e.getModifiers() & (Event.ALT_MASK|Event.META_MASK|Event.SHIFT_MASK)) == 0)) {
                     int offset = textArea.viewToModel(new Point(e.getX(), e.getY()));
                     if (offset != -1) {
@@ -52,7 +52,7 @@ public abstract class HyperlinkPage extends TextPage {
             }
 
             @Override
-			public void mouseMoved(MouseEvent e) {
+            public void mouseMoved(MouseEvent e) {
                 if ((e.getX() != lastX) || (e.getY() != lastY) || (lastModifiers != e.getModifiers())) {
                     lastX = e.getX();
                     lastY = e.getY();
@@ -86,7 +86,7 @@ public abstract class HyperlinkPage extends TextPage {
     }
 
     @Override
-	protected RSyntaxTextArea newSyntaxTextArea() { return new HyperlinkSyntaxTextArea(); }
+    protected RSyntaxTextArea newSyntaxTextArea() { return new HyperlinkSyntaxTextArea(); }
 
     public void addHyperlink(HyperlinkData hyperlinkData) {
         hyperlinks.put(hyperlinkData.getStartPosition(), hyperlinkData);
@@ -102,11 +102,11 @@ public abstract class HyperlinkPage extends TextPage {
 
     public class HyperlinkSyntaxTextArea extends RSyntaxTextArea {
         /**
-		 *
-		 */
-		private static final long serialVersionUID = 1L;
+         *
+         */
+        private static final long serialVersionUID = 1L;
 
-		/**
+        /**
          * @see HyperlinkPage.HyperlinkSyntaxTextArea#getUnderlineForToken(org.fife.ui.rsyntaxtextarea.Token)
          */
         @Override

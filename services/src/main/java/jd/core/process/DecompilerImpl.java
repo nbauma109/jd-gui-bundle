@@ -34,42 +34,42 @@ import jd.core.process.writer.ClassFileWriter;
 
 public class DecompilerImpl implements Decompiler
 {
-	public void decompile(
-			Preferences preferences, Loader loader,
-			Printer printer, String internalClassPath)
-		throws LoaderException
-	{
+    public void decompile(
+            Preferences preferences, Loader loader,
+            Printer printer, String internalClassPath)
+        throws LoaderException
+    {
 //long time0 = System.currentTimeMillis();
 
-		// 1) Deserialisation
-		ClassFile classFile =
-			ClassFileDeserializer.Deserialize(loader, internalClassPath);
-		if (classFile == null)
-			throw new LoaderException(
-				"Can not deserialize '" + internalClassPath + "'.");
+        // 1) Deserialisation
+        ClassFile classFile =
+            ClassFileDeserializer.Deserialize(loader, internalClassPath);
+        if (classFile == null)
+            throw new LoaderException(
+                "Can not deserialize '" + internalClassPath + "'.");
 
-		// 2) Analyse du byte code
-		ReferenceMap referenceMap = new ReferenceMap();
-		ClassFileAnalyzer.Analyze(referenceMap, classFile);
+        // 2) Analyse du byte code
+        ReferenceMap referenceMap = new ReferenceMap();
+        ClassFileAnalyzer.Analyze(referenceMap, classFile);
 
-		// 3) Creation de la liste des references pour generer la liste des
-	    //    "import"
-		ReferenceAnalyzer.Analyze(referenceMap, classFile);
+        // 3) Creation de la liste des references pour generer la liste des
+        //    "import"
+        ReferenceAnalyzer.Analyze(referenceMap, classFile);
 
-		// 4) Mise en page du code source
-		ArrayList<LayoutBlock> layoutBlockList = new ArrayList<LayoutBlock>(1024);
-		int maxLineNumber =	ClassFileLayouter.Layout(
-				preferences, referenceMap, classFile, layoutBlockList);
+        // 4) Mise en page du code source
+        ArrayList<LayoutBlock> layoutBlockList = new ArrayList<LayoutBlock>(1024);
+        int maxLineNumber =	ClassFileLayouter.Layout(
+                preferences, referenceMap, classFile, layoutBlockList);
 
 //System.out.println("layoutBlockList.size = " + layoutBlockList.size());
 
-		// 5) Ecriture du code source
-		ClassFileWriter.Write(
-			loader, printer, referenceMap, maxLineNumber,
-			classFile.getMajorVersion(), classFile.getMinorVersion(),
-			layoutBlockList);
+        // 5) Ecriture du code source
+        ClassFileWriter.Write(
+            loader, printer, referenceMap, maxLineNumber,
+            classFile.getMajorVersion(), classFile.getMinorVersion(),
+            layoutBlockList);
 
 //long time1 = System.currentTimeMillis();
 //System.out.println("time = " + (time1-time0) + " ms");
-	}
+    }
 }

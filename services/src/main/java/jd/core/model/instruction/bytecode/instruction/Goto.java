@@ -21,14 +21,14 @@ import jd.core.model.classfile.LocalVariables;
 
 public class Goto extends BranchInstruction
 {
-	public Goto(int opcode, int offset, int lineNumber, int branch)
-	{
-		super(opcode, offset, lineNumber, branch);
-	}
+    public Goto(int opcode, int offset, int lineNumber, int branch)
+    {
+        super(opcode, offset, lineNumber, branch);
+    }
 
-	public String getReturnedSignature(
-			ConstantPool constants, LocalVariables localVariables)
-	{
-		return null;
-	}
+    public String getReturnedSignature(
+            ConstantPool constants, LocalVariables localVariables)
+    {
+        return null;
+    }
 }

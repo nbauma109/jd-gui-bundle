@@ -31,45 +31,45 @@ import jd.core.process.analyzer.instruction.fast.visitor.CountDupLoadVisitor;
  */
 public class SingleDupLoadAnalyzer
 {
-	public static void Cleanup(List<Instruction> list)
-	{
-		CountDupLoadVisitor countDupLoadVisitor =
-			new CountDupLoadVisitor();
-		ReplaceDupLoadVisitor replaceDupLoadVisitor =
-			new ReplaceDupLoadVisitor();
+    public static void Cleanup(List<Instruction> list)
+    {
+        CountDupLoadVisitor countDupLoadVisitor =
+            new CountDupLoadVisitor();
+        ReplaceDupLoadVisitor replaceDupLoadVisitor =
+            new ReplaceDupLoadVisitor();
 
-		int length = list.size();
+        int length = list.size();
 
-		// Effacement des instructions DupStore et DupLoad
-		for (int dupStoreIndex=0; dupStoreIndex<length; dupStoreIndex++)
-		{
-			if (list.get(dupStoreIndex).opcode != ByteCodeConstants.DUPSTORE)
-				continue;
+        // Effacement des instructions DupStore et DupLoad
+        for (int dupStoreIndex=0; dupStoreIndex<length; dupStoreIndex++)
+        {
+            if (list.get(dupStoreIndex).opcode != ByteCodeConstants.DUPSTORE)
+                continue;
 
-			DupStore dupStore = (DupStore)list.get(dupStoreIndex);
-			countDupLoadVisitor.init(dupStore);
+            DupStore dupStore = (DupStore)list.get(dupStoreIndex);
+            countDupLoadVisitor.init(dupStore);
 
-			for (int index=dupStoreIndex+1; index<length; ++index)
-			{
-				countDupLoadVisitor.visit(list.get(index));
-				if (countDupLoadVisitor.getCounter() >= 2)
-					break;
-			}
+            for (int index=dupStoreIndex+1; index<length; ++index)
+            {
+                countDupLoadVisitor.visit(list.get(index));
+                if (countDupLoadVisitor.getCounter() >= 2)
+                    break;
+            }
 
-			int counter = countDupLoadVisitor.getCounter();
+            int counter = countDupLoadVisitor.getCounter();
 
-			if (counter < 2)
-			{
-				if (counter > 0)
-				{
-					replaceDupLoadVisitor.init(dupStore, dupStore.objectref);
-					for (int index=dupStoreIndex+1; index<length; ++index)
-						replaceDupLoadVisitor.visit(list.get(index));
-				}
+            if (counter < 2)
+            {
+                if (counter > 0)
+                {
+                    replaceDupLoadVisitor.init(dupStore, dupStore.objectref);
+                    for (int index=dupStoreIndex+1; index<length; ++index)
+                        replaceDupLoadVisitor.visit(list.get(index));
+                }
 
-				list.remove(dupStoreIndex--);
-				length--;
-			}
-		}
-	}
+                list.remove(dupStoreIndex--);
+                length--;
+            }
+        }
+    }
 }

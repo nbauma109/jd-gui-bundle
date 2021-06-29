@@ -8,15 +8,15 @@
 package org.jd.core.v1.model.classfile.attribute;
 
 public class ElementValueAnnotationValue implements ElementValue {
-	protected Annotation annotationValue;
+    protected Annotation annotationValue;
 
     public ElementValueAnnotationValue(Annotation annotationValue) {
         this.annotationValue = annotationValue;
     }
 
     public Annotation getAnnotationValue() {
-		return annotationValue;
-	}
+        return annotationValue;
+    }
 
     @Override
     public void accept(ElementValueVisitor visitor) {

@@ -34,10 +34,10 @@ public abstract class AbstractTypeFileTreeNodeFactoryProvider extends AbstractTr
 
     public static class BaseTreeNode extends DefaultMutableTreeNode implements ContainerEntryGettable, UriGettable, PageCreator {
         /**
-		 *
-		 */
-		private static final long serialVersionUID = 1L;
-		protected Container.Entry entry;
+         *
+         */
+        private static final long serialVersionUID = 1L;
+        protected Container.Entry entry;
         protected PageAndTipFactory factory;
         protected URI uri;
 
@@ -75,10 +75,10 @@ public abstract class AbstractTypeFileTreeNodeFactoryProvider extends AbstractTr
 
     protected static class FileTreeNode extends BaseTreeNode implements TreeNodeExpandable {
         /**
-		 *
-		 */
-		private static final long serialVersionUID = 1L;
-		protected boolean initialized;
+         *
+         */
+        private static final long serialVersionUID = 1L;
+        protected boolean initialized;
 
         public FileTreeNode(Container.Entry entry, Object userObject, PageAndTipFactory pageAndTipFactory) {
             this(entry, null, userObject, pageAndTipFactory);
@@ -114,10 +114,10 @@ public abstract class AbstractTypeFileTreeNodeFactoryProvider extends AbstractTr
 
     protected static class TypeTreeNode extends BaseTreeNode implements TreeNodeExpandable {
         /**
-		 *
-		 */
-		private static final long serialVersionUID = 1L;
-		protected boolean initialized;
+         *
+         */
+        private static final long serialVersionUID = 1L;
+        protected boolean initialized;
         protected Type type;
 
         public TypeTreeNode(Container.Entry entry, Type type, Object userObject, PageAndTipFactory factory) {
@@ -193,11 +193,11 @@ public abstract class AbstractTypeFileTreeNodeFactoryProvider extends AbstractTr
 
     protected static class FieldOrMethodTreeNode extends BaseTreeNode {
         /**
-		 *
-		 */
-		private static final long serialVersionUID = 1L;
+         *
+         */
+        private static final long serialVersionUID = 1L;
 
-		public FieldOrMethodTreeNode(Container.Entry entry, String fragment, Object userObject, PageAndTipFactory factory) {
+        public FieldOrMethodTreeNode(Container.Entry entry, String fragment, Object userObject, PageAndTipFactory factory) {
             super(entry, fragment, userObject, factory);
         }
     }

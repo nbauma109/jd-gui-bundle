@@ -25,14 +25,14 @@ import jd.core.model.classfile.LocalVariables;
  */
 public class ReturnAddressLoad extends Instruction
 {
-	public ReturnAddressLoad(int opcode, int offset, int lineNumber)
-	{
-		super(opcode, offset, lineNumber);
-	}
+    public ReturnAddressLoad(int opcode, int offset, int lineNumber)
+    {
+        super(opcode, offset, lineNumber);
+    }
 
-	public String getReturnedSignature(
-			ConstantPool constants, LocalVariables localVariables)
-	{
-		return null;
-	}
+    public String getReturnedSignature(
+            ConstantPool constants, LocalVariables localVariables)
+    {
+        return null;
+    }
 }

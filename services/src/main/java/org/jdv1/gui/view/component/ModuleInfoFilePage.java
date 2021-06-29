@@ -46,9 +46,9 @@ import org.jdv1.gui.util.index.IndexesUtil;
 
 public class ModuleInfoFilePage extends ClassFilePage {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	public static final String SYNTAX_STYLE_JAVA_MODULE = "text/java-module";
+    public static final String SYNTAX_STYLE_JAVA_MODULE = "text/java-module";
 
     static {
         // Add a new token maker for Java 9+ module

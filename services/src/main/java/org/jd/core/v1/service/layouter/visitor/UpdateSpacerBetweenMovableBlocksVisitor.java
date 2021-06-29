@@ -10,7 +10,6 @@ package org.jd.core.v1.service.layouter.visitor;
 import org.jd.core.v1.model.fragment.*;
 import org.jd.core.v1.util.DefaultList;
 
-
 public class UpdateSpacerBetweenMovableBlocksVisitor implements FragmentVisitor {
     protected DefaultList<StartMovableBlockFragment> blocks = new DefaultList<>();
     protected DefaultList<SpacerBetweenMovableBlocksFragment> spacers = new DefaultList<>();

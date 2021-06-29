@@ -22,7 +22,7 @@ import java.io.DataInputStream;
 
 public interface Loader
 {
-	public DataInputStream load(String internalPath) throws LoaderException;
+    public DataInputStream load(String internalPath) throws LoaderException;
 
-	public boolean canLoad(String internalPath);
+    public boolean canLoad(String internalPath);
 }

@@ -23,7 +23,6 @@ public class TypeArgumentToTypeVisitor extends AbstractTypeArgumentVisitor {
         return type;
     }
 
-
     @Override public void visit(DiamondTypeArgument argument) { type = TYPE_OBJECT; }
     @Override public void visit(WildcardTypeArgument argument) { type = TYPE_OBJECT; }
 

@@ -130,8 +130,8 @@ public class MavenOrgSourceLoaderProvider implements SourceLoader {
 
                 try (DigestInputStream is = new DigestInputStream(entry.getInputStream(), messageDigest)) {
                     while (is.read(buffer) > -1) {
-						;
-					}
+                        ;
+                    }
                 }
 
                 byte[] array = messageDigest.digest();
@@ -215,7 +215,7 @@ public class MavenOrgSourceLoaderProvider implements SourceLoader {
                     tmpFile.deleteOnExit();
 
                     try (InputStream is = new BufferedInputStream(loadUrl.openStream()); OutputStream os = new BufferedOutputStream(new FileOutputStream(tmpFile))) {
-                    	IOUtils.copy(is, os);
+                        IOUtils.copy(is, os);
                     }
                     cache.put(entry, tmpFile);
                     return tmpFile;
